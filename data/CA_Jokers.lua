@@ -113,7 +113,7 @@ function CodexArcanum.INIT.CA_Jokers()
     local chain_reaction_def = { 
         name = "Chain Reaction", 
         text = { 
-            "Create a {C:dark_edition}Negative{} {C:attention}Copy{}", 
+            "Create a {C:dark_edition}Negative{} {C:attention}copy{}", 
             "of the first {C:alchemical}Alchemical{} ", 
             "card used each blind" 
         } 
