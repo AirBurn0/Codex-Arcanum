@@ -34,12 +34,12 @@ function CodexArcanum.INIT.CA_Others()
         }
     }
 
-    local alchemical_merchant = SMODS.Voucher:new("Alchemical Merchant", "alchemical_merchant", { extra = 4.8 / 4 }, { x = 1, y = 2 }, v_alchemical_merchant_def, 10, true, false, true, nil, "ca_others_atlas")
+    local alchemical_merchant = SMODS.Voucher:new("Alchemical Merchant", "alchemical_merchant", { extra = 4.8 }, { x = 1, y = 2 }, v_alchemical_merchant_def, 10, true, false, true, nil, "ca_others_atlas")
     alchemical_merchant:register()
 
     function SMODS.Vouchers.v_alchemical_merchant.redeem(center)
         G.E_MANAGER:add_event(Event({ func = function()
-            G.GAME.alchemical_rate = 4 * center.extra
+            G.GAME.alchemical_rate = center.extra
             return true
         end }))
     end
@@ -54,13 +54,13 @@ function CodexArcanum.INIT.CA_Others()
         }
     }
 
-    local alchemical_tycoon = SMODS.Voucher:new("Alchemical Tycoon", "alchemical_tycoon", { extra = 9.6 / 4 }, { x = 1, y = 3 }, v_alchemical_tycoon_def, 10, true, false, true, { "v_alchemical_merchant" }, "ca_others_atlas")
+    local alchemical_tycoon = SMODS.Voucher:new("Alchemical Tycoon", "alchemical_tycoon", { extra = 4.8 * 2 }, { x = 1, y = 3 }, v_alchemical_tycoon_def, 10, true, false, true, { "v_alchemical_merchant" }, "ca_others_atlas")
     alchemical_tycoon:register()
 
     function SMODS.Vouchers.v_alchemical_tycoon.redeem(center)
         G.E_MANAGER:add_event(Event({ 
             func = function()
-                G.GAME.alchemical_rate = 4 * center.extra
+                G.GAME.alchemical_rate = center.extra
                 return true
             end 
         }))
