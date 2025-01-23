@@ -36,7 +36,7 @@ function CodexArcanum.INIT.CA_Jokers()
         text = { 
             "Create an {C:alchemical}Alchemical{} card", 
             "every {C:attention}#1#{} hands played",
-            "{C:inactive}#2#" 
+            "{C:inactive}(#2#)" 
         } 
     }
 
