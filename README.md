@@ -1,3 +1,5 @@
+This fork fixes several issues with original Codex Arcanum mod, but doesn't fix them all. Still doesn't work with other mods like Bunco.
+
 <p align="center">
   <a href="" rel="noopener">
  <img width=600px src="assets/promos/logo.png?raw=true" alt="Project logo"></a>
