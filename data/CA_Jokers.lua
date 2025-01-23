@@ -109,6 +109,37 @@ function CodexArcanum.INIT.CA_Jokers()
         end
     end
 
+    -- Chain Reaction
+    local chain_reaction_def = { 
+        name = "Chain Reaction", 
+        text = { 
+            "Create a {C:dark_edition}Negative{} {C:attention}Copy{}", 
+            "of the first {C:alchemical}Alchemical{} ", 
+            "card used each blind" 
+        } 
+    }
+
+    local chain_reaction = SMODS.Joker:new("Chain Reaction", "chain_reaction", { extra = { used = false } }, { x = 2, y = 0 }, chain_reaction_def, 2, 5, false, false, true, true, "", "ca_joker_atlas")
+    chain_reaction:register()
+
+    function SMODS.Jokers.j_chain_reaction.calculate(card, context)
+        if context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == 'Alchemical' then
+            if not card.ability.extra.used then
+                G.E_MANAGER:add_event(Event({ func = function()
+                    local _card = copy_card(context.consumeable, nil, nil, nil)
+                    _card:set_edition({ negative = true }, true)
+                    _card:add_to_deck()
+                    G.consumeables:emplace(_card)
+
+                    return true
+                end }))
+                card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Copied", colour = G.C.SECONDARY_SET.Alchemy })
+                card.ability.extra.used = true
+                return
+            end
+        end
+    end
+
     -- Essence of Comedy
     local essence_of_comedy_def = { 
         name = "Essence of Comedy", 
@@ -162,37 +193,6 @@ function CodexArcanum.INIT.CA_Jokers()
                     add_random_alchemical(card)
                     card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('p_plus_alchemical'), colour = G.C.SECONDARY_SET.Alchemy })
                 end
-            end
-        end
-    end
-
-    -- Chain Reaction
-    local chain_reaction_def = { 
-        name = "Chain Reaction", 
-        text = { 
-            "Create a {C:dark_edition}Negative{} {C:attention}Copy{}", 
-            "of the first {C:alchemical}Alchemical{} ", 
-            "card used each blind" 
-        } 
-    }
-
-    local chain_reaction = SMODS.Joker:new("Chain Reaction", "chain_reaction", { extra = { used = false } }, { x = 2, y = 0 }, chain_reaction_def, 3, 6, false, false, true, true, "", "ca_joker_atlas")
-    chain_reaction:register()
-
-    function SMODS.Jokers.j_chain_reaction.calculate(card, context)
-        if context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == 'Alchemical' then
-            if not card.ability.extra.used then
-                G.E_MANAGER:add_event(Event({ func = function()
-                    local _card = copy_card(context.consumeable, nil, nil, nil)
-                    _card:set_edition({ negative = true }, true)
-                    _card:add_to_deck()
-                    G.consumeables:emplace(_card)
-
-                    return true
-                end }))
-                card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Copied", colour = G.C.SECONDARY_SET.Alchemy })
-                card.ability.extra.used = true
-                return
             end
         end
     end
