@@ -1,4 +1,3 @@
-
 G.FUNCS.your_collection_alchemicals = function(e)
   G.SETTINGS.paused = true
   G.FUNCS.overlay_menu{
@@ -19,7 +18,9 @@ G.FUNCS.your_collection_alchemical_page = function(args)
   for j = 1, #G.your_collection do
     for i = 1, 4 do
       local center = G.P_CENTER_POOLS["Alchemical"][(j-1) * 4 + i + (8*(args.cycle_config.current_option - 1))]
-      if not center then break end
+      if not center then
+        break 
+      end
       local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w/2, G.your_collection[j].T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, center)
       card:start_materialize(nil, i>1 or j>1)
       G.your_collection[j]:emplace(card)
@@ -60,36 +61,66 @@ function create_UIBox_your_collection_alchemicals()
         end
       end
     end
-  
+
     INIT_COLLECTION_CARD_ALERTS()
-    
-    local t = create_UIBox_generic_options({ back_func = 'your_collection', contents = {
-              {n=G.UIT.R, config={align = "cm", minw = 2.5, padding = 0.1, r = 0.1, colour = G.C.BLACK, emboss = 0.05}, nodes=deck_tables},
-                    {n=G.UIT.R, config={align = "cm"}, nodes={
-                      create_option_cycle({options = alchemical_options, w = 4, cycle_shoulders = true, opt_callback = 'your_collection_alchemical_page', focus_args = {snap_to = true, nav = 'wide'},current_option = 1, colour = G.C.RED, no_pips = true})
-                    }}
-            }})
+
+    local t = create_UIBox_generic_options({ 
+      back_func = 'your_collection', 
+      contents = { 
+          { 
+              n = G.UIT.R, 
+              config = { 
+                  align = "cm", 
+                  minw = 2.5, 
+                  padding = 0.1, 
+                  r = 0.1, 
+                  colour = G.C.BLACK, 
+                  emboss = 0.05 
+              }, 
+              nodes = deck_tables 
+          }, 
+          { 
+              n = G.UIT.R, 
+              config = { 
+                  align = "cm"
+              }, 
+              nodes = { 
+                  create_option_cycle({
+                      options = alchemical_options,
+                      w = 4,
+                      cycle_shoulders = true, 
+                      opt_callback = 'your_collection_alchemical_page', 
+                      focus_args = { 
+                          snap_to = true, 
+                          nav = 'wide' 
+                      }, 
+                      current_option = 1, 
+                      colour = G.C.RED, 
+                      no_pips = true 
+                  }) 
+              } 
+          } 
+      }
+    })
     return t
 end
 
 local set_discover_talliesref = set_discover_tallies
 function set_discover_tallies()
   set_discover_talliesref()
-
-  G.DISCOVER_TALLIES.alchemicals = {tally = 0, of = 0}
-
+  G.DISCOVER_TALLIES.alchemicals = { tally = 0, of = 0 }
   for _, v in pairs(G.P_CENTERS) do
     if not v.omit then 
       if v.set and v.consumeable and v.set == 'Alchemical' then
         G.DISCOVER_TALLIES.alchemicals.of = G.DISCOVER_TALLIES.alchemicals.of+1
-          if v.discovered then 
-              G.DISCOVER_TALLIES.alchemicals.tally = G.DISCOVER_TALLIES.alchemicals.tally+1
-          end
+        if v.discovered then 
+          G.DISCOVER_TALLIES.alchemicals.tally = G.DISCOVER_TALLIES.alchemicals.tally+1
+        end
       end
     end
   end
 end
 
 function CodexArcanum.INIT.CA_AlchemyUI()
-    
+
 end

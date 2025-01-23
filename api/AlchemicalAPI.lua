@@ -1,7 +1,3 @@
-------------------------------------
--- ALCHEMICALS API
-------------------------------------
-
 CodexArcanum.Alchemicals = {}
 CodexArcanum.Alchemical = {
     name = "",
@@ -29,9 +25,9 @@ function CodexArcanum.Alchemical:new(name, slug, config, pos, loc_txt, cost, dis
       x = 0,
       y = 0
   }
-  o.cost = cost
+  o.cost = cost or 3
   o.discovered = discovered or false
-  o.unlocked = unlocked
+  o.unlocked = unlocked or false
   o.consumeable = true
   o.unlock_condition = unlock_condition or {}
   o.atlas = atlas or "alchemical_atlas"
@@ -41,12 +37,7 @@ end
 function CodexArcanum.Alchemical:register()
 	CodexArcanum.Alchemicals[self.slug] = self
 	local minId = table_length(G.P_CENTER_POOLS['Alchemical']) + 1
-	local id = 0
-	local i = 0
-	i = i + 1
-
-  	id = i + minId
-
+	local id = 1 + minId
 	local alchemical_obj = {
 		discovered = self.discovered,
 		unlocked = self.unlocked,
@@ -95,12 +86,50 @@ function CodexArcanum.Alchemical:register()
 			end
 		end
 	end
-
-	sendDebugMessage("The Alchemical named " .. self.name .. " with the slug " .. self.slug ..
-						 " have been registered at the id " .. id .. ".")
 end
 
-------------------------------------
+function alchemical_can_use(self, card)
+    if G.STATE == G.STATES.SELECTING_HAND and not card.debuff then
+        return true
+    else
+        return false
+    end
+end
+
+function is_in_booster_pack(state)
+	return state == G.STATES.STANDARD_PACK 
+	or state == G.STATES.TAROT_PACK 
+	or state == G.STATES.PLANET_PACK 
+	or state == G.STATES.SPECTRAL_PACK 
+	or state == G.STATES.BUFFOON_PACK
+	or state == G.STATES.SMODS_BOOSTER_OPENED
+end
+
+function get_most_common_suit() 
+	local suit_to_card_couner = {}
+	for _, v in pairs(SMODS.Suits) do
+		if not v.disabled then
+			suit_to_card_couner[v.name] = 0
+		end
+	end
+
+	if G.playing_cards then
+		for _, v in pairs(G.playing_cards) do
+			suit_to_card_couner[v.base.suit] = suit_to_card_couner[v.base.suit] + 1
+		end
+	end
+
+	local top_suit = "";
+	local top_count = -1;
+	for suit, count in pairs(suit_to_card_couner) do
+		if top_count < count then
+			top_suit = suit
+			top_count = count
+		end
+	end
+
+	return top_suit
+end
 
 function CodexArcanum.INIT.AlchemicalAPI()
     

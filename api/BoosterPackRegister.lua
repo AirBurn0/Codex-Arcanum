@@ -1,7 +1,3 @@
-------------------------------------
--- BOOSTER API
-------------------------------------
-
 SMODS.Boosters = {}
 SMODS.Booster = {
   	name = "",
@@ -71,11 +67,8 @@ function SMODS.Booster:register()
 	G.P_CENTERS[self.slug] = booster_obj
 	table.insert(G.P_CENTER_POOLS['Booster'], booster_obj)
 
-	sendDebugMessage("The Booster named " .. self.name .. " with the slug " .. self.slug ..
-						 " have been registered at the id " .. id .. ".")
+	sendDebugMessage("The Booster named " .. self.name .. " with the slug " .. self.slug .. " have been registered at the id " .. id .. ".")
 end
-
-------------------------------------
 
 function CodexArcanum.INIT.BoosterPackRegister()
     

@@ -3,7 +3,6 @@ function create_alchemical()
     return card
 end
 
-
 function take_cards_from_discard(count)
     G.E_MANAGER:add_event(Event({
         trigger = 'immediate',
@@ -38,7 +37,6 @@ function return_to_deck(count, card)
         G.STATE = G.STATES.GAME_OVER; G.STATE_COMPLETE = false 
         return true
     end
-
     delay(0.05)
     draw_card(G.hand,G.deck, 100,'up', false, card)
 end

@@ -1,4 +1,3 @@
-
 local get_type_colourref = get_type_colour
 function get_type_colour(_c, card)
   local fromRef = get_type_colourref(_c, card)
@@ -190,7 +189,7 @@ end
 
 local generate_card_uiref = generate_card_ui
 function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end)
-  if _c.set == "Alchemical" or (_c.set == 'Booster' and _c.name:find("Alchemy")) or _c.name == 'Shock Humor' then
+  if _c.set == "Alchemical" or (_c.set == 'Booster' and _c.name:find("Alchemy")) then
     local first_pass = nil
     if not full_UI_table then 
         first_pass = true
@@ -245,43 +244,31 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
       localize{type = 'other', key = 'undiscovered_'..(string.lower(_c.set)), set = _c.set, nodes = desc_nodes}
     elseif _c.set == "Alchemical" then
       info_queue[#info_queue+1] = {key = "alchemical_card", set = "Other"}
-      if _c.name == 'Bismuth' then info_queue[#info_queue+1] = G.P_CENTERS.e_polychrome
-      elseif _c.name == 'Manganese' then info_queue[#info_queue+1] = G.P_CENTERS.m_steel
-      elseif _c.name == 'Glass' then info_queue[#info_queue+1] = G.P_CENTERS.m_glass
-      elseif _c.name == 'Gold' then info_queue[#info_queue+1] = G.P_CENTERS.m_gold
-      elseif _c.name == 'Silver' then info_queue[#info_queue+1] = G.P_CENTERS.m_lucky
-      elseif _c.name == 'Stone' then info_queue[#info_queue+1] = G.P_CENTERS.m_stone
-      elseif _c.name == 'Cobalt' then 
-        local loc_text = "Not chosen"
-        if G.hand then
-          local text,disp_text = G.FUNCS.get_poker_hand_info(G.hand.highlighted)
-          loc_text = localize(text, 'poker_hands')
-          if loc_text == "ERROR" then
-            loc_text = "Not chosen"
-          end
-        end
-        loc_vars = {loc_text}
-      elseif _c.name == 'Antimony' then 
+      if _c.key == 'c_alchemy_bismuth' then info_queue[#info_queue+1] = G.P_CENTERS.e_polychrome
+      elseif _c.key == 'c_alchemy_manganese' then info_queue[#info_queue+1] = G.P_CENTERS.m_steel
+      elseif _c.key == 'c_alchemy_glass' then info_queue[#info_queue+1] = G.P_CENTERS.m_glass
+      elseif _c.key == 'c_alchemy_gold' then info_queue[#info_queue+1] = G.P_CENTERS.m_gold
+      elseif _c.key == 'c_alchemy_silver' then info_queue[#info_queue+1] = G.P_CENTERS.m_lucky
+      elseif _c.key == 'c_alchemy_stone' then info_queue[#info_queue+1] = G.P_CENTERS.m_stone
+      elseif _c.key == 'c_alchemy_borax' then 
+        local top_suit = get_most_common_suit()
+        loc_vars = {top_suit, colours = { G.C.SUITS[top_suit] }}
+      elseif _c.key == 'c_alchemy_antimony' then 
         info_queue[#info_queue+1] = G.P_CENTERS.e_negative 
         info_queue[#info_queue+1] = {key = 'eternal', set = 'Other'} 
       end
       localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = loc_vars}
     elseif _c.set == 'Booster' and _c.name:find("Alchemy") then 
-      local desc_override = 'p_arcana_normal'
-      if _c.name == 'Alchemy Pack' then desc_override = 'p_alchemy_normal'; loc_vars = {_c.config.choose, _c.config.extra} end
-      if _c.name == 'Jumbo Alchemy Pack' then desc_override = 'p_alchemy_jumbo'; loc_vars = {_c.config.choose, _c.config.extra} end
-      if _c.name == 'Mega Alchemy Pack' then desc_override = 'p_alchemy_mega'; loc_vars = {_c.config.choose, _c.config.extra} end
+      local i, j = string.find(_c.key, "p_alchemy_[^]]*_"); -- why ifelse when can just pattern-match and substring?
+      local desc_override = nil
+      if i and j then
+        desc_override = string.sub(_c.key, i, j - 1)
+      end
+      loc_vars = {_c.config.choose, _c.config.extra}
+      desc_override = desc_override or "p_alchemy_normal"
       name_override = desc_override
       if not full_UI_table.name then full_UI_table.name = localize{type = 'name', set = 'Other', key = name_override, nodes = full_UI_table.name} end
       localize{type = 'other', key = desc_override, nodes = desc_nodes, vars = loc_vars}
-    elseif _c.set == 'Joker' then
-      if _c.name == 'Shock Humor' then 
-        info_queue[#info_queue+1] = G.P_CENTERS.m_gold
-        info_queue[#info_queue+1] = G.P_CENTERS.m_steel
-        info_queue[#info_queue+1] = G.P_CENTERS.m_stone
-      end
-      localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = specific_vars or {}}
-      
     end
 
     if main_end then 
@@ -320,31 +307,43 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
 
     return full_UI_table
   end
-  
-  return generate_card_uiref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end)
+  full_UI_table = generate_card_uiref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end)
+  if _c.set == "Joker" then
+    local info_queue = {}
+    if _c.key == "j_shock_humor" then 
+      info_queue[#info_queue+1] = G.P_CENTERS.m_gold
+      info_queue[#info_queue+1] = G.P_CENTERS.m_steel
+      info_queue[#info_queue+1] = G.P_CENTERS.m_stone
+    elseif _c.key == "j_chain_reaction" then 
+      info_queue[#info_queue+1] = {key = "e_negative_consumable", set = "Edition", config = {extra = 1}}
+    end
+    for _, v in ipairs(info_queue) do
+      generate_card_ui(v, full_UI_table)
+  end
+  end
+  return full_UI_table
 end
 
 local set_spritesref = Card.set_sprites
 function Card:set_sprites(_center, _front)
     if _center and _center.set == "Alchemical" then
-      if _center.set then
-        if self.children.center then
-          self.children.center.atlas = G.ASSET_ATLAS[_center.atlas]
-          self.children.center:set_sprite_pos(_center.pos)
+      if self.children.center then
+        self.children.center.atlas = G.ASSET_ATLAS[_center.atlas]
+        self.children.center:set_sprite_pos(_center.pos)
+      else
+        if not _center.unlocked and not self.params.bypass_discovery_center then 
+          self.bypass_discovery_center = true -- hide (?) icon
+          self.children.center = Sprite(self.T.x, self.T.y, self.T.w, self.T.h, G.ASSET_ATLAS["c_alchemy_locked"], { x=0, y=0 })
+        elseif not _center.discovered and not self.params.bypass_discovery_center then 
+          self.children.center = Sprite(self.T.x, self.T.y, self.T.w, self.T.h, G.ASSET_ATLAS["c_alchemy_undiscovered"], { x=0, y=0 })
         else
-          if not _center.unlocked and not self.params.bypass_discovery_center then 
-            self.children.center = Sprite(self.T.x, self.T.y, self.T.w, self.T.h, G.ASSET_ATLAS["c_alchemy_locked"], {x=0,y=0})
-          elseif not self.params.bypass_discovery_center and not _center.discovered then 
-            self.children.center = Sprite(self.T.x, self.T.y, self.T.w, self.T.h, G.ASSET_ATLAS["c_alchemy_undiscovered"], {x=0,y=0})
-          else
-            self.children.center = Sprite(self.T.x, self.T.y, self.T.w, self.T.h, G.ASSET_ATLAS[_center.atlas], _center.pos)
-          end
-          self.children.center.states.hover = self.states.hover
-          self.children.center.states.click = self.states.click
-          self.children.center.states.drag = self.states.drag
-          self.children.center.states.collide.can = false
-          self.children.center:set_role({major = self, role_type = 'Glued', draw_major = self})
+          self.children.center = Sprite(self.T.x, self.T.y, self.T.w, self.T.h, G.ASSET_ATLAS[_center.atlas], _center.pos)
         end
+        self.children.center.states.hover = self.states.hover
+        self.children.center.states.click = self.states.click
+        self.children.center.states.drag = self.states.drag
+        self.children.center.states.collide.can = false
+        self.children.center:set_role({major = self, role_type = 'Glued', draw_major = self})
       end
       
       if not self.children.back then
@@ -354,83 +353,53 @@ function Card:set_sprites(_center, _front)
         self.children.back.states.drag = self.states.drag
         self.children.back.states.collide.can = false
         self.children.back:set_role({major = self, role_type = 'Glued', draw_major = self})
-    end
-
-    else
-      set_spritesref(self, _center, _front);
-    end
+      end
+  else
+    set_spritesref(self, _center, _front);
+  end
     
 end
 
 local use_consumeableref = Card.use_consumeable
 function Card:use_consumeable(area, copier)
-
-  local used_alchemical = copier or self
-
   use_consumeableref(self, area, copier)
-  if self.config.in_booster and (self.ability.set == "Alchemical" or self.ability.name == "Philosopher's Stone") then
-    if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-      G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-      G.E_MANAGER:add_event(Event({
-        func = (function()
-          G.E_MANAGER:add_event(Event({
-            func = function() 
-              local card = copy_card(used_alchemical, nil, nil, nil)
-              card:add_to_deck()
-              G.consumeables:emplace(card)
-              G.GAME.consumeable_buffer = 0
-              return true end }))   
-      return true end)}))
+  local key = self.config.center.key
+  local center_obj = CodexArcanum.Alchemicals[key]
+  if center_obj and center_obj.use and type(center_obj.use) == 'function' then
+    stop_use()
+    if not copier then set_consumeable_usage(self) end
+    if self.debuff then return nil end
+    if self.ability.consumeable.max_highlighted then
+      update_hand_text({ immediate = true, nopulse = true, delay = 0 },
+        { mult = 0, chips = 0, level = '', handname = '' })
     end
-  else
-    local key = self.config.center.key
-    local center_obj = CodexArcanum.Alchemicals[key]
-    if center_obj and center_obj.use and type(center_obj.use) == 'function' then
-      stop_use()
-      if not copier then set_consumeable_usage(self) end
-      if self.debuff then return nil end
-      if self.ability.consumeable.max_highlighted then
-        update_hand_text({ immediate = true, nopulse = true, delay = 0 },
-          { mult = 0, chips = 0, level = '', handname = '' })
-      end
-      center_obj.use(self, area, copier)
-      check_for_unlock({type = 'used_alchemical'})
-    end
+    center_obj.use(self, area, copier)
+    check_for_unlock({type = 'used_alchemical'})
+  end
 
-    if self.ability.name == "Philosopher's Stone" then
-      G.deck.config.philosopher = true
-    end
+  if self.ability.name == "Philosopher's Stone" then
+    G.deck.config.philosopher = true
   end
 end
 
 local can_use_consumeableref = Card.can_use_consumeable
 function Card:can_use_consumeable(any_state, skip_check)
-  if not skip_check and ((G.play and #G.play.cards > 0) or
-    (G.CONTROLLER.locked) or
-    (G.GAME.STOP_USE and G.GAME.STOP_USE > 0))
-    then  return false end
-
-  if G.STATE == G.STATES.SELECTING_HAND then
+  if skip_check or not ((G.play and #G.play.cards > 0) or (G.CONTROLLER.locked) or (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)) then 
     if self.ability.set == "Alchemical" then
-      local t = nil
-      local key = self.config.center.key
-      local center_obj = CodexArcanum.Alchemicals[key]
-
-      self.config.in_booster = false
-      if center_obj and center_obj.can_use and type(center_obj.can_use) == 'function' then
+      if G.STATE == G.STATES.SELECTING_HAND then
+        local t = nil
+        local key = self.config.center.key
+        local center_obj = CodexArcanum.Alchemicals[key]
+        self.config.in_booster = false
+        if center_obj and center_obj.can_use and type(center_obj.can_use) == 'function' then
           t = center_obj.can_use(self)
+        end
+        if not (t == nil) then
+          return t
+        end
+      elseif is_in_booster_pack(G.STATE) then
+        self.config.in_booster = true
       end
-      if not (t == nil) then
-        return t
-      end
-    end
-  end
-
-  if G.STATE == G.STATES.STANDARD_PACK or G.STATE == G.STATES.TAROT_PACK 
-  or G.STATE == G.STATES.PLANET_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.BUFFOON_PACK then
-    if self.ability.set == "Alchemical" then
-      self.config.in_booster = true
-      return true
     end
   end
 
@@ -604,74 +573,94 @@ local card_openref = Card.open
 function Card:open()
   G.ARGS.is_alchemical_booster = false
   if self.ability.set == "Booster" and self.ability.name:find('Alchemy') then
-      stop_use()
-      G.STATE_COMPLETE = false 
-      self.opening = true
+    stop_use()
+    G.STATE_COMPLETE = false 
+    self.opening = true
 
-      if not self.config.center.discovered then
-          discover_card(self.config.center)
-      end
-      self.states.hover.can = false
+    if not self.config.center.discovered then
+        discover_card(self.config.center)
+    end
+    self.states.hover.can = false
 
-      G.ARGS.is_alchemical_booster = true
-      G.STATE = G.STATES.STANDARD_PACK
-      G.GAME.pack_size = self.ability.extra
+    G.ARGS.is_alchemical_booster = true
+    G.STATE = G.STATES.STANDARD_PACK
+    G.GAME.pack_size = self.ability.extra
 
-      G.GAME.pack_choices = self.config.center.config.choose or 1
+    G.GAME.pack_choices = self.config.center.config.choose or 1
 
-      if self.cost > 0 then 
-          G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-              inc_career_stat('c_shop_dollars_spent', self.cost)
-              self:juice_up()
-          return true end }))
-          ease_dollars(-self.cost) 
+    if self.cost > 0 then 
+        G.E_MANAGER:add_event(Event({
+          trigger = 'after', 
+          delay = 0.2, 
+          func = function()
+            inc_career_stat('c_shop_dollars_spent', self.cost)
+            self:juice_up()
+            return true
+          end
+        }))
+        ease_dollars(-self.cost) 
      else
          delay(0.2)
      end
+  G.E_MANAGER:add_event(Event({
+    trigger = 'after', 
+    delay = 0.4, 
+    func = function()
+      self:explode()
+      local pack_cards = {}
 
-      G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-          self:explode()
-          local pack_cards = {}
-
-          G.E_MANAGER:add_event(Event({trigger = 'after', delay = 1.3*math.sqrt(G.SETTINGS.GAMESPEED), blockable = false, blocking = false, func = function()
-              local _size = self.ability.extra
-              
-              for i = 1, _size do
-                  local card = nil
-                  card = create_alchemical()
-                  card.T.x = self.T.x
-                  card.T.y = self.T.y
-                  card:start_materialize({G.C.WHITE, G.C.WHITE}, nil, 1.5*G.SETTINGS.GAMESPEED)
-                  pack_cards[i] = card
-              end
-              return true
-          end}))
-
-          G.E_MANAGER:add_event(Event({trigger = 'after', delay = 1.3*math.sqrt(G.SETTINGS.GAMESPEED), blockable = false, blocking = false, func = function()
-              if G.pack_cards then 
-                  if G.pack_cards and G.pack_cards.VT.y < G.ROOM.T.h then 
-                  for k, v in ipairs(pack_cards) do
-                      G.pack_cards:emplace(v)
-                  end
-                  return true
-                  end
-              end
-          end}))
-
-          for i = 1, #G.jokers.cards do
-              G.jokers.cards[i]:calculate_joker({open_booster = true, card = self})
+      G.E_MANAGER:add_event(Event({
+        trigger = 'after',
+        delay = 1.3*math.sqrt(G.SETTINGS.GAMESPEED),
+        blockable = false, 
+        blocking = false, 
+        func = function()
+          local _size = self.ability.extra
+          for i = 1, _size do
+              local card = nil
+              card = create_alchemical()
+              card.T.x = self.T.x
+              card.T.y = self.T.y
+              card:start_materialize({G.C.WHITE, G.C.WHITE}, nil, 1.5*G.SETTINGS.GAMESPEED)
+              pack_cards[i] = card
           end
+          return true
+        end
+      }))
 
-          if G.GAME.modifiers.inflation then 
-              G.GAME.inflation = G.GAME.inflation + 1
-              G.E_MANAGER:add_event(Event({func = function()
-                for k, v in pairs(G.I.CARD) do
-                    if v.set_cost then v:set_cost() end
+      G.E_MANAGER:add_event(Event({
+        trigger = 'after', 
+        delay = 1.3*math.sqrt(G.SETTINGS.GAMESPEED),
+        blockable = false, 
+        blocking = false, 
+        func = function()
+          if G.pack_cards then 
+              if G.pack_cards and G.pack_cards.VT.y < G.ROOM.T.h then 
+                for k, v in ipairs(pack_cards) do
+                    G.pack_cards:emplace(v)
                 end
-                return true end }))
+                return true
+              end
           end
+        end
+      }))
 
-      return true end }))
+      for i = 1, #G.jokers.cards do
+          G.jokers.cards[i]:calculate_joker({open_booster = true, card = self})
+      end
+
+      if G.GAME.modifiers.inflation then 
+          G.GAME.inflation = G.GAME.inflation + 1
+          G.E_MANAGER:add_event(Event({func = function()
+            for k, v in pairs(G.I.CARD) do
+                if v.set_cost then v:set_cost() end
+            end
+            return true end }))
+      end
+
+      return true 
+    end 
+  }))
   else
     card_openref(self)
   end
@@ -738,10 +727,13 @@ G.FUNCS.use_card = function(e, mute, nosave)
   local delay_fac = 1
 
   if card:check_use() then 
-    G.E_MANAGER:add_event(Event({func = function()
-      e.disable_button = nil
-      e.config.button = 'use_card'
-    return true end }))
+    G.E_MANAGER:add_event(Event({
+      func = function()
+        e.disable_button = nil
+        e.config.button = 'use_card'
+        return true 
+      end 
+    }))
     return
   end
 
@@ -835,7 +827,7 @@ function ease_background_colour_blind(state, blind_override)
 end
 
 function hue_to_rgb(hue) 
-  local r, g, b = 0;
+  local r, g, b = 0, 0, 0;
 
   local saturation = 0.5;
   local lightness = 0.75;
@@ -939,16 +931,14 @@ function Game:init_item_prototypes()
   SMODS.LOAD_LOC()
   SMODS.SAVE_UNLOCKS()
   ALCHEMICAL_SAVE_UNLOCKS()
-  save_tags()
 end
 
 
 local alias__G_UIDEF_use_and_sell_buttons = G.UIDEF.use_and_sell_buttons;
 function G.UIDEF.use_and_sell_buttons(card)
-	local ret = alias__G_UIDEF_use_and_sell_buttons(card)
-
+  local ret = alias__G_UIDEF_use_and_sell_buttons(card)
   if (card.ability.set == "Alchemical" or card.ability.name == "Philosopher's Stone") and G.ARGS.is_alchemical_booster and (card.area == G.pack_cards and G.pack_cards) then
-		return {
+    return {
 			n=G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes={
 				{n=G.UIT.R, config={mid = true}, nodes={
 				}},
@@ -957,7 +947,6 @@ function G.UIDEF.use_and_sell_buttons(card)
 			}},
 		}}
 	end
-	
 	return ret
 end
 
@@ -979,17 +968,12 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
   local dont_dissolve = nil
   local delay_fac = 1
 
-  G.TAROT_INTERRUPT = G.STATE
-  if card.ability.set == 'Booster' then G.GAME.PACK_INTERRUPT = G.STATE end 
-  G.STATE = (G.STATE == G.STATES.TAROT_PACK and G.STATES.TAROT_PACK) or
-    (G.STATE == G.STATES.PLANET_PACK and G.STATES.PLANET_PACK) or
-    (G.STATE == G.STATES.SPECTRAL_PACK and G.STATES.SPECTRAL_PACK) or
-    (G.STATE == G.STATES.STANDARD_PACK and G.STATES.STANDARD_PACK) or
-    (G.STATE == G.STATES.BUFFOON_PACK and G.STATES.BUFFOON_PACK) or
-    G.STATES.PLAY_TAROT
-    
+  if card.ability.set == 'Booster' then
+    G.GAME.PACK_INTERRUPT = G.STATE 
+  end 
+      
   G.CONTROLLER.locks.use = true
-  if G.booster_pack and not G.booster_pack.alignment.offset.py and (card.ability.consumeable or not (G.GAME.pack_choices and G.GAME.pack_choices > 1)) then
+  if G.booster_pack and not G.booster_pack.alignment.offset.py and (G.GAME.pack_choices and G.GAME.pack_choices < 2) then
     G.booster_pack.alignment.offset.py = G.booster_pack.alignment.offset.y
     G.booster_pack.alignment.offset.y = G.ROOM.T.y + 29
   end
@@ -1006,11 +990,22 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
     G.round_eval.alignment.offset.y = G.ROOM.T.y + 29
   end
 
-  if card.children.use_button then card.children.use_button:remove(); card.children.use_button = nil end
-  if card.children.sell_button then card.children.sell_button:remove(); card.children.sell_button = nil end
-  if card.children.price then card.children.price:remove(); card.children.price = nil end
+  if card.children.use_button then 
+    card.children.use_button:remove()
+    card.children.use_button = nil 
+  end
+  if card.children.sell_button then 
+    card.children.sell_button:remove()
+    card.children.sell_button = nil 
+  end
+  if card.children.price then 
+    card.children.price:remove()
+    card.children.price = nil 
+  end
 
-  if card.area then card.area:remove_card(card) end
+  if card.area then 
+    card.area:remove_card(card)
+  end
   
   if card.ability.set == 'Alchemical' or card.ability.name == "Philosopher's Stone" then
     card:add_to_deck()
@@ -1020,62 +1015,69 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
     dont_dissolve = true
     delay_fac = 0.2
   end
-G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.2,
-func = function()
-  if not dont_dissolve then card:start_dissolve() end
-  G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.1,
-  func = function()
-    G.STATE = prev_state
-    G.TAROT_INTERRUPT=nil
-    G.CONTROLLER.locks.use = false
-
-    if (prev_state == G.STATES.TAROT_PACK or prev_state == G.STATES.PLANET_PACK or
-      prev_state == G.STATES.SPECTRAL_PACK or prev_state == G.STATES.STANDARD_PACK or
-      prev_state == G.STATES.BUFFOON_PACK) and G.booster_pack then
-      if area == G.consumeables then
-      G.booster_pack.alignment.offset.y = G.booster_pack.alignment.offset.py
-      G.booster_pack.alignment.offset.py = nil
-      elseif G.GAME.pack_choices and G.GAME.pack_choices > 1 then
-      if G.booster_pack.alignment.offset.py then 
-        G.booster_pack.alignment.offset.y = G.booster_pack.alignment.offset.py
-        G.booster_pack.alignment.offset.py = nil
-      end
-      G.GAME.pack_choices = G.GAME.pack_choices - 1
-      else
-        G.CONTROLLER.interrupt.focus = true
-        
-        G.FUNCS.end_consumeable(nil, delay_fac)
-      end
-    else
-      if G.shop then 
-      G.shop.alignment.offset.y = G.shop.alignment.offset.py
-      G.shop.alignment.offset.py = nil
-      end
-      if G.blind_select then
-      G.blind_select.alignment.offset.y = G.blind_select.alignment.offset.py
-      G.blind_select.alignment.offset.py = nil
-      end
-      if G.round_eval then
-      G.round_eval.alignment.offset.y = G.round_eval.alignment.offset.py
-      G.round_eval.alignment.offset.py = nil
-      end
-      if area and area.cards[1] then 
-      G.E_MANAGER:add_event(Event({func = function()
-        G.E_MANAGER:add_event(Event({func = function()
-        G.CONTROLLER.interrupt.focus = nil
-        if card.ability.set == 'Voucher' then 
-          G.CONTROLLER:snap_to({node = G.shop:get_UIE_by_ID('next_round_button')})
-        elseif area then
-          G.CONTROLLER:recall_cardarea_focus(area)
+  G.E_MANAGER:add_event(Event({
+    trigger = 'after',
+    delay = 0.2,
+    func = function()
+      if not dont_dissolve then card:start_dissolve() end
+      G.E_MANAGER:add_event(Event({
+        trigger = 'after',delay = 0.1,
+        func = function()
+          G.STATE = prev_state
+          G.TAROT_INTERRUPT=nil
+          G.CONTROLLER.locks.use = false
+          if is_in_booster_pack(prev_state) and G.booster_pack then
+            if area == G.consumeables then
+              G.booster_pack.alignment.offset.y = G.booster_pack.alignment.offset.py
+              G.booster_pack.alignment.offset.py = nil
+            elseif G.GAME.pack_choices and G.GAME.pack_choices > 1 then
+              if G.booster_pack.alignment.offset.py then 
+                G.booster_pack.alignment.offset.y = G.booster_pack.alignment.offset.py
+                G.booster_pack.alignment.offset.py = nil
+              end
+              G.GAME.pack_choices = G.GAME.pack_choices - 1
+            else
+              G.CONTROLLER.interrupt.focus = true
+              G.FUNCS.end_consumeable(nil, delay_fac)
+            end
+          else
+            if G.shop then 
+              G.shop.alignment.offset.y = G.shop.alignment.offset.py
+              G.shop.alignment.offset.py = nil
+            end
+            if G.blind_select then
+              G.blind_select.alignment.offset.y = G.blind_select.alignment.offset.py
+              G.blind_select.alignment.offset.py = nil
+            end
+            if G.round_eval then
+              G.round_eval.alignment.offset.y = G.round_eval.alignment.offset.py
+              G.round_eval.alignment.offset.py = nil
+            end
+            if area and area.cards[1] then 
+              G.E_MANAGER:add_event(Event({
+                func = function()
+                  G.E_MANAGER:add_event(Event({
+                    func = function()
+                      G.CONTROLLER.interrupt.focus = nil
+                      if card.ability.set == 'Voucher' then 
+                        G.CONTROLLER:snap_to({ node = G.shop:get_UIE_by_ID('next_round_button') })
+                      elseif area then
+                        G.CONTROLLER:recall_cardarea_focus(area)
+                      end
+                      return true 
+                    end
+                  }))
+                  return true 
+                end 
+              }))
+            end
+          end
+          return true
         end
-        return true end }))
-      return true end }))
-      end
+      }))
+      return true
     end
-  return true
-  end}))
-return true
-end}))
+  }))
 end
 
 
@@ -1128,35 +1130,15 @@ function create_UIBox_notify_alert(_achievement, _type)
   return retval
 end
 
-local create_UIBox_card_unlockref = create_UIBox_card_unlock
-function create_UIBox_card_unlock(card_center)
-  local retval = create_UIBox_card_unlockref(card_center)
-
-  if card_center.set == 'Alchemical' then
- 
-    retval.nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].config.object:remove()
-    retval.nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1] = {n=G.UIT.O, config={object = DynaText({string = {localize('k_alchemical')}, colours = {G.C.BLUE},shadow = true, rotate = true, bump = true, pop_in = 0.3, pop_in_rate = 2, scale = 1.2})}}
-    retval.nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[2].nodes[1].config.object:remove()
-    retval.nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[2].nodes[1] = {n=G.UIT.O, config={object = DynaText({string = {localize('k_unlocked_ex')}, colours = {G.C.RED},shadow = true, rotate = true, bump = true, pop_in = 0.6, pop_in_rate = 2, scale = 0.8})}}
-
-  end
-
-  return retval
-end
-
 
 function ALCHEMICAL_SAVE_UNLOCKS() 
   G:save_progress()
   -------------------------------------
-  local TESTHELPER_unlocks = false and not _RELEASE_MODE
-  -------------------------------------
   if not love.filesystem.getInfo(G.SETTINGS.profile .. '') then
-      love.filesystem.createDirectory(G.SETTINGS.profile ..
-          '')
+      love.filesystem.createDirectory(G.SETTINGS.profile ..'')
   end
   if not love.filesystem.getInfo(G.SETTINGS.profile .. '/' .. 'meta.jkr') then
-      love.filesystem.append(
-          G.SETTINGS.profile .. '/' .. 'meta.jkr', 'return {}')
+      love.filesystem.append(G.SETTINGS.profile .. '/' .. 'meta.jkr', 'return {}')
   end
 
   convert_save_to_meta()
@@ -1168,15 +1150,11 @@ function ALCHEMICAL_SAVE_UNLOCKS()
 
   for k, v in pairs(G.P_CENTERS) do
       if not v.wip and not v.demo then
-          if TESTHELPER_unlocks then
-              v.unlocked = true; v.discovered = true; v.alerted = true
-          end --REMOVE THIS
           if not v.unlocked and (string.find(k, '^j_') or string.find(k, '^b_') or string.find(k, '^v_')) or string.find(k, '^c_') and meta.unlocked[k] then
               v.unlocked = true
           end
           if not v.unlocked and (string.find(k, '^j_') or string.find(k, '^b_') or string.find(k, '^v_')) or string.find(k, '^c_') then
-              G.P_LOCKED[#G.P_LOCKED + 1] =
-                  v
+              G.P_LOCKED[#G.P_LOCKED + 1] = v
           end
           if not v.discovered and (string.find(k, '^j_') or string.find(k, '^b_') or string.find(k, '^e_') or string.find(k, '^c_') or string.find(k, '^p_') or string.find(k, '^v_')) and meta.discovered[k] then
               v.discovered = true
@@ -1192,7 +1170,6 @@ function ALCHEMICAL_SAVE_UNLOCKS()
   for k, v in pairs(G.P_BLINDS) do
       v.key = k
       if not v.wip and not v.demo then 
-          if TESTHELPER_unlocks then v.discovered = true; v.alerted = true  end --REMOVE THIS
           if not v.discovered and meta.discovered[k] then 
               v.discovered = true
           end
@@ -1207,9 +1184,6 @@ function ALCHEMICAL_SAVE_UNLOCKS()
   for k, v in pairs(G.P_SEALS) do
       v.key = k
       if not v.wip and not v.demo then
-          if TESTHELPER_unlocks then
-              v.discovered = true; v.alerted = true
-          end                                                                   --REMOVE THIS
           if not v.discovered and meta.discovered[k] then
               v.discovered = true
           end
@@ -1225,33 +1199,23 @@ end
 
 local check_for_unlockref = check_for_unlock
 function check_for_unlock(args)
-  if not next(args) then return end
-  if G.GAME.seeded then return end
+  if next(args) and not G.GAME.seeded then 
+    local card1 = G.P_CENTERS["c_alchemy_uranium"]
+    if card1 and not card1.unlocked then
+      local alchemicals_count = 0
+      for k, v in pairs(G.GAME.consumeable_usage) do
+        if v.set == 'Alchemical' then 
+          alchemicals_count = alchemicals_count + v.count 
+        end
+      end
 
-  local alchemicals_count = 0
-  for k, v in pairs(G.GAME.consumeable_usage) do
-    if v.set == 'Alchemical' then alchemicals_count = alchemicals_count + 1 end
-  end
-
-  local i=1
-  while i <= #G.P_LOCKED do
-    local ret = false
-    local card = G.P_LOCKED[i]
-
-    if not card.unlocked and card.unlock_condition and card.unlock_condition.type == args.type then
-      if args.type == 'used_alchemical' and alchemicals_count >= card.unlock_condition.extra then
-        ret = true
-        unlock_card(card)
+      if args.type == 'used_alchemical' and alchemicals_count >= card1.unlock_condition.extra then
+        unlock_card(card1)
+        return true
       end
     end
-
-    if ret == true then
-      table.remove(G.P_LOCKED, i)
-    else
-        i = i + 1
-    end
   end
-
+  return check_for_unlockref(args)
 end
 
 local blind_debuff_cardref = Blind.debuff_card
