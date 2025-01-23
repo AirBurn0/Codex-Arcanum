@@ -536,7 +536,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
             "{C:attention}4{} selected cards",
             "into the most common",
             "{C:attention}suit for one Blind",
-            "{C:inactive}Current suit: {V:1}#1#{}"
+            "{C:inactive}(Current suit: {V:1}#1#{C:inactive})"
         }
     }
 
