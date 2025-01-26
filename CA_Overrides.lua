@@ -362,24 +362,36 @@ end
 
 local use_consumeableref = Card.use_consumeable
 function Card:use_consumeable(area, copier)
-  use_consumeableref(self, area, copier)
-  local key = self.config.center.key
-  local center_obj = CodexArcanum.Alchemicals[key]
-  if center_obj and center_obj.use and type(center_obj.use) == 'function' then
-    stop_use()
-    if not copier then set_consumeable_usage(self) end
-    if self.debuff then return nil end
-    if self.ability.consumeable.max_highlighted then
-      update_hand_text({ immediate = true, nopulse = true, delay = 0 },
-        { mult = 0, chips = 0, level = '', handname = '' })
-    end
-    center_obj.use(self, area, copier)
-    check_for_unlock({type = 'used_alchemical'})
-  end
-
+  local ret = use_consumeableref(self, area, copier)
   if self.ability.name == "Philosopher's Stone" then
     G.deck.config.philosopher = true
   end
+  local key = self.config.center.key
+  local center_obj = CodexArcanum.Alchemicals[key]
+  if center_obj and center_obj.use and type(center_obj.use) == 'function' then
+    if not copier then 
+      if G.GAME.consumeable_usage_total.alchemical then
+        G.GAME.consumeable_usage_total.alchemical = G.GAME.consumeable_usage_total.alchemical + 1
+      else
+        G.GAME.consumeable_usage_total.alchemical = 1
+      end
+      if not G.GAME.used_alchemical_consumeable_unique then
+        G.GAME.used_alchemical_consumeable_unique = { count = 0 }
+        setmetatable(G.GAME.used_alchemical_consumeable_unique, {})
+      end
+      if not getmetatable(G.GAME.used_alchemical_consumeable_unique)[key] then
+        getmetatable(G.GAME.used_alchemical_consumeable_unique)[key] = true
+        G.GAME.used_alchemical_consumeable_unique.count = G.GAME.used_alchemical_consumeable_unique.count + 1
+      end
+    end
+    if self.debuff then 
+      return nil 
+    end
+    center_obj.use(self, area, copier)
+    check_for_unlock({type = 'used_alchemical'})
+    return true
+  end
+  return ret
 end
 
 local can_use_consumeableref = Card.can_use_consumeable
@@ -1198,20 +1210,11 @@ end
 
 local check_for_unlockref = check_for_unlock
 function check_for_unlock(args)
-  if next(args) and not G.GAME.seeded then 
+  if next(args) and not G.GAME.seeded then -- ignore overrides from smods, yep?
     local card1 = G.P_CENTERS["c_alchemy_uranium"]
-    if card1 and not card1.unlocked then
-      local alchemicals_count = 0
-      for k, v in pairs(G.GAME.consumeable_usage) do
-        if v.set == 'Alchemical' then 
-          alchemicals_count = alchemicals_count + v.count 
-        end
-      end
-
-      if args.type == 'used_alchemical' and alchemicals_count >= card1.unlock_condition.extra then
-        unlock_card(card1)
-        return true
-      end
+    if card1 and not card1.unlocked and args.type == 'used_alchemical' and G.GAME.consumeable_usage_total.alchemical >= card1.unlock_condition.extra then
+      unlock_card(card1)
+      return true
     end
   end
   return check_for_unlockref(args)

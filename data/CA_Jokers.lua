@@ -87,41 +87,28 @@ function CodexArcanum.INIT.CA_Jokers()
 
     function SMODS.Jokers.j_mutated_joker.loc_def(card)
         local expected_total_chips = 0
-            if G.GAME.consumeable_usage then
-                local alchemical_tally = 0
-                for k, v in pairs(G.GAME.consumeable_usage) do
-                    if v.set == 'Alchemical' then 
-                        alchemical_tally = alchemical_tally + 1
-                    end
-                end
-                expected_total_chips = alchemical_tally * card.ability.extra.chips
-            end
+        if G.GAME.used_alchemical_consumeable_unique then
+            expected_total_chips = G.GAME.used_alchemical_consumeable_unique.count * card.ability.extra.chips
+        end
         return { card.ability.extra.chips, expected_total_chips }
     end
 
     function SMODS.Jokers.j_mutated_joker.calculate(card, context)
         if context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == 'Alchemical' then 
-            --context.consumeable
-            --G.GAME.consumeable_usage[]
-            --require("lldebugger").start()
-            G.E_MANAGER:add_event(Event({ 
-                func = function()
-                    card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize { type = 'variable', key = 'a_chips', vars = { card.ability.extra.chips } } })
-                    return true
-                end 
-            }))
+            if G.GAME.consumeable_usage and G.GAME.consumeable_usage[context.consumeable.config.center.key].count == 1 then
+                G.E_MANAGER:add_event(Event({ 
+                    func = function()
+                        card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize { type = 'variable', key = 'a_chips', vars = { card.ability.extra.chips } } })
+                        return true
+                    end 
+                }))
+            end
             return
         end
         if context.joker_main then
             local expected_total_chips = 0
-            if G.GAME.consumeable_usage then
-                local alchemical_tally = 0
-                for k, v in pairs(G.GAME.consumeable_usage) do
-                    if v.set == 'Alchemical' then 
-                        alchemical_tally = alchemical_tally + 1
-                    end
-                end
-                expected_total_chips = alchemical_tally * card.ability.extra.chips
+            if G.GAME.used_alchemical_consumeable_unique then
+                expected_total_chips = G.GAME.used_alchemical_consumeable_unique.count * card.ability.extra.chips
             end
             return { message = localize { type = 'variable', key = 'a_chips', vars = { expected_total_chips } }, chip_mod = expected_total_chips }
         end
@@ -141,20 +128,19 @@ function CodexArcanum.INIT.CA_Jokers()
     chain_reaction:register()
 
     function SMODS.Jokers.j_chain_reaction.calculate(card, context)
-        if context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == 'Alchemical' then
-            if not card.ability.extra.used then
-                G.E_MANAGER:add_event(Event({ func = function()
+        if context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == 'Alchemical' and not card.ability.extra.used then
+            G.E_MANAGER:add_event(Event({
+                func = function()
                     local _card = copy_card(context.consumeable, nil, nil, nil)
                     _card:set_edition({ negative = true }, true)
                     _card:add_to_deck()
                     G.consumeables:emplace(_card)
-
                     return true
-                end }))
-                card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Copied", colour = G.C.SECONDARY_SET.Alchemy })
-                card.ability.extra.used = true
-                return
-            end
+                end
+            }))
+            card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Copied", colour = G.C.SECONDARY_SET.Alchemy })
+            card.ability.extra.used = true
+            return
         end
     end
 
@@ -178,10 +164,12 @@ function CodexArcanum.INIT.CA_Jokers()
     function SMODS.Jokers.j_essence_of_comedy.calculate(card, context)
         if context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == 'Alchemical' then
             card.ability.x_mult = card.ability.x_mult + card.ability.extra
-            G.E_MANAGER:add_event(Event({ func = function()
-                card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.x_mult } } });
-                return true
-            end }))
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.x_mult } } });
+                    return true
+                end
+            }))
             return
         end
     end
@@ -205,13 +193,16 @@ function CodexArcanum.INIT.CA_Jokers()
     end
 
     function SMODS.Jokers.j_shock_humor.calculate(card, context)
-        if context.discard and not context.other_card.debuff then
-            if context.other_card.config.center == G.P_CENTERS.m_steel or context.other_card.config.center == G.P_CENTERS.m_gold or context.other_card.config.center == G.P_CENTERS.m_stone then
-                if pseudorandom('shock_humor') < G.GAME.probabilities.normal / card.ability.extra.odds then
-                    add_random_alchemical(card)
-                    card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('p_plus_alchemical'), colour = G.C.SECONDARY_SET.Alchemy })
-                end
-            end
+        if context.discard 
+        and not context.other_card.debuff 
+        and (context.other_card.config.center == G.P_CENTERS.m_steel 
+            or context.other_card.config.center == G.P_CENTERS.m_gold 
+            or context.other_card.config.center == G.P_CENTERS.m_stone
+        ) 
+        and pseudorandom('shock_humor') < G.GAME.probabilities.normal / card.ability.extra.odds 
+        then
+            add_random_alchemical(card)
+            card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('p_plus_alchemical'), colour = G.C.SECONDARY_SET.Alchemy })
         end
     end
 
