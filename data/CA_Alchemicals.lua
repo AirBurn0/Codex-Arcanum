@@ -112,12 +112,10 @@ function CodexArcanum.INIT.CA_Alchemicals()
             func = function()
                 G.GAME.blind.chips = math.floor(G.GAME.blind.chips * 0.85)
                 G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-                
                 local chips_UI = G.hand_text_area.blind_chips
                 G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
                 G.HUD_blind:recalculate() 
                 chips_UI:juice_up()
-                
                 if not silent then 
                     play_sound('chips2') 
                 end
@@ -134,7 +132,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
         }
     }
 
-    local alchemy_aero = CodexArcanum.Alchemical:new("Aero", "aero", {extra = 4}, { x = 3, y = 0 }, alchemy_aero_def)
+    local alchemy_aero = CodexArcanum.Alchemical:new("Aero", "aero", { extra = 4 }, { x = 3, y = 0 }, alchemy_aero_def)
     alchemy_aero:register()
             
     function CodexArcanum.Alchemicals.c_alchemy_aero.can_use(card)
@@ -161,7 +159,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
         }
     }
 
-    local alchemy_quicksilver = CodexArcanum.Alchemical:new("Quicksilver", "quicksilver", {extra = 2}, { x = 4, y = 0 }, alchemy_quicksilver_def)
+    local alchemy_quicksilver = CodexArcanum.Alchemical:new("Quicksilver", "quicksilver", { extra = 2 }, { x = 4, y = 0 }, alchemy_quicksilver_def)
     alchemy_quicksilver:register()
             
     function CodexArcanum.Alchemicals.c_alchemy_quicksilver.can_use(card)
@@ -191,7 +189,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
         }
     }
 
-    local alchemy_salt = CodexArcanum.Alchemical:new("Salt", "salt", {extra = 2}, { x = 5, y = 0 }, alchemy_salt_def)
+    local alchemy_salt = CodexArcanum.Alchemical:new("Salt", "salt", { extra = 2 }, { x = 5, y = 0 }, alchemy_salt_def)
     alchemy_salt:register()
             
     function CodexArcanum.Alchemicals.c_alchemy_salt.can_use(card)
@@ -262,7 +260,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
         }
     }
 
-    local alchemy_phosphorus = CodexArcanum.Alchemical:new("Phosphorus", "phosphorus", {extra = 4}, { x = 1, y = 1 }, alchemy_phosphorus_def)
+    local alchemy_phosphorus = CodexArcanum.Alchemical:new("Phosphorus", "phosphorus", { extra = 4 }, { x = 1, y = 1 }, alchemy_phosphorus_def)
     alchemy_phosphorus:register()
             
     function CodexArcanum.Alchemicals.c_alchemy_phosphorus.can_use(card)
@@ -284,18 +282,18 @@ function CodexArcanum.INIT.CA_Alchemicals()
     local alchemy_bismuth_def = {
         name = "Bismuth",
         text = {
-        "Converts up to",
-        "{C:attention}2{} selected cards",
-        "to {C:dark_edition}Polychrome",
-        "for one blind"
+            "Converts up to",
+            "{C:attention}2{} selected cards",
+            "to {C:dark_edition}Polychrome",
+            "for one blind"
         }
     }
 
-    local alchemy_bismuth = CodexArcanum.Alchemical:new("Bismuth", "bismuth", {extra = 2}, { x = 2, y = 1 }, alchemy_bismuth_def)
+    local alchemy_bismuth = CodexArcanum.Alchemical:new("Bismuth", "bismuth", { extra = 2 }, { x = 2, y = 1 }, alchemy_bismuth_def)
     alchemy_bismuth:register()
             
     function CodexArcanum.Alchemicals.c_alchemy_bismuth.can_use(card)
-        if #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted >= 1 then return true else return false end
+        return #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted > 0 
     end
 
     function CodexArcanum.Alchemicals.c_alchemy_bismuth.use(card, area, copier)
@@ -317,9 +315,9 @@ function CodexArcanum.INIT.CA_Alchemicals()
     local alchemy_cobalt_def = {
         name = "Cobalt",
         text = {
-        "Upgrade currently",
-        "selected {C:legendary,E:1}poker hand",
-        "by {C:attention}2{} levels"
+            "Upgrade currently",
+            "selected {C:legendary,E:1}poker hand",
+            "by {C:attention}2{} levels"
         }
     }
 
@@ -327,7 +325,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
     alchemy_cobalt:register()
             
     function CodexArcanum.Alchemicals.c_alchemy_cobalt.can_use(card)
-        if #G.hand.highlighted >= 1 then return true else return false end
+        return #G.hand.highlighted > 0
     end
 
     function CodexArcanum.Alchemicals.c_alchemy_cobalt.use(card, area, copier)
@@ -335,7 +333,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
             trigger = 'after',
             delay = 0.1,
             func = function()
-                local text,disp_text = G.FUNCS.get_poker_hand_info(G.hand.highlighted)
+                local text, disp_text = G.FUNCS.get_poker_hand_info(G.hand.highlighted)
                 update_hand_text({sound = 'button', volume = 0.7, pitch = 0.8, delay = 0.3}, {handname=localize(text, 'poker_hands'),chips = G.GAME.hands[text].chips, mult = G.GAME.hands[text].mult, level=G.GAME.hands[text].level})
                 level_up_hand(self, text, nil, 2)
                 update_hand_text({sound = 'button', volume = 0.7, pitch = 1.1, delay = 0}, {mult = 0, chips = 0, handname = '', level = ''})
@@ -348,8 +346,8 @@ function CodexArcanum.INIT.CA_Alchemicals()
     local alchemy_arsenic_def = {
         name = "Arsenic",
         text = {
-        "{C:attention}Swap{} your {C:blue}hands{}",
-        "and your {C:red}discards{}"
+            "{C:attention}Swap{} your {C:blue}hands{}",
+            "and your {C:red}discards{}"
         }
     }
 
@@ -387,9 +385,9 @@ function CodexArcanum.INIT.CA_Alchemicals()
     local alchemy_antimony_def = {
         name = "Antimony",
         text = {
-        "Create a {C:dark_edition}Negative{} {C:eternal}eternal{}",
-        "{C:attention}copy{} of a random",
-        "joker for one blind"
+            "Create a {C:dark_edition}Negative{} {C:eternal}eternal{}",
+            "{C:attention}copy{} of a random",
+            "joker for one blind"
         }
     }
 
@@ -433,11 +431,11 @@ function CodexArcanum.INIT.CA_Alchemicals()
         }
     }
 
-    local alchemy_soap = CodexArcanum.Alchemical:new("Soap", "soap", {extra = 3}, { x = 0, y = 2 }, alchemy_soap_def)
+    local alchemy_soap = CodexArcanum.Alchemical:new("Soap", "soap", { extra = 3 }, { x = 0, y = 2 }, alchemy_soap_def)
     alchemy_soap:register()
                     
     function CodexArcanum.Alchemicals.c_alchemy_soap.can_use(card)
-        if #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted >= 1 then return true else return false end
+        return #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted > 0
     end
 
     function CodexArcanum.Alchemicals.c_alchemy_soap.use(card, area, copier)
@@ -465,11 +463,11 @@ function CodexArcanum.INIT.CA_Alchemicals()
         }
     }
 
-    local alchemy_manganese = CodexArcanum.Alchemical:new("Manganese", "manganese", {extra = 4}, { x = 1, y = 2 }, alchemy_manganese_def)
+    local alchemy_manganese = CodexArcanum.Alchemical:new("Manganese", "manganese", { extra = 4 }, { x = 1, y = 2 }, alchemy_manganese_def)
     alchemy_manganese:register()
                         
     function CodexArcanum.Alchemicals.c_alchemy_manganese.can_use(card)
-        if #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted >= 1 then return true else return false end
+        return #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted > 0
     end
 
     function CodexArcanum.Alchemicals.c_alchemy_manganese.use(card, area, copier)
@@ -503,7 +501,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
     alchemy_wax:register()
             
     function CodexArcanum.Alchemicals.c_alchemy_wax.can_use(card)
-        if #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted >= 1 then return true else return false end
+        return #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted > 0
     end
 
     function CodexArcanum.Alchemicals.c_alchemy_wax.use(card, area, copier)
@@ -540,11 +538,11 @@ function CodexArcanum.INIT.CA_Alchemicals()
         }
     }
 
-    local alchemy_borax = CodexArcanum.Alchemical:new("Borax", "borax", {extra = 4}, { x = 3, y = 2 }, alchemy_borax_def)
+    local alchemy_borax = CodexArcanum.Alchemical:new("Borax", "borax", { extra = 4 }, { x = 3, y = 2 }, alchemy_borax_def)
     alchemy_borax:register()
             
     function CodexArcanum.Alchemicals.c_alchemy_borax.can_use(card)
-        if #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted >= 1 then return true else return false end
+        return #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted > 0
     end
 
     function CodexArcanum.Alchemicals.c_alchemy_borax.use(card, area, copier)
@@ -577,11 +575,11 @@ function CodexArcanum.INIT.CA_Alchemicals()
         }
     }
 
-    local alchemy_glass = CodexArcanum.Alchemical:new("Glass", "glass", {extra = 4}, { x = 4, y = 2 }, alchemy_glass_def)
+    local alchemy_glass = CodexArcanum.Alchemical:new("Glass", "glass", { extra = 4 }, { x = 4, y = 2 }, alchemy_glass_def)
     alchemy_glass:register()
                 
     function CodexArcanum.Alchemicals.c_alchemy_glass.can_use(card)
-        if #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted >= 1 then return true else return false end
+        return #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted > 0
     end
 
     function CodexArcanum.Alchemicals.c_alchemy_glass.use(card, area, copier)
@@ -615,7 +613,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
     alchemy_magnet:register()
                 
     function CodexArcanum.Alchemicals.c_alchemy_magnet.can_use(card)
-        if #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted >= 1 then return true else return false end
+        return #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted > 0
     end
 
     function CodexArcanum.Alchemicals.c_alchemy_magnet.use(card, area, copier)
@@ -648,11 +646,11 @@ function CodexArcanum.INIT.CA_Alchemicals()
         }
     }
 
-    local alchemy_gold = CodexArcanum.Alchemical:new("Gold", "gold", {extra = 4}, { x = 0, y = 3 }, alchemy_gold_def)
+    local alchemy_gold = CodexArcanum.Alchemical:new("Gold", "gold", { extra = 4 }, { x = 0, y = 3 }, alchemy_gold_def)
     alchemy_gold:register()
                 
     function CodexArcanum.Alchemicals.c_alchemy_gold.can_use(card)
-        if #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted >= 1 then return true else return false end
+        return #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted > 0
     end
     
     function CodexArcanum.Alchemicals.c_alchemy_gold.use(card, area, copier)
@@ -683,11 +681,11 @@ function CodexArcanum.INIT.CA_Alchemicals()
         }
     }
 
-    local alchemy_silver = CodexArcanum.Alchemical:new("Silver", "silver", {extra = 4}, { x = 1, y = 3 }, alchemy_silver_def)
+    local alchemy_silver = CodexArcanum.Alchemical:new("Silver", "silver", { extra = 4 }, { x = 1, y = 3 }, alchemy_silver_def)
     alchemy_silver:register()
                 
     function CodexArcanum.Alchemicals.c_alchemy_silver.can_use(card)
-        if #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted >= 1 then return true else return false end
+        return #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted > 0
     end
         
     function CodexArcanum.Alchemicals.c_alchemy_silver.use(card, area, copier)
@@ -759,7 +757,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
     alchemy_acid:register()
                 
     function CodexArcanum.Alchemicals.c_alchemy_acid.can_use(card)
-        if #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted >= 1 then return true else return false end
+        return #G.hand.highlighted <= card.ability.extra and #G.hand.highlighted > 0
     end
 
     function CodexArcanum.Alchemicals.c_alchemy_acid.use(card, area, copier)
@@ -793,7 +791,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
         }
     }
 
-    local alchemy_brimstone = CodexArcanum.Alchemical:new("Brimstone", "brimstone", {extra = 2}, { x = 4, y = 3 }, alchemy_brimstone_def)
+    local alchemy_brimstone = CodexArcanum.Alchemical:new("Brimstone", "brimstone", { extra = 2 }, { x = 4, y = 3 }, alchemy_brimstone_def)
     alchemy_brimstone:register()
                 
     function CodexArcanum.Alchemicals.c_alchemy_brimstone.can_use(card)
@@ -856,19 +854,15 @@ function CodexArcanum.INIT.CA_Alchemicals()
                             table.insert(eligible_cards, v)
                         end
                     end
-
                     if #eligible_cards > 0 then
                         local conv_card = pseudorandom_element(eligible_cards, pseudoseed(card.ability.name))
-
                         delay(0.05)
                         if not (G.hand.highlighted[1].edition) then conv_card:juice_up(1, 0.5) end
                         conv_card:set_ability(G.hand.highlighted[1].config.center)
                         conv_card:set_seal(G.hand.highlighted[1]:get_seal(true))
                         conv_card:set_edition(G.hand.highlighted[1].edition)
-
                         table.insert(G.deck.config.uranium, conv_card.unique_val)
                     end
-                    
                 end
                 return true
             end
