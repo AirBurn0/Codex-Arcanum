@@ -26,8 +26,8 @@ function CodexArcanum.Alchemical:new(name, slug, config, pos, loc_txt, cost, dis
       y = 0
   }
   o.cost = cost or 3
-  o.discovered = discovered or false
-  o.unlocked = unlocked or false
+  o.discovered = false
+  o.unlocked = unlocked
   o.consumeable = true
   o.unlock_condition = unlock_condition or {}
   o.atlas = atlas or "alchemical_atlas"
