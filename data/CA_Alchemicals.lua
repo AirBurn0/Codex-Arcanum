@@ -3,7 +3,7 @@ SMODS.ConsumableType{
     primary_colour = G.C.SECONDARY_SET.Alchemy,
     secondary_colour = G.C.SECONDARY_SET.Alchemy,
     loc_txt = {
-        name = "Alchemical Cards",
+        name = "Alchemical",
         collection = "Alchemical Cards",
         undiscovered = {
             name = "Not Discovered",
