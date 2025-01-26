@@ -82,30 +82,45 @@ function CodexArcanum.INIT.CA_Jokers()
         } 
     }
 
-    local mutated_joker = SMODS.Joker:new("Mutated Joker", "mutated_joker", { extra = { chips = 10, total_chips = 0 } }, { x = 1, y = 2 }, mutated_joker_def, 1, 5, true, false, true, true, "", "ca_joker_atlas")
+    local mutated_joker = SMODS.Joker:new("Mutated Joker", "mutated_joker", { extra = { chips = 10 } }, { x = 1, y = 2 }, mutated_joker_def, 1, 5, true, false, true, true, "", "ca_joker_atlas")
     mutated_joker:register()
 
     function SMODS.Jokers.j_mutated_joker.loc_def(card)
-        return { card.ability.extra.chips, card.ability.extra.total_chips }
+        local expected_total_chips = 0
+            if G.GAME.consumeable_usage then
+                local alchemical_tally = 0
+                for k, v in pairs(G.GAME.consumeable_usage) do
+                    if v.set == 'Alchemical' then 
+                        alchemical_tally = alchemical_tally + 1
+                    end
+                end
+                expected_total_chips = alchemical_tally * card.ability.extra.chips
+            end
+        return { card.ability.extra.chips, expected_total_chips }
     end
 
     function SMODS.Jokers.j_mutated_joker.calculate(card, context)
-        if context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == 'Alchemical' then
-            G.alchemical_tally = 0
-            for k, v in pairs(G.GAME.consumeable_usage) do
-                if v.set == 'Alchemical' then
-                    G.alchemical_tally = G.alchemical_tally + 1
-                end
-            end
-            card.ability.extra.total_chips = G.alchemical_tally * card.ability.extra.chips
-            G.E_MANAGER:add_event(Event({ func = function()
-                card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize { type = 'variable', key = 'a_chips', vars = { card.ability.extra.chips } } })
-                return true
-            end }))
+        if context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == 'Alchemical' then 
+            G.E_MANAGER:add_event(Event({ 
+                func = function()
+                    card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize { type = 'variable', key = 'a_chips', vars = { card.ability.extra.chips } } })
+                    return true
+                end 
+            }))
             return
         end
         if context.joker_main then
-            return { message = localize { type = 'variable', key = 'a_chips', vars = { card.ability.extra.total_chips } }, chip_mod = card.ability.extra.total_chips }
+            local expected_total_chips = 0
+            if G.GAME.consumeable_usage then
+                local alchemical_tally = 0
+                for k, v in pairs(G.GAME.consumeable_usage) do
+                    if v.set == 'Alchemical' then 
+                        alchemical_tally = alchemical_tally + 1
+                    end
+                end
+                expected_total_chips = alchemical_tally * card.ability.extra.chips
+            end
+            return { message = localize { type = 'variable', key = 'a_chips', vars = { expected_total_chips } }, chip_mod = expected_total_chips }
         end
     end
 
