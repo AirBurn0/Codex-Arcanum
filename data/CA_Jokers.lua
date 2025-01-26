@@ -241,9 +241,8 @@ function CodexArcanum.INIT.CA_Jokers()
                 delay = 0.1, 
                 func = function()
                     if not G.GAME.blind.in_blind and context.consumeable.config.center.key == 'c_alchemy_salt' then
-                        local extra_money = 2 * card.ability.money
-                        ease_dollars(extra_money, true)
-                        card_eval_status_text(card, 'dollars', extra_money, nil, nil, { instant = true })
+                        ease_dollars(card.ability.money, true)
+                        card_eval_status_text(card, 'dollars', card.ability.money, nil, nil, { instant = true })
                         return true
                     end
                     local choice = pseudorandom(pseudoseed('breaking_bozo'))
