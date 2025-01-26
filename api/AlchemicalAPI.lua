@@ -89,11 +89,7 @@ function CodexArcanum.Alchemical:register()
 end
 
 function alchemical_can_use(self, card)
-    if G.STATE == G.STATES.SELECTING_HAND and not card.debuff then
-        return true
-    else
-        return false
-    end
+    return G.STATE == G.STATES.SELECTING_HAND and not card.debuff
 end
 
 function is_in_booster_pack(state)

@@ -611,7 +611,7 @@ function Card:open()
 
       G.E_MANAGER:add_event(Event({
         trigger = 'after',
-        delay = 1.3*math.sqrt(G.SETTINGS.GAMESPEED),
+        delay = 1.3 * math.sqrt(G.SETTINGS.GAMESPEED),
         blockable = false, 
         blocking = false, 
         func = function()
@@ -651,13 +651,15 @@ function Card:open()
 
       if G.GAME.modifiers.inflation then 
           G.GAME.inflation = G.GAME.inflation + 1
-          G.E_MANAGER:add_event(Event({func = function()
-            for k, v in pairs(G.I.CARD) do
-                if v.set_cost then v:set_cost() end
-            end
-            return true end }))
+          G.E_MANAGER:add_event(Event({
+            func = function()
+              for k, v in pairs(G.I.CARD) do
+                  if v.set_cost then v:set_cost() end
+              end
+              return true 
+            end 
+          }))
       end
-
       return true 
     end 
   }))
@@ -764,9 +766,12 @@ function Card:apply_to_run(center)
   }
 
   if center_table.name == 'Mortar and Pestle' then
-    G.E_MANAGER:add_event(Event({func = function()
-      G.consumeables.config.card_limit = G.consumeables.config.card_limit + 1
-      return true end }))
+    G.E_MANAGER:add_event(Event({
+      func = function()
+        G.consumeables.config.card_limit = G.consumeables.config.card_limit + 1
+        return true 
+      end 
+    }))
   end
 
 
@@ -900,11 +905,6 @@ function Game:update(dt)
       G.STATE_COMPLETE = true
       end_round()
     end
-  end
-
-  G.alchemical_tally = 1
-  for k, v in pairs(G.GAME.consumeable_usage) do
-    if v.set == 'Alchemical' then G.alchemical_tally = G.alchemical_tally + 1 end
   end
 end
 
