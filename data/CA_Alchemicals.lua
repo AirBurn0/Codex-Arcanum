@@ -395,16 +395,16 @@ function CodexArcanum.INIT.CA_Alchemicals()
     alchemy_antimony:register()
                 
     function CodexArcanum.Alchemicals.c_alchemy_antimony.can_use(card)
-        return true
+        return #G.jokers.cards > 0 
     end
 
     function CodexArcanum.Alchemicals.c_alchemy_antimony.use(card, area, copier)
         G.jokers.config.antimony = G.jokers.config.antimony or {}
-        G.E_MANAGER:add_event(Event({
-            trigger = 'after',
-            delay = 0.1,
-            func = function()
-                if #G.jokers.cards > 0 then 
+        if #G.jokers.cards > 0 then 
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.1,
+                func = function()
                     local chosen_joker = pseudorandom_element(G.jokers.cards, pseudoseed('invisible'))
                     local card = copy_card(chosen_joker, nil, nil, nil, chosen_joker.edition and chosen_joker.edition.negative)
                     card:set_edition({negative = true}, true)
@@ -415,10 +415,10 @@ function CodexArcanum.INIT.CA_Alchemicals()
                     card:add_to_deck()
                     G.jokers:emplace(card)
                     table.insert(G.jokers.config.antimony, card.unique_val)
-                end
-                return true
-            end 
-        }))
+                    return true
+                end 
+            }))
+        end
     end
 
     
