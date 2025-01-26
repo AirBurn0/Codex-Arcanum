@@ -101,6 +101,9 @@ function CodexArcanum.INIT.CA_Jokers()
 
     function SMODS.Jokers.j_mutated_joker.calculate(card, context)
         if context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == 'Alchemical' then 
+            --context.consumeable
+            --G.GAME.consumeable_usage[]
+            --require("lldebugger").start()
             G.E_MANAGER:add_event(Event({ 
                 func = function()
                     card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize { type = 'variable', key = 'a_chips', vars = { card.ability.extra.chips } } })
@@ -237,6 +240,12 @@ function CodexArcanum.INIT.CA_Jokers()
                 trigger = 'after', 
                 delay = 0.1, 
                 func = function()
+                    if not G.GAME.blind.in_blind and context.consumeable.config.center.key == 'c_alchemy_salt' then
+                        local extra_money = 2 * card.ability.money
+                        ease_dollars(extra_money, true)
+                        card_eval_status_text(card, 'dollars', extra_money, nil, nil, { instant = true })
+                        return true
+                    end
                     local choice = pseudorandom(pseudoseed('breaking_bozo'))
                     if choice < 0.33 then
                         G.FUNCS.draw_from_deck_to_hand(card.ability.cards)
@@ -252,24 +261,7 @@ function CodexArcanum.INIT.CA_Jokers()
                         G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
                         G.HUD_blind:recalculate()
                         G.hand_text_area.blind_chips:juice_up()
-                        local card_aligned = 'bm'
-                        local y_off = 0.15 * G.CARD_H
-                        if card.area == G.jokers or card.area == G.consumeables then
-                            y_off = 0.05 * card.T.h
-                        elseif card.area == G.hand or card.area == G.play or card.jimbo then
-                            y_off = -0.05 * G.CARD_H
-                            card_aligned = 'tm'
-                        end
-                        attention_text({
-                            text = localize{type='variable', key='p_alchemy_reduce_blind', vars = { difference } },
-                            scale = 0.5, 
-                            hold = 1,
-                            backdrop_colour = G.C.SECONDARY_SET.Alchemy,
-                            align = card_aligned,
-                            major = card,
-                            offset = {x = 0, y = y_off}
-                        })
-                        play_sound('chips2', 0.98 + 0.04 * math.random(), 1)
+                        alchemy_card_eval_text(card, localize{ type='variable', key='p_alchemy_reduce_blind', vars = { difference } }, 'chips2', G.C.SECONDARY_SET.Alchemy, 0.5, 1)
                     end
                     return true
                 end

@@ -384,25 +384,24 @@ end
 
 local can_use_consumeableref = Card.can_use_consumeable
 function Card:can_use_consumeable(any_state, skip_check)
-  if skip_check or not ((G.play and #G.play.cards > 0) or (G.CONTROLLER.locked) or (G.GAME.STOP_USE and G.GAME.STOP_USE > 0)) then 
-    if self.ability.set == "Alchemical" then
-      if G.STATE == G.STATES.SELECTING_HAND then
-        local t = nil
-        local key = self.config.center.key
-        local center_obj = CodexArcanum.Alchemicals[key]
-        self.config.in_booster = false
-        if center_obj and center_obj.can_use and type(center_obj.can_use) == 'function' then
-          t = center_obj.can_use(self)
-        end
-        if not (t == nil) then
-          return t
-        end
-      elseif is_in_booster_pack(G.STATE) then
-        self.config.in_booster = true
+  if self.ability.set == "Alchemical" and (skip_check or not ((G.play and #G.play.cards > 0) or (G.CONTROLLER.locked) or (G.GAME.STOP_USE and G.GAME.STOP_USE > 0))) then 
+    local key = self.config.center.key
+    if key == 'c_alchemy_salt' then
+      return G.STATE ~= G.STATES.HAND_PLAYED and G.STATE ~= G.STATES.DRAW_TO_HAND and G.STATE ~= G.STATES.PLAY_TAROT or any_state
+    elseif G.STATE == G.STATES.SELECTING_HAND then
+      local t = nil
+      local center_obj = CodexArcanum.Alchemicals[key]
+      self.config.in_booster = false
+      if center_obj and center_obj.can_use and type(center_obj.can_use) == 'function' then
+        t = center_obj.can_use(self)
       end
+      if not (t == nil) then
+        return t
+      end
+    elseif is_in_booster_pack(G.STATE) then
+      self.config.in_booster = true
     end
   end
-
   return can_use_consumeableref(self, any_state, skip_check)
 end
 
