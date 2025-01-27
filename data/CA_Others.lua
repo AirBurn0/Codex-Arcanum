@@ -85,7 +85,7 @@ function CodexArcanum.INIT.CA_Others()
             "Start run with the", 
             "{C:tarot,T:v_mortar_and_pestle}Mortar and Pestle{} voucher.", 
             "Gain an {C:alchemical}Alchemical{} card before", 
-            "each boss blind" 
+            "each {C:attention}Boss Blind{}" 
         } 
     }
 
@@ -96,7 +96,7 @@ function CodexArcanum.INIT.CA_Others()
         name = "Elemental Tag",
         text = {
             "Gives a free",
-            "{C:alchemical}Mega Alchemy Pack"
+            "{C:alchemical}Mega Alchemy Pack{}"
         }
     }
 

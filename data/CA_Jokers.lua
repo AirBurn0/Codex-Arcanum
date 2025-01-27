@@ -120,7 +120,7 @@ function CodexArcanum.INIT.CA_Jokers()
         text = { 
             "Create a {C:dark_edition}Negative{} {C:attention}copy{}", 
             "of the first {C:alchemical}Alchemical{} ", 
-            "card used each blind" 
+            "card used each {C:attention}Blind{}" 
         } 
     }
 

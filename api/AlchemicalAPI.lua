@@ -63,6 +63,9 @@ function CodexArcanum.Alchemical:register()
 	table.insert(G.P_CENTER_POOLS['Alchemical'], alchemical_obj)
 
   	G.localization.descriptions["Alchemical"][self.slug] = self.loc_txt
+	self.can_use = function(card)
+        return true
+    end
 
   	for g_k, group in pairs(G.localization) do
 		if g_k == 'descriptions' then
@@ -156,6 +159,13 @@ function alchemy_card_eval_text(card, text, sound, color, text_scale, hold, dela
 	else
 		text_func()
 	end
+end
+
+function alchemy_ability_round(ability) 
+	if not ability or type(ability) ~= "number" then
+		return 0
+	end
+	return math.floor(ability + 0.5)
 end
 
 function CodexArcanum.INIT.AlchemicalAPI()

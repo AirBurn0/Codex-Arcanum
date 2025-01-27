@@ -4,26 +4,26 @@ function CodexArcanum.INIT.CA_BoosterPacks()
     G.localization.descriptions["Other"]["p_alchemy_normal"] = { 
         name = "Alchemy Pack", 
         text = { 
-            "Choose {C:attention}1{} of up to", 
-            "{C:attention}2{C:alchemical} Alchemical{} cards to", 
+            "Choose {C:attention}#1#{} of up to", 
+            "{C:attention}#2#{C:alchemical} Alchemical{} cards to", 
             "add to your consumeables" 
         }
     }
 
     G.localization.descriptions["Other"]["p_alchemy_jumbo"] = {
-        name = "Alchemy Pack", 
+        name = "Jumbo Alchemy Pack", 
         text = { 
-            "Choose {C:attention}1{} of up to", 
-            "{C:attention}4{C:alchemical} Alchemical{} cards to",
+            "Choose {C:attention}#1#{} of up to", 
+            "{C:attention}#2#{C:alchemical} Alchemical{} cards to",
             "add to your consumeables" 
         }
     }
 
     G.localization.descriptions["Other"]["p_alchemy_mega"] = { 
-        name = "Alchemy Pack",
-         text = { 
-            "Choose {C:attention}2{} of up to",
-            "{C:attention}4{C:alchemical} Alchemical{} cards to",
+        name = "Mega Alchemy Pack",
+        text = { 
+            "Choose {C:attention}#1#{} of up to",
+            "{C:attention}#2#{C:alchemical} Alchemical{} cards to",
             "add to your consumeables" 
         } 
     }

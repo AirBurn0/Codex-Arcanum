@@ -244,31 +244,20 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
       localize{type = 'other', key = 'undiscovered_'..(string.lower(_c.set)), set = _c.set, nodes = desc_nodes}
     elseif _c.set == "Alchemical" then
       info_queue[#info_queue+1] = {key = "alchemical_card", set = "Other"}
-      if _c.key == 'c_alchemy_bismuth' then info_queue[#info_queue+1] = G.P_CENTERS.e_polychrome
-      elseif _c.key == 'c_alchemy_manganese' then info_queue[#info_queue+1] = G.P_CENTERS.m_steel
-      elseif _c.key == 'c_alchemy_glass' then info_queue[#info_queue+1] = G.P_CENTERS.m_glass
-      elseif _c.key == 'c_alchemy_gold' then info_queue[#info_queue+1] = G.P_CENTERS.m_gold
-      elseif _c.key == 'c_alchemy_silver' then info_queue[#info_queue+1] = G.P_CENTERS.m_lucky
-      elseif _c.key == 'c_alchemy_stone' then info_queue[#info_queue+1] = G.P_CENTERS.m_stone
-      elseif _c.key == 'c_alchemy_borax' then 
-        local top_suit = get_most_common_suit()
-        loc_vars = {top_suit, colours = { G.C.SUITS[top_suit] }}
-      elseif _c.key == 'c_alchemy_antimony' then 
-        info_queue[#info_queue+1] = G.P_CENTERS.e_negative 
-        info_queue[#info_queue+1] = {key = 'eternal', set = 'Other'} 
+      local center_obj = CodexArcanum.Alchemicals[_c.key]
+      if center_obj and center_obj.loc_def and type(center_obj.loc_def) == "function" then
+        loc_vars = center_obj.loc_def(_c, info_queue)
       end
       localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = loc_vars}
     elseif _c.set == 'Booster' and _c.name:find("Alchemy") then 
       local i, j = string.find(_c.key, "p_alchemy_[^]]*_"); -- why ifelse when can just pattern-match and substring?
-      local desc_override = nil
+      name_override = "p_alchemy_normal"
       if i and j then
-        desc_override = string.sub(_c.key, i, j - 1)
+        name_override = string.sub(_c.key, i, j - 1)
       end
       loc_vars = {_c.config.choose, _c.config.extra}
-      desc_override = desc_override or "p_alchemy_normal"
-      name_override = desc_override
       if not full_UI_table.name then full_UI_table.name = localize{type = 'name', set = 'Other', key = name_override, nodes = full_UI_table.name} end
-      localize{type = 'other', key = desc_override, nodes = desc_nodes, vars = loc_vars}
+      localize{type = 'other', key = name_override, nodes = desc_nodes, vars = loc_vars}
     end
 
     if main_end then 
