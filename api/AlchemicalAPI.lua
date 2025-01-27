@@ -168,6 +168,15 @@ function alchemy_ability_round(ability)
 	return math.floor(ability + 0.5)
 end
 
+-- Talisman compat API
+function alchemical_talisman_compat_to_big(arg)
+    local status, ret = pcall(to_big, arg)
+    if status then
+        return ret
+    end
+    return arg
+end
+
 function CodexArcanum.INIT.AlchemicalAPI()
     
 end

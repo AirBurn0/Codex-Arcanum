@@ -899,13 +899,12 @@ function Game:update(dt)
   end
 
 
-  if G.GAME and G.GAME.blind and G.GAME.chips - G.GAME.blind.chips >= 0 then
-    if G.STATE == G.STATES.SELECTING_HAND then
-      G.STATE = G.STATES.HAND_PLAYED
-      G.STATE_COMPLETE = true
-      end_round()
-    end
+  if G.GAME and G.GAME.blind and alchemical_talisman_compat_to_big(G.GAME.chips) >= alchemical_talisman_compat_to_big(G.GAME.blind.chips) and G.STATE == G.STATES.SELECTING_HAND then
+    G.STATE = G.STATES.HAND_PLAYED
+    G.STATE_COMPLETE = true
+    end_round()
   end
+
 end
 
 
