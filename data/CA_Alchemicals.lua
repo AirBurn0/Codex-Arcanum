@@ -114,7 +114,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
             trigger = 'after',
             delay = 0.1,
             func = function()
-                G.GAME.blind.chips = math.floor(G.GAME.blind.chips * math.max(0, (1 - extra)))
+                G.GAME.blind.chips = math.floor(G.GAME.blind.chips * math.max(0, (1 - card.ability.extra)))
                 G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
                 G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
                 G.HUD_blind:recalculate() 
