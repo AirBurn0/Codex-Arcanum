@@ -144,10 +144,13 @@ function CodexArcanum.INIT.CA_Others()
     end
 
     function SMODS.Tarots.c_seeker.can_use(card)
-        return #G.consumeables.cards < G.consumeables.config.card_limit or card.area == G.consumeables
+        return true
     end
 
     function SMODS.Tarots.c_seeker.use(card, area, copier)
+        if G.consumeables.config.card_limit - #G.consumeables.cards < 1 then
+            return
+        end
         local used_tarot = (copier or card)
         for i = 1, math.min(card.ability.consumeable.alchemicals, G.consumeables.config.card_limit - #G.consumeables.cards) do
             G.E_MANAGER:add_event(Event({ 
