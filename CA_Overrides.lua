@@ -308,7 +308,7 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
     end
     for _, v in ipairs(info_queue) do
       generate_card_ui(v, full_UI_table)
-  end
+    end
   end
   return full_UI_table
 end
