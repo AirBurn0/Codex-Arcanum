@@ -92,21 +92,23 @@ function CodexArcanum.INIT.CA_Others()
     local herbalist_deck = SMODS.Deck:new("Herbalist's Deck", "herbalist", { vouchers = { 'v_mortar_and_pestle' }, atlas = "ca_decks_atlas" }, { x = 1, y = 0 }, herbalist_deck_def)
     herbalist_deck:register()
 
-    local tag_elemental_def = {
-        name = "Elemental Tag",
-        text = {
-            "Gives a free",
-            "{C:alchemical}Mega Alchemy Pack{}"
-        }
-    }
+    SMODS.Atlas { key = 'ca_tag_elemental', path = 'tag_elemental.png', px = 34, py = 34 }
 
-     -- Elemental Tag
-    local tag_elemental = SMODS.Tag:new("Elemental Tag", "elemental", { type = 'new_blind_choice' }, { x = 0, y = 0 }, tag_elemental_def)
-    SMODS.Sprite:new("tag_elemental", CodexArcanum.mod.path, "tag_elemental.png", 34, 34, "asset_atli"):register();
-    tag_elemental:register()
-
-    function SMODS.Tags.tag_elemental.apply(tag, context)
-        if context.type == 'new_blind_choice' then
+    -- Elemental Tag
+    SMODS.Tag {
+        key = "elemental",
+        loc_txt = {
+            name = 'Elemental Tag',
+            text = {
+                "Gives a free",
+                "{C:alchemical}Mega Alchemy Pack"
+            }
+        },
+        config = { type = 'new_blind_choice' },
+        apply = function(self, tag, context)
+            if context.type ~= 'new_blind_choice' then
+                return
+            end
             local lock = tag.ID
             G.CONTROLLER.locks[lock] = true
             tag:yep('+', G.C.PURPLE, 
@@ -123,8 +125,10 @@ function CodexArcanum.INIT.CA_Others()
             )
             tag.triggered = true
             return true
-        end
-    end
+        end,
+        pos = { x = 0, y = 0 },
+        atlas = 'ca_tag_elemental'
+    }
 
     -- The Seeker
     local tarot_seeker_def = {

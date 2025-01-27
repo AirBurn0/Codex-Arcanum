@@ -29,8 +29,6 @@ SMODS.Atlas { key = 'modicon', px = 32, py = 32, path = 'tag_elemental.png' }
 function SMODS.INIT.CodexArcanum()
     CodexArcanum.mod = SMODS.findModByID(CodexArcanum.mod_id)
 
-    SMODS.load_file("api/TagAPI.lua")()
-    SMODS.load_file("api/BoosterPackRegister.lua")()
     SMODS.load_file("api/AlchemicalAPI.lua")()
 
     SMODS.load_file("utils/CA_AlchemyUI.lua")()

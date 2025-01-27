@@ -45,16 +45,17 @@ function create_card_for_shop(area)
       return card
     else
       local forced_tag = nil
-      for k, v in ipairs(G.GAME.tags) do
-        if not forced_tag then
-          forced_tag = v:apply_to_run({type = 'store_joker_create', area = area})
-          if forced_tag then
-            for kk, vv in ipairs(G.GAME.tags) do
-              if vv:apply_to_run({type = 'store_joker_modify', card = forced_tag}) then break end
-            end
-            return forced_tag end
-        end
-      end
+      -- todo remove
+      -- for k, v in ipairs(G.GAME.tags) do
+      --   if not forced_tag then
+      --     forced_tag = v:apply_to_run({type = 'store_joker_create', area = area})
+      --     if forced_tag then
+      --       for kk, vv in ipairs(G.GAME.tags) do
+      --         if vv:apply_to_run({type = 'store_joker_modify', card = forced_tag}) then break end
+      --       end
+      --       return forced_tag end
+      --   end
+      -- end
         G.GAME.spectral_rate = G.GAME.spectral_rate or 0
         local total_rate = G.GAME.joker_rate + G.GAME.tarot_rate + G.GAME.planet_rate + G.GAME.playing_card_rate + G.GAME.spectral_rate + G.GAME.alchemical_rate
         local polled_rate = pseudorandom(pseudoseed('cdt'..G.GAME.round_resets.ante))*total_rate
@@ -70,14 +71,15 @@ function create_card_for_shop(area)
           if polled_rate > check_rate and polled_rate <= check_rate + v.val then
             local card = create_card(v.type, area, nil, nil, nil, nil, nil, 'sho')
             create_shop_card_ui(card, v.type, area)
-            G.E_MANAGER:add_event(Event({
-                func = (function()
-                    for k, v in ipairs(G.GAME.tags) do
-                      if v:apply_to_run({type = 'store_joker_modify', card = card}) then break end
-                    end
-                    return true
-                end)
-            }))
+            -- todo what happened here?
+            -- G.E_MANAGER:add_event(Event({
+            --     func = (function()
+            --         for k, v in ipairs(G.GAME.tags) do
+            --           if v:apply_to_run({type = 'store_joker_modify', card = card}) then break end
+            --         end
+            --         return true
+            --     end)
+            -- }))
             if (v.type == 'Base' or v.type == 'Enhanced') and G.GAME.used_vouchers["v_illusion"] and pseudorandom(pseudoseed('illusion')) > 0.8 then 
               local edition_poll = pseudorandom(pseudoseed('illusion'))
               local edition = {}
@@ -166,7 +168,7 @@ function get_current_pool(_type, _rarity, _legendary, _append)
           _pool[#_pool + 1] = 'UNAVAILABLE'
       end
     end
-
+    -- todo remove
     if _pool_size == 0 then
       _pool = EMPTY(G.ARGS.TEMP_POOL)
       if _type == 'Tarot' or _type == 'Tarot_Planet' then _pool[#_pool + 1] = "c_fool"
@@ -189,7 +191,7 @@ end
 
 local generate_card_uiref = generate_card_ui
 function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end)
-  if _c.set == "Alchemical" or (_c.set == 'Booster' and _c.name:find("Alchemy")) then
+  if _c.set == "Alchemical" then
     local first_pass = nil
     if not full_UI_table then 
         first_pass = true
@@ -224,9 +226,7 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
                 full_UI_table.name = {}
                 localize{type = 'other', key = 'playing_card', set = 'Other', nodes = full_UI_table.name, vars = {localize(specific_vars.value, 'ranks'), localize(specific_vars.suit, 'suits_plural'), colours = {specific_vars.colour}}}
                 full_UI_table.name = full_UI_table.name[1]
-            end
-        elseif card_type == 'Booster' then
-            
+            end            
         else
             full_UI_table.name = localize{type = 'name', set = _c.set, key = _c.key, nodes = full_UI_table.name}
         end
@@ -400,8 +400,8 @@ function Card:can_use_consumeable(any_state, skip_check)
       if not (t == nil) then
         return t
       end
-    elseif is_in_booster_pack(G.STATE) then
-      self.config.in_booster = true
+    else
+      self.config.in_booster = is_in_booster_pack(G.STATE)
     end
   end
   return can_use_consumeableref(self, any_state, skip_check)
@@ -570,156 +570,6 @@ function Game:update_round_eval(dt)
 
 end
 
-local card_openref = Card.open
-function Card:open()
-  G.ARGS.is_alchemical_booster = false
-  if self.ability.set == "Booster" and self.ability.name:find('Alchemy') then
-    stop_use()
-    G.STATE_COMPLETE = false 
-    self.opening = true
-
-    if not self.config.center.discovered then
-        discover_card(self.config.center)
-    end
-    self.states.hover.can = false
-
-    G.ARGS.is_alchemical_booster = true
-    G.STATE = G.STATES.STANDARD_PACK
-    G.GAME.pack_size = self.ability.extra
-
-    G.GAME.pack_choices = self.config.center.config.choose or 1
-
-    if self.cost > 0 then 
-        G.E_MANAGER:add_event(Event({
-          trigger = 'after', 
-          delay = 0.2, 
-          func = function()
-            inc_career_stat('c_shop_dollars_spent', self.cost)
-            self:juice_up()
-            return true
-          end
-        }))
-        ease_dollars(-self.cost) 
-     else
-         delay(0.2)
-     end
-  G.E_MANAGER:add_event(Event({
-    trigger = 'after', 
-    delay = 0.4, 
-    func = function()
-      self:explode()
-      local pack_cards = {}
-
-      G.E_MANAGER:add_event(Event({
-        trigger = 'after',
-        delay = 1.3 * math.sqrt(G.SETTINGS.GAMESPEED),
-        blockable = false, 
-        blocking = false, 
-        func = function()
-          local _size = self.ability.extra
-          for i = 1, _size do
-              local card = nil
-              card = create_alchemical()
-              card.T.x = self.T.x
-              card.T.y = self.T.y
-              card:start_materialize({G.C.WHITE, G.C.WHITE}, nil, 1.5*G.SETTINGS.GAMESPEED)
-              pack_cards[i] = card
-          end
-          return true
-        end
-      }))
-
-      G.E_MANAGER:add_event(Event({
-        trigger = 'after', 
-        delay = 1.3*math.sqrt(G.SETTINGS.GAMESPEED),
-        blockable = false, 
-        blocking = false, 
-        func = function()
-          if G.pack_cards then 
-              if G.pack_cards and G.pack_cards.VT.y < G.ROOM.T.h then 
-                for k, v in ipairs(pack_cards) do
-                    G.pack_cards:emplace(v)
-                end
-                return true
-              end
-          end
-        end
-      }))
-
-      for i = 1, #G.jokers.cards do
-          G.jokers.cards[i]:calculate_joker({open_booster = true, card = self})
-      end
-
-      if G.GAME.modifiers.inflation then 
-          G.GAME.inflation = G.GAME.inflation + 1
-          G.E_MANAGER:add_event(Event({
-            func = function()
-              for k, v in pairs(G.I.CARD) do
-                  if v.set_cost then v:set_cost() end
-              end
-              return true 
-            end 
-          }))
-      end
-      return true 
-    end 
-  }))
-  else
-    card_openref(self)
-  end
-end
-
-local create_UIBox_standard_packref = create_UIBox_standard_pack
-function create_UIBox_standard_pack()
-  if G.ARGS.is_alchemical_booster then
-    local _size = G.GAME.pack_size
-    G.pack_cards = CardArea(
-      G.ROOM.T.x + 9 + G.hand.T.x, G.hand.T.y,
-      _size*G.CARD_W*1.1,
-      1.05*G.CARD_H, 
-      {card_limit = _size, type = 'consumeable', highlight_limit = 1})
-
-      local t = {n=G.UIT.ROOT, config = {align = 'tm', r = 0.15, colour = G.C.CLEAR, padding = 0.15}, nodes={
-        {n=G.UIT.R, config={align = "cl", colour = G.C.CLEAR,r=0.15, padding = 0.1, minh = 2, shadow = true}, nodes={
-          {n=G.UIT.R, config={align = "cm"}, nodes={
-          {n=G.UIT.C, config={align = "cm", padding = 0.1}, nodes={
-            {n=G.UIT.C, config={align = "cm", r=0.2, colour = G.C.CLEAR, shadow = true}, nodes={
-              {n=G.UIT.O, config={object = G.pack_cards}},
-            }}
-          }}
-        }},
-        {n=G.UIT.R, config={align = "cm"}, nodes={
-        }},
-        {n=G.UIT.R, config={align = "tm"}, nodes={
-          {n=G.UIT.C,config={align = "tm", padding = 0.05, minw = 2.4}, nodes={}},
-          {n=G.UIT.C,config={align = "tm", padding = 0.05}, nodes={
-          UIBox_dyn_container({
-            {n=G.UIT.C, config={align = "cm", padding = 0.05, minw = 4}, nodes={
-              {n=G.UIT.R,config={align = "bm", padding = 0.05}, nodes={
-                {n=G.UIT.O, config={object = DynaText({string = localize('k_alchemy_pack'), colours = {G.C.WHITE},shadow = true, rotate = true, bump = true, spacing =2, scale = 0.7, maxw = 4, pop_in = 0.5})}}
-              }},
-              {n=G.UIT.R,config={align = "bm", padding = 0.05}, nodes={
-                {n=G.UIT.O, config={object = DynaText({string = {localize('k_choose')..' '}, colours = {G.C.WHITE},shadow = true, rotate = true, bump = true, spacing =2, scale = 0.5, pop_in = 0.7})}},
-                {n=G.UIT.O, config={object = DynaText({string = {{ref_table = G.GAME, ref_value = 'pack_choices'}}, colours = {G.C.WHITE},shadow = true, rotate = true, bump = true, spacing =2, scale = 0.5, pop_in = 0.7})}}
-              }},
-            }}
-          }),
-        }},
-          {n=G.UIT.C,config={align = "tm", padding = 0.05, minw = 2.4}, nodes={
-            {n=G.UIT.R,config={minh =0.2}, nodes={}},
-            {n=G.UIT.R,config={align = "tm",padding = 0.2, minh = 1.2, minw = 1.8, r=0.15,colour = G.C.GREY, one_press = true, button = 'skip_booster', hover = true,shadow = true, func = 'can_skip_booster'}, nodes = {
-              {n=G.UIT.T, config={text = localize('b_skip'), scale = 0.5, colour = G.C.WHITE, shadow = true, focus_args = {button = 'y', orientation = 'bm'}, func = 'set_button_pip'}}
-            }}
-          }}
-        }}
-      }}
-    }}
-    return t
-  else
-    return create_UIBox_standard_packref()
-  end
-end
-
 local func_use_cardref = G.FUNCS.use_card
 G.FUNCS.use_card = function(e, mute, nosave)
   func_use_cardref(e, mute, nosave)
@@ -774,8 +624,6 @@ function Card:apply_to_run(center)
       end 
     }))
   end
-
-
 end
 
 local add_to_deckref = Card.add_to_deck
@@ -916,38 +764,29 @@ function Game:init_item_prototypes()
   G.C.SECONDARY_SET.Alchemy = HEX("C09D75")
   G.P_CENTER_POOLS.Alchemical = {}
   G.localization.descriptions.Alchemical = {}
-
-  for _, booster in pairs(SMODS.Boosters) do
-    booster:register()
-  end
-
+  -- TODO migrate to consumeable api
   for _, alchemical in pairs(CodexArcanum.Alchemicals) do
     alchemical:register()
   end
 
-  for _, tag in pairs(SMODS.Tags) do
-    tag:register()
-  end
   SMODS.LOAD_LOC()
   SMODS.SAVE_UNLOCKS()
   ALCHEMICAL_SAVE_UNLOCKS()
 end
 
-
-local alias__G_UIDEF_use_and_sell_buttons = G.UIDEF.use_and_sell_buttons;
+local G_UIDEF_use_and_sell_buttons_ref = G.UIDEF.use_and_sell_buttons;
 function G.UIDEF.use_and_sell_buttons(card)
-  local ret = alias__G_UIDEF_use_and_sell_buttons(card)
-  if (card.ability.set == "Alchemical" or card.ability.name == "Philosopher's Stone") and G.ARGS.is_alchemical_booster and (card.area == G.pack_cards and G.pack_cards) then
+  if (card.ability.set == "Alchemical" or card.ability.name == "Philosopher's Stone") and G.STATE == G.STATES.SMODS_BOOSTER_OPENED and (card.area == G.pack_cards and G.pack_cards) then
     return {
-			n=G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes={
-				{n=G.UIT.R, config={mid = true}, nodes={
-				}},
-				{n=G.UIT.R, config={ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5*card.T.w - 0.15, minh = 0.8*card.T.h, maxw = 0.7*card.T.w - 0.15, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'select_alchemical', func = 'can_select_alchemical'}, nodes={
-				{n=G.UIT.T, config={text = localize("b_select"),colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}}
-			}},
-		}}
+			n = G.UIT.ROOT,
+      config = { padding = 0, colour = G.C.CLEAR },
+      nodes = {
+				{ n = G.UIT.R, config = { mid = true }, nodes = { } },
+				{ n = G.UIT.R, config = { ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5*card.T.w - 0.15, minh = 0.8*card.T.h, maxw = 0.7*card.T.w - 0.15, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'select_alchemical', func = 'can_select_alchemical' }, nodes = { { n = G.UIT.T, config = { text = localize("b_select"), colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true } } } },
+		  }
+    }
 	end
-	return ret
+	return G_UIDEF_use_and_sell_buttons_ref(card)
 end
 
 G.FUNCS.can_select_alchemical = function(e)

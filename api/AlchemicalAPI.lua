@@ -66,7 +66,7 @@ function CodexArcanum.Alchemical:register()
 	self.can_use = function(card)
         return true
     end
-
+	-- unsafe
   	for g_k, group in pairs(G.localization) do
 		if g_k == 'descriptions' then
 			for _, set in pairs(group) do
