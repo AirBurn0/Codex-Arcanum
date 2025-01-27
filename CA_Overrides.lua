@@ -368,9 +368,10 @@ function Card:use_consumeable(area, copier)
         G.GAME.used_alchemical_consumeable_unique = { count = 0 }
         setmetatable(G.GAME.used_alchemical_consumeable_unique, {})
       end
-      if not getmetatable(G.GAME.used_alchemical_consumeable_unique)[key] then
-        getmetatable(G.GAME.used_alchemical_consumeable_unique)[key] = true
-        G.GAME.used_alchemical_consumeable_unique.count = G.GAME.used_alchemical_consumeable_unique.count + 1
+      local consumeables = getmetatable(G.GAME.used_alchemical_consumeable_unique)
+      if consumeables and not consumeables[key] then
+        consumeables[key] = true
+        G.GAME.used_alchemical_consumeable_unique.count = (G.GAME.used_alchemical_consumeable_unique.count or 0) + 1
       end
     end
     if self.debuff then 
