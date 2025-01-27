@@ -399,7 +399,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
         name = "Antimony",
         text = {
             "Create #1# {C:dark_edition}Negative{}",
-            "{C:money}$0{} {C:eternal}eternal{} {C:attention}cop#2#{} of",
+            "{C:eternal}eternal{} {C:attention}cop#2#{} of",
             "a random joker",
             "for current {C:attention}Blind{}"
         }
@@ -426,7 +426,6 @@ function CodexArcanum.INIT.CA_Alchemicals()
                 trigger = 'after',
                 delay = 0.1,
                 func = function()
-                    require("lldebugger").start()
                     for _ = 1, alchemy_ability_round(card.ability.extra) or 1 do
                         local chosen_joker = pseudorandom_element(G.jokers.cards, pseudoseed('invisible'))
                         local card = copy_card(chosen_joker, nil, nil, nil, chosen_joker.edition and chosen_joker.edition.negative)
