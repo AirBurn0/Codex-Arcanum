@@ -249,15 +249,6 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
         loc_vars = center_obj.loc_def(_c, info_queue)
       end
       localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = loc_vars}
-    elseif _c.set == 'Booster' and _c.name:find("Alchemy") then 
-      local i, j = string.find(_c.key, "p_alchemy_[^]]*_"); -- why ifelse when can just pattern-match and substring?
-      name_override = "p_alchemy_normal"
-      if i and j then
-        name_override = string.sub(_c.key, i, j - 1)
-      end
-      loc_vars = {_c.config.choose, _c.config.extra}
-      if not full_UI_table.name then full_UI_table.name = localize{type = 'name', set = 'Other', key = name_override, nodes = full_UI_table.name} end
-      localize{type = 'other', key = name_override, nodes = desc_nodes, vars = loc_vars}
     end
 
     if main_end then 

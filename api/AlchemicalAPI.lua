@@ -72,12 +72,16 @@ function CodexArcanum.Alchemical:register()
 			for _, set in pairs(group) do
 				for _, center in pairs(set) do
 					center.text_parsed = {}
-					for _, line in ipairs(center.text) do
-						center.text_parsed[#center.text_parsed + 1] = loc_parse_string(line)
+					if center.text then
+						for _, line in ipairs(center.text) do
+							center.text_parsed[#center.text_parsed + 1] = loc_parse_string(line)
+						end
 					end
 					center.name_parsed = {}
-					for _, line in ipairs(type(center.name) == 'table' and center.name or {center.name}) do
-						center.name_parsed[#center.name_parsed + 1] = loc_parse_string(line)
+					if center.name then
+						for _, line in ipairs(type(center.name) == 'table' and center.name or {center.name}) do
+							center.name_parsed[#center.name_parsed + 1] = loc_parse_string(line)
+						end
 					end
 					if center.unlock then
 						center.unlock_parsed = {}
