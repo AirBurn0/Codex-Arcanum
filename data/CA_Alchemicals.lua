@@ -26,10 +26,11 @@ SMODS.ConsumableType{
     default = "alchemical_atlas"
 }
 
+SMODS.Sprite:new("c_alchemy_undiscovered", CodexArcanum.mod.path, "c_alchemy_undiscovered.png", 71, 95, "asset_atli"):register();
+SMODS.Sprite:new("c_alchemy_locked", CodexArcanum.mod.path, "c_alchemy_locked.png", 71, 95, "asset_atli"):register();
+SMODS.Sprite:new("alchemical_atlas", CodexArcanum.mod.path, "alchemical_atlas.png", 71, 95, "asset_atli"):register();
+
 function CodexArcanum.INIT.CA_Alchemicals()
-    SMODS.Sprite:new("c_alchemy_undiscovered", CodexArcanum.mod.path, "c_alchemy_undiscovered.png", 71, 95, "asset_atli"):register();
-    SMODS.Sprite:new("c_alchemy_locked", CodexArcanum.mod.path, "c_alchemy_locked.png", 71, 95, "asset_atli"):register();
-    SMODS.Sprite:new("alchemical_atlas", CodexArcanum.mod.path, "alchemical_atlas.png", 71, 95, "asset_atli"):register();
 
     G.localization.descriptions["Other"]["alchemical_card"] = {
         name = "Alchemical",

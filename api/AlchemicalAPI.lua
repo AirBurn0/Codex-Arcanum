@@ -180,7 +180,3 @@ function alchemical_talisman_compat_to_big(arg)
     end
     return arg
 end
-
-function CodexArcanum.INIT.AlchemicalAPI()
-    
-end

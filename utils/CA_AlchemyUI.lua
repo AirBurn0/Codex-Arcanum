@@ -120,7 +120,3 @@ function set_discover_tallies()
     end
   end
 end
-
-function CodexArcanum.INIT.CA_AlchemyUI()
-
-end

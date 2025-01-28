@@ -39,7 +39,3 @@ function return_to_deck(count, card)
     delay(0.05)
     draw_card(G.hand,G.deck, 100,'up', false, card)
 end
-
-function CodexArcanum.INIT.CA_CardUtil()
-    
-end

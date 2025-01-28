@@ -11,7 +11,6 @@ end
 
 local create_cardref = create_card
 function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
-
   if not forced_key and soulable and (not G.GAME.banned_keys['c_soul']) then
     if (_type == 'Alchemical' or _type == 'Spectral') and
     not (G.GAME.used_jokers['c_philosopher_stone'] and not next(find_joker("Showman")))  then
@@ -44,18 +43,6 @@ function create_card_for_shop(area)
       create_shop_card_ui(card)
       return card
     else
-      local forced_tag = nil
-      -- todo remove
-      -- for k, v in ipairs(G.GAME.tags) do
-      --   if not forced_tag then
-      --     forced_tag = v:apply_to_run({type = 'store_joker_create', area = area})
-      --     if forced_tag then
-      --       for kk, vv in ipairs(G.GAME.tags) do
-      --         if vv:apply_to_run({type = 'store_joker_modify', card = forced_tag}) then break end
-      --       end
-      --       return forced_tag end
-      --   end
-      -- end
         G.GAME.spectral_rate = G.GAME.spectral_rate or 0
         local total_rate = G.GAME.joker_rate + G.GAME.tarot_rate + G.GAME.planet_rate + G.GAME.playing_card_rate + G.GAME.spectral_rate + G.GAME.alchemical_rate
         local polled_rate = pseudorandom(pseudoseed('cdt'..G.GAME.round_resets.ante))*total_rate
@@ -71,15 +58,6 @@ function create_card_for_shop(area)
           if polled_rate > check_rate and polled_rate <= check_rate + v.val then
             local card = create_card(v.type, area, nil, nil, nil, nil, nil, 'sho')
             create_shop_card_ui(card, v.type, area)
-            -- todo what happened here?
-            -- G.E_MANAGER:add_event(Event({
-            --     func = (function()
-            --         for k, v in ipairs(G.GAME.tags) do
-            --           if v:apply_to_run({type = 'store_joker_modify', card = card}) then break end
-            --         end
-            --         return true
-            --     end)
-            -- }))
             if (v.type == 'Base' or v.type == 'Enhanced') and G.GAME.used_vouchers["v_illusion"] and pseudorandom(pseudoseed('illusion')) > 0.8 then 
               local edition_poll = pseudorandom(pseudoseed('illusion'))
               local edition = {}
@@ -756,9 +734,7 @@ function Game:init_item_prototypes()
   G.P_CENTER_POOLS.Alchemical = {}
   G.localization.descriptions.Alchemical = {}
   -- TODO migrate to consumeable api
-  for _, alchemical in pairs(CodexArcanum.Alchemicals) do
-    alchemical:register()
-  end
+  CodexArcanum.INIT.CA_Alchemicals()
 
   SMODS.LOAD_LOC()
   SMODS.SAVE_UNLOCKS()
@@ -1097,8 +1073,4 @@ function Back:trigger_effect(args)
   end
 
   return trigger_effectref(self, args)
-end
-
-function CodexArcanum.INIT.CA_Overrides()
-  
 end
