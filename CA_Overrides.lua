@@ -168,7 +168,9 @@ function get_current_pool(_type, _rarity, _legendary, _append)
 end
 
 local generate_card_uiref = generate_card_ui
-function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end)
+function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, _self) -- https://github.com/Steamodded/smods/blob/757b0ebea1a9e7b32de3fac4741904870ee93f24/lovely/center.toml#L84
+  -- this whole thing isn't support modded editions, seals, etc.
+  -- TODO remove
   if _c.set == "Alchemical" then
     local first_pass = nil
     if not full_UI_table then 
@@ -265,7 +267,7 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
 
     return full_UI_table
   end
-  full_UI_table = generate_card_uiref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end)
+  full_UI_table = generate_card_uiref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, _self)
   if _c.set == "Joker" then
     local info_queue = {}
     if _c.key == "j_shock_humor" then 
