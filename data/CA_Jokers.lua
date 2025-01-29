@@ -260,6 +260,7 @@ function CodexArcanum.INIT.CA_Jokers()
                         G.HUD_blind:recalculate()
                         G.hand_text_area.blind_chips:juice_up()
                         alchemy_card_eval_text(card, localize{ type='variable', key='p_alchemy_reduce_blind', vars = { difference } }, 'chips2', G.C.SECONDARY_SET.Alchemy, 0.5, 1)
+                        G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
                     end
                     return true
                 end

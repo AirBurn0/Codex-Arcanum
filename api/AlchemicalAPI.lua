@@ -1,3 +1,4 @@
+-- TODO migrate to consumable API
 CodexArcanum.Alchemicals = {}
 CodexArcanum.Alchemical = {
     name = "",
@@ -173,10 +174,14 @@ function alchemy_ability_round(ability)
 end
 
 -- Talisman compat API
-function alchemical_talisman_compat_to_big(arg)
-    local status, ret = pcall(to_big, arg)
-    if status then
-        return ret
-    end
-    return arg
+local function alchemy_talisman_number(arg)
+	local status, ret = pcall(to_big, arg)
+	if status then
+		return ret
+	end
+	return arg
+end
+
+function alchemy_check_for_chips_win()
+	return alchemy_talisman_number(G.GAME.chips) >= alchemy_talisman_number(G.GAME.blind.chips) 
 end

@@ -123,6 +123,7 @@ function CodexArcanum.INIT.CA_Alchemicals()
                 if not silent then 
                     play_sound('chips2') 
                 end
+                G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
                 return true
             end
         }))

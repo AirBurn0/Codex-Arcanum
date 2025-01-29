@@ -637,7 +637,7 @@ function ease_background_colour_blind(state, blind_override)
   end
 end
 
-function hue_to_rgb(hue) 
+local function hue_to_rgb(hue) 
   local r, g, b = 0, 0, 0;
 
   local saturation = 0.5;
@@ -681,7 +681,6 @@ function hue_to_rgb(hue)
   return r, g, b
 end
 
-
 local game_updateref = Game.update
 function Game:update(dt)
   game_updateref(self, dt)
@@ -696,7 +695,6 @@ function Game:update(dt)
   self.C.RAINBOW_EDITION[1] = r
   self.C.RAINBOW_EDITION[3] = g
   self.C.RAINBOW_EDITION[2] = b
-
   self.C.RAINBOW_EDITION_HUE = (self.C.RAINBOW_EDITION_HUE + 0.25) % 360
 
   if G.deck and G.deck.config.philosopher then 
@@ -704,11 +702,13 @@ function Game:update(dt)
     ease_background_colour{new_colour = G.C.RAINBOW_EDITION, contrast = 1}
   end
 
-
-  if G.GAME and G.GAME.blind and alchemical_talisman_compat_to_big(G.GAME.chips) >= alchemical_talisman_compat_to_big(G.GAME.blind.chips) and G.STATE == G.STATES.SELECTING_HAND then
-    G.STATE = G.STATES.HAND_PLAYED
-    G.STATE_COMPLETE = true
-    end_round()
+  if G.GAME and G.GAME.blind and G.GAME.blind.alchemy_chips_win and G.STATE == G.STATES.SELECTING_HAND then
+	  G.GAME.blind.alchemy_chips_win = false
+    if alchemy_check_for_chips_win() then -- double check in case of modified score
+      G.STATE = G.STATES.HAND_PLAYED
+  		G.STATE_COMPLETE = true
+  		end_round()
+  	end
   end
 
 end
