@@ -14,8 +14,8 @@ function CodexArcanum.INIT.CA_Jokers()
     local studious_joker = SMODS.Joker:new("Studious Joker", "studious_joker", { mult = 4 }, { x = 0, y = 0 }, studious_joker_def, 1, 5, true, false, true, true, "Mult", "ca_joker_atlas")
     studious_joker:register()
 
-    function SMODS.Jokers.j_studious_joker.loc_def(card)
-        return { card.ability.mult }
+    function SMODS.Jokers.j_studious_joker.loc_vars(self, info_queue, card)
+        return { vars = { card.ability.mult } }
     end
 
     function SMODS.Jokers.j_studious_joker.calculate(card, context)
@@ -43,8 +43,8 @@ function CodexArcanum.INIT.CA_Jokers()
     local bottled_buffoon = SMODS.Joker:new("Bottled Buffoon", "bottled_buffoon", { extra = { every = 3 } }, { x = 1, y = 0 }, bottled_buffoon_def, 1, 5, true, false, true, true, "", "ca_joker_atlas")
     bottled_buffoon:register()
 
-    function SMODS.Jokers.j_bottled_buffoon.loc_def(card)
-        return { card.ability.extra.every + 1, localize { type = 'variable', key = (card.ability.loyalty_remaining == 0 and 'loyalty_active' or 'loyalty_inactive'), vars = { card.ability.loyalty_remaining } } }
+    function SMODS.Jokers.j_bottled_buffoon.loc_vars(self, info_queue, card)
+        return { vars = { card.ability.extra.every + 1, localize { type = 'variable', key = (card.ability.loyalty_remaining == 0 and 'loyalty_active' or 'loyalty_inactive'), vars = { card.ability.loyalty_remaining } } }}
     end
 
     function SMODS.Jokers.j_bottled_buffoon.calculate(card, context)
@@ -85,12 +85,12 @@ function CodexArcanum.INIT.CA_Jokers()
     local mutated_joker = SMODS.Joker:new("Mutated Joker", "mutated_joker", { extra = { chips = 10 } }, { x = 1, y = 2 }, mutated_joker_def, 1, 5, true, false, true, true, "", "ca_joker_atlas")
     mutated_joker:register()
 
-    function SMODS.Jokers.j_mutated_joker.loc_def(card)
+    function SMODS.Jokers.j_mutated_joker.loc_vars(self, info_queue, card)
         local expected_total_chips = 0
         if G.GAME.used_alchemical_consumeable_unique then
             expected_total_chips = G.GAME.used_alchemical_consumeable_unique.count * card.ability.extra.chips
         end
-        return { card.ability.extra.chips, expected_total_chips }
+        return { vars = { card.ability.extra.chips, expected_total_chips } }
     end
 
     function SMODS.Jokers.j_mutated_joker.calculate(card, context)
@@ -127,6 +127,11 @@ function CodexArcanum.INIT.CA_Jokers()
     local chain_reaction = SMODS.Joker:new("Chain Reaction", "chain_reaction", { extra = { used = false } }, { x = 2, y = 0 }, chain_reaction_def, 2, 5, false, false, true, true, "", "ca_joker_atlas")
     chain_reaction:register()
 
+    function SMODS.Jokers.j_chain_reaction.loc_vars(self, info_queue, card)
+        info_queue[#info_queue+1] = {key = "e_negative_consumable", set = "Edition", config = {extra = 1}}
+        return { vars = { } }
+    end   
+
     function SMODS.Jokers.j_chain_reaction.calculate(card, context)
         if context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == 'Alchemical' and not card.ability.extra.used then
             G.E_MANAGER:add_event(Event({
@@ -157,8 +162,8 @@ function CodexArcanum.INIT.CA_Jokers()
     local essence_of_comedy = SMODS.Joker:new("Essence of Comedy", "essence_of_comedy", { extra = 0.1, Xmult = 1 }, { x = 0, y = 1 }, essence_of_comedy_def, 2, 6, true, false, true, true, "", "ca_joker_atlas")
     essence_of_comedy:register()
 
-    function SMODS.Jokers.j_essence_of_comedy.loc_def(card)
-        return { card.ability.extra, card.ability.x_mult }
+    function SMODS.Jokers.j_essence_of_comedy.loc_vars(self, info_queue, card)
+        return { vars = { card.ability.extra, card.ability.x_mult } }
     end
 
     function SMODS.Jokers.j_essence_of_comedy.calculate(card, context)
@@ -188,8 +193,11 @@ function CodexArcanum.INIT.CA_Jokers()
     local shock_humor = SMODS.Joker:new("Shock Humor", "shock_humor", { extra = { odds = 5 } }, { x = 1, y = 1 }, shock_humor_def, 2, 5, true, false, true, true, "", "ca_joker_atlas")
     shock_humor:register()
 
-    function SMODS.Jokers.j_shock_humor.loc_def(card) 
-        return { '' .. (G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.odds }
+    function SMODS.Jokers.j_shock_humor.loc_vars(self, info_queue, card)
+        info_queue[#info_queue+1] = G.P_CENTERS.m_gold
+        info_queue[#info_queue+1] = G.P_CENTERS.m_steel
+        info_queue[#info_queue+1] = G.P_CENTERS.m_stone
+        return { vars = { '' .. (G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.odds } }
     end
 
     function SMODS.Jokers.j_shock_humor.calculate(card, context)
@@ -273,8 +281,8 @@ function CodexArcanum.INIT.CA_Jokers()
     local catalyst_joker = SMODS.Joker:new("Catalyst Joker", "catalyst_joker", { extra = { slots = 1, bonus = 0.5 } }, { x = 0, y = 2 }, catalyst_joker_def, 3, 6, true, false, true, true, "", "ca_joker_atlas")
     catalyst_joker:register()
 
-    function SMODS.Jokers.j_catalyst_joker.loc_def(card)
-        return { card.ability.extra.slots, card.ability.extra.bonus, 1 + card.ability.extra.bonus * (card.ability.consumeable_tally or 0) }
+    function SMODS.Jokers.j_catalyst_joker.loc_vars(self, info_queue, card)
+        return { vars = { card.ability.extra.slots, card.ability.extra.bonus, 1 + card.ability.extra.bonus * (card.ability.consumeable_tally or 0) } }
     end
 
     function SMODS.Jokers.j_catalyst_joker.calculate(card, context)

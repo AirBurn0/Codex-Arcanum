@@ -267,21 +267,7 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
 
     return full_UI_table
   end
-  full_UI_table = generate_card_uiref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, _self)
-  if _c.set == "Joker" then
-    local info_queue = {}
-    if _c.key == "j_shock_humor" then 
-      info_queue[#info_queue+1] = G.P_CENTERS.m_gold
-      info_queue[#info_queue+1] = G.P_CENTERS.m_steel
-      info_queue[#info_queue+1] = G.P_CENTERS.m_stone
-    elseif _c.key == "j_chain_reaction" then 
-      info_queue[#info_queue+1] = {key = "e_negative_consumable", set = "Edition", config = {extra = 1}}
-    end
-    for _, v in ipairs(info_queue) do
-      generate_card_ui(v, full_UI_table)
-    end
-  end
-  return full_UI_table
+  return generate_card_uiref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, _self)
 end
 
 local set_spritesref = Card.set_sprites
