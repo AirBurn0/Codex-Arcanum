@@ -1,4 +1,9 @@
-This fork fixes several issues with original Codex Arcanum mod, but doesn't fix them all. Still doesn't work with other mods like Bunco.
+## Fork
+This fork fixes several issues with [original Codex Arcanum mod](https://github.com/itayfeder/Codex-Arcanum) without introducing any gameplay changes. 
+
+It aims for **compatibility** with other mods like [**Bunco**](https://github.com/Firch/Bunco), [**Ortolab**](https://github.com/Eremel/Ortalab), [**Pokermon**](https://github.com/InertSteak/Pokermon), [**Talisman**](https://github.com/MathIsFun0/Talisman), etc. 
+
+Any bug/incompatibility reports are welcome, but please reset your game progress and confirm if issue is still here.
 
 <p align="center">
   <a href="" rel="noopener">
@@ -9,7 +14,8 @@ This fork fixes several issues with original Codex Arcanum mod, but doesn't fix 
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/itayfeder/Codex-Arcanum.svg)](https://github.com/itayfeder/Codex-Arcanum/issues)
+[![GitHub Issues Original](https://img.shields.io/github/issues/itayfeder/Codex-Arcanum.svg)](https://github.com/itayfeder/Codex-Arcanum/issues)
+[![GitHub Issues Fork](https://img.shields.io/github/issues/AirBurn0/Codex-Arcanum.svg)](https://github.com/AirBurn0/Codex-Arcanum/issues)
 [![License](https://img.shields.io/badge/license-GNU-blue.svg)](/LICENSE)
 
 </div>
@@ -48,4 +54,6 @@ The mod also adds **7 new jokers**, **2 new vouchers** and **7 new booster packs
 
 ## 🎉 Credits <a name = "credits"></a>
 
-- The mod was written by [**Itayfeder**](https://github.com/stars/itayfeder/lists/balatro-modding), with art created by [**Lyman**](https://github.com/spikeof2010)
+- The mod was written by [**Itayfeder**](https://github.com/stars/itayfeder/lists/balatro-modding);
+- art created by [**Lyman**](https://github.com/spikeof2010);
+- fixes introduced by [**Jumbo**](https://github.com/jumbocarrot0), [**lshtech**](https://github.com/lshtech) and  [**AirBurn**](https://github.com/AirBurn0).
