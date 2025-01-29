@@ -5,6 +5,8 @@ It aims for **compatibility** with other mods like [**Bunco**](https://github.co
 
 Any bug/incompatibility reports are welcome, but please reset your game progress and confirm if issue is still here.
 
+Also check out ## [Redux Arcanum](https://github.com/jumbocarrot0/Redux-Arcanum)!
+
 <p align="center">
   <a href="" rel="noopener">
  <img width=600px src="assets/promos/logo.png?raw=true" alt="Project logo"></a>
