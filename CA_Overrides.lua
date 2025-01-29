@@ -1,3 +1,17 @@
+local set_discover_talliesref = set_discover_tallies
+function set_discover_tallies()
+  set_discover_talliesref()
+  G.DISCOVER_TALLIES.alchemicals = { tally = 0, of = 0 }
+  for _, v in pairs(G.P_CENTERS) do
+    if not v.omit and v.set and v.consumeable and v.set == 'Alchemical' then
+      G.DISCOVER_TALLIES.alchemicals.of = G.DISCOVER_TALLIES.alchemicals.of + 1
+      if v.discovered then 
+        G.DISCOVER_TALLIES.alchemicals.tally = G.DISCOVER_TALLIES.alchemicals.tally + 1
+      end
+    end
+  end
+end
+
 local get_type_colourref = get_type_colour
 function get_type_colour(_c, card)
   local fromRef = get_type_colourref(_c, card)

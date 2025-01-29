@@ -15,13 +15,13 @@ SMODS.ConsumableType{
             },
         },
     },
-    collection_rows = { 6, 6 },
+    collection_rows = { 4, 4 },
     shop_rate = 2,
     rarities = {
-        {key = 'Common', rate = 75},
-        {key = 'Uncommon', rate = 20},
-        {key = 'Rare', rate = 4},
-        {key = 'Legendary', rate = 1},
+        { key = 'Common', rate = 75 },
+        { key = 'Uncommon', rate = 20 },
+        { key = 'Rare', rate = 4 },
+        { key = 'Legendary', rate = 1 },
     },
     default = "alchemical_atlas"
 }

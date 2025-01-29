@@ -30,10 +30,7 @@ function SMODS.INIT.CodexArcanum()
     CodexArcanum.mod = SMODS.findModByID(CodexArcanum.mod_id)
 
     SMODS.load_file("api/AlchemicalAPI.lua")()
-
-    SMODS.load_file("utils/CA_AlchemyUI.lua")()
     SMODS.load_file("utils/CA_CardUtil.lua")()
-
     SMODS.load_file("CA_Overrides.lua")()
 
     SMODS.load_file("data/CA_Jokers.lua")()
