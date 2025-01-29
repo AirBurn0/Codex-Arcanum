@@ -1,5 +1,5 @@
 ## Fork
-This fork fixes several issues with [original Codex Arcanum mod](https://github.com/itayfeder/Codex-Arcanum) without introducing any gameplay changes. 
+This fork fixes several issues with [original Codex Arcanum mod](https://github.com/itayfeder/Codex-Arcanum) without introducing any major (except for bugfixes) gameplay changes. 
 
 It aims for **compatibility** with other mods like [**Bunco**](https://github.com/Firch/Bunco), [**Ortolab**](https://github.com/Eremel/Ortalab), [**Pokermon**](https://github.com/InertSteak/Pokermon), [**Talisman**](https://github.com/MathIsFun0/Talisman), etc. 
 
