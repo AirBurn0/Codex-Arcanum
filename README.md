@@ -48,9 +48,29 @@ The mod also adds **7 new jokers**, **2 new vouchers** and **7 new booster packs
 
 ## ⬇ How to Download <a name = "how_to_download"></a>
 
-- The mod requires Steamodded. You can see info about how to use it [here](https://github.com/Steamopollys/Steamodded)
-- Download the latest release of Codex Arcanum
-- Extract the downloaded mod to the Mods folder (at %appdata%/Balatro/Mods)
+- Install [Steamodded](https://github.com/Steamodded/smods/wiki)
+
+### With git
+
+- Open Command line in `%appdata%/Balatro/Mods` folder and execute `git clone https://github.com/AirBurn0/Codex-Arcanum`
+
+To receive any updates just execute `git pull` in mod folder.
+
+For alternative versions (like rebalance):
+
+- Navigate to Codex Arcanum mod folder (probably will be `%appdata%/Balatro/Mods/Codex-Arcanum`), open Command line and execute `git branch` to see list of available branches, then execute `git checkout [branch-name]`.
+### Without git
+- Download repo as Zip
+
+![image](https://github.com/user-attachments/assets/ed6b6c40-818f-4468-9f8b-ed52d0fed185)
+
+- Extract `Codex-Arcanum` __folder__ into `%appdata%/Balatro/Mods`. Mod folder will be: `%appdata%/Balatro/Mods/Codex-Arcanum`.
+
+For alternative versions (like rebalance):
+
+![image](https://github.com/user-attachments/assets/2efd96a0-f79b-4154-be19-c616a8e37997)
+
+- Choose any of existed branches, then click on it and download branch repo as Zip as described earlier.
 
 ## 🎉 Credits <a name = "credits"></a>
 
