@@ -220,10 +220,8 @@ function CodexArcanum.INIT.CA_Alchemicals()
                             it = it + 1
                             _tag_name = pseudorandom_element(_pool, pseudoseed(_pool_key..'_resample'..it))
                         end
-                
                         G.GAME.round_resets.blind_tags = G.GAME.round_resets.blind_tags or {}
-                        local _tag = Tag(_tag_name, nil, G.GAME.blind)
-                        add_tag(_tag)
+                        add_tag(Tag(_tag_name, nil, G.GAME.blind))
                     end
                 end
                 return true 
