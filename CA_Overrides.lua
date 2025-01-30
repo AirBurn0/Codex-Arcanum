@@ -25,21 +25,18 @@ end
 
 local create_cardref = create_card
 function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
-  if not forced_key and soulable and (not G.GAME.banned_keys['c_soul']) then
-    if (_type == 'Alchemical' or _type == 'Spectral') and
-    not (G.GAME.used_jokers['c_philosopher_stone'] and not next(find_joker("Showman")))  then
-        if pseudorandom('philosopher_stone_'.._type..G.GAME.round_resets.ante) > 0.997 then
-            forced_key = 'c_philosopher_stone'
-        end
-    end
+  if not forced_key and soulable 
+  and not G.GAME.banned_keys['c_soul']
+  and (_type == 'Alchemical' or _type == 'Spectral') 
+  and not (G.GAME.used_jokers['c_philosopher_stone'] 
+  and not next(find_joker("Showman")))
+  and pseudorandom('philosopher_stone_'.._type..G.GAME.round_resets.ante) > 0.997 then
+    forced_key = 'c_philosopher_stone'
   end
-
   local card = create_cardref(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
-
   if G.GAME.used_vouchers.v_cauldron and pseudorandom('cauldron') > 0.5 and _type == "Alchemical" then
     card:set_edition({negative = true}, true)
   end
-
   return card
 end
 
@@ -323,9 +320,6 @@ end
 local use_consumeableref = Card.use_consumeable
 function Card:use_consumeable(area, copier)
   local ret = use_consumeableref(self, area, copier)
-  if self.ability.name == "Philosopher's Stone" then
-    G.deck.config.philosopher = true
-  end
   local key = self.config.center.key
   local center_obj = CodexArcanum.Alchemicals[key]
   if center_obj and center_obj.use and type(center_obj.use) == 'function' then
@@ -628,23 +622,22 @@ function Card:update(dt)
   end
 end
 
-local calculate_sealref = Card.calculate_seal
-function Card:calculate_seal(context)
-  if self.debuff then return nil end
-  if context.repetition and G.deck.config.philosopher then
-    return {
-        message = localize('k_again_ex'),
-        repetitions = 1,
-        card = self
-    }
+local eval_cardref = eval_card
+function eval_card(card, context)
+  context = context or {}
+  local ret, sub = eval_cardref(card, context)
+  if context.repetition_only and G.deck.config.philosopher and not card.debuff then
+    ret.seals = ret.seals or {}
+    ret.seals.message = ret.seals.message or localize('k_again_ex')
+    ret.seals.repetitions = (ret.seals.repetitions or 0) + 1
+    ret.seals.card = card
   end
-  return calculate_sealref(self, context)
+  return ret, sub
 end
 
 local ease_background_colour_blindref = ease_background_colour_blind
 function ease_background_colour_blind(state, blind_override)
   ease_background_colour_blindref(state, blind_override)
-
   if G.deck and G.deck.config.philosopher then 
     G.GAME.blind:change_colour(G.C.RAINBOW_EDITION)
     ease_background_colour{new_colour = G.C.RAINBOW_EDITION, contrast = 1}

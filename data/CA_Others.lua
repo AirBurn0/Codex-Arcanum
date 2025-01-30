@@ -179,7 +179,8 @@ function CodexArcanum.INIT.CA_Others()
     local c_philosopher_stone_def = {
         name = "Philosopher's Stone",
         text = {
-            "{C:attention}Paints background{}"
+            "{C:attention}Retrigger{} all played cards",
+            "for one blind"
         }
     }
 
@@ -187,15 +188,8 @@ function CodexArcanum.INIT.CA_Others()
     spectral_philosopher_stone:register();
 
     function SMODS.Spectrals.c_philosopher_stone.can_use(card)
-        if G.STATE == G.STATES.SELECTING_HAND then
-            card.config.in_booster = false
-            return true
-        end
-
-        if G.STATE == G.STATES.STANDARD_PACK or G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.PLANET_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.BUFFOON_PACK then
-            card.config.in_booster = true
-            return true
-        end
+        return not (G.deck and G.deck.config and G.deck.config.philosopher) and G.STATE == G.STATES.SELECTING_HAND
+        
     end
 
     function SMODS.Spectrals.c_philosopher_stone.use(card)
