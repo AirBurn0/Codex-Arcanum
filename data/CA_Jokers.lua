@@ -35,11 +35,11 @@ new_joker{
     rarity = 1,
     cost = 5,
     calculate = function(self, card, context)
-        if context.selling_self then -- be able to sell blueprint for alchemical? WHY NOT?
-            local _card = context.blueprint_card or card
-            add_random_alchemical(_card)
-            card_eval_status_text(_card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy })
-            return { card = _card }
+        -- sadly but that's how canon works
+        if context.selling_self and not context.blueprint and G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
+            add_random_alchemical(card)
+            card_eval_status_text(card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy })
+            return { card = card }
         elseif context.joker_main then
             return { message = localize { type = "variable", key = "a_mult", vars = { card.ability.mult } }, mult_mod = card.ability.mult }
         end
@@ -128,7 +128,7 @@ new_joker{
             return
         end
         if context.first_hand_drawn then
-            juice_card_until(card, function(_card) return not _card.ability.used end, true)
+            juice_card_until(card, function(_card) return not _card.ability.extra.used end, true)
         end
         if G.GAME.blind.in_blind and context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == "Alchemical" and not card.ability.extra.used then
             local _card = card
