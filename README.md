@@ -5,7 +5,7 @@ This Fork contains:
 * **Compressed art**
 * **Compatibility** with other mods like [**Bunco**](https://github.com/Firch/Bunco), [**Ortalab**](https://github.com/Eremel/Ortalab), [**Pokermon**](https://github.com/InertSteak/Pokermon), [**Talisman**](https://github.com/MathIsFun0/Talisman), etc. 
 
-Any bug/incompatibility reports are ___welcome___, but before reporting any issue please reset your game progress and confirm if issue is still here.
+<ins>Any bug/incompatibility reports are welcome</ins>, but before reporting any issue please reset your game progress and confirm if issue is still here.
 
 Also check out [**Redux Arcanum**](https://github.com/jumbocarrot0/Redux-Arcanum)!
 
