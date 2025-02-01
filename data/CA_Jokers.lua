@@ -113,44 +113,6 @@ new_joker{
 }
 
 new_joker{
-    key = "chain_reaction",
-    pos = { x = 2, y = 0 },
-    loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
-        return { vars = { } }
-    end,
-    config = { extra = { used = false } },
-    rarity = 2,
-    cost = 5,
-    no_blueprint = true, -- sadly but that's how canon works
-    calculate = function(self, card, context)
-        if context.blueprint then
-            return
-        end
-        if context.first_hand_drawn then
-            juice_card_until(card, function(_card) return not _card.ability.extra.used end, true)
-        end
-        if G.GAME.blind.in_blind and context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == "Alchemical" and not card.ability.extra.used then
-            G.E_MANAGER:add_event(Event({
-                trigger = "after", 
-                delay = 0.1, 
-                func = function()
-                    alchemy_card_eval_text(card, localize("k_copied_ex"), "generic1", G.C.SECONDARY_SET.Alchemy, nil, nil, true, function() 
-                        local _card = copy_card(context.consumeable, nil, nil, nil)
-                        _card:set_edition({ negative = true }, true)
-                        _card:add_to_deck()
-                        G.consumeables:emplace(_card)
-                    end)                    
-                    return true
-                end
-            }))
-            card.ability.extra.used = true
-            return
-        end
-    end
-}
-
-new_joker{
     key = "essence_of_comedy",
     pos = { x = 0, y = 1 },
     loc_vars = function(self, info_queue, card)
@@ -196,6 +158,47 @@ new_joker{
             local _card = context.blueprint_card or card
             add_random_alchemical(_card)
             card_eval_status_text(_card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy })
+        end
+    end
+}
+
+new_joker{
+    key = "chain_reaction",
+    pos = { x = 2, y = 0 },
+    config = { extra = { used = false } },
+    rarity = 3,
+    cost = 6,
+    calculate = function(self, card, context)
+        if context.first_hand_drawn and not context.blueprint then
+            juice_card_until(card, function(_card) return not _card.ability.extra.used end, true)
+        end
+        local used = context.consumeable
+        if G.GAME.blind.in_blind 
+        and context.using_consumeable 
+        and not used.config.in_booster 
+        and used.ability.set == "Alchemical" 
+        and not card.ability.extra.used then
+            if (used.edition and used.edition.negative) or G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
+                local host = context.blueprint_card or card
+                G.GAME.consumeable_buffer = (G.GAME.consumeable_buffer or 0) + 1
+                G.E_MANAGER:add_event(Event({
+                    trigger = "after", 
+                    delay = 0.1, 
+                    func = function() 
+                        alchemy_card_eval_text(host, localize("k_copied_ex"), "generic1", G.C.SECONDARY_SET.Alchemy, nil, nil, true, function() 
+                            local _card = copy_card(context.consumeable, nil, nil, nil)
+                            _card:add_to_deck()
+                            G.consumeables:emplace(_card)
+                            G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
+                        end)
+                        return true
+                    end
+                }))
+            end
+            if not context.blueprint then
+                card.ability.extra.used = true
+            end
+            return
         end
     end
 }

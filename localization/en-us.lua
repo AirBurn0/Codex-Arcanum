@@ -244,14 +244,6 @@ return {
                     "{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)" 
                 } 
             },
-            j_alchemy_chain_reaction = {
-                name = "Chain Reaction", 
-                text = { 
-                    "Create a {C:dark_edition}Negative{} {C:attention}copy{}", 
-                    "of the first {C:alchemical}Alchemical{} ", 
-                    "card used each {C:attention}Blind{}" 
-                } 
-            },
             j_alchemy_essence_of_comedy = {
                 name = "Essence of Comedy", 
                 text = { 
@@ -267,6 +259,14 @@ return {
                     "create an {C:alchemical}Alchemical{} card", 
                     "when you discard a {C:attention}Gold{},", 
                     "{C:attention}Steel{} or {C:attention}Stone{} card" 
+                } 
+            },
+            j_alchemy_chain_reaction = {
+                name = "Chain Reaction", 
+                text = { 
+                    "Create a {C:attention}copy{} of th", 
+                    "first {C:alchemical}Alchemical{} ", 
+                    "card used each {C:attention}Blind{}" 
                 } 
             },
             j_alchemy_breaking_bozo = {
