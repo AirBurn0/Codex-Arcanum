@@ -1,4 +1,4 @@
-## Fork
+## Fork changes
 This fork contains:
 * **Fixes** for several issues with [original Codex Arcanum mod](https://github.com/itayfeder/Codex-Arcanum) without introducing any major (except for bugfixes) gameplay changes
 * **API refactoring** (migrated to SMODS API)
@@ -9,9 +9,9 @@ Any bug/incompatibility reports are ___welcome___, but before reporting any issu
 
 Also check out [**Redux Arcanum**](https://github.com/jumbocarrot0/Redux-Arcanum)!
 
-## branch
+## Branch changes
 
-This branch is mostly like vanilla Codex Arcanum 1.1.4
+Except Fork changes, this branch is mostly like vanilla Codex Arcanum 1.1.4
 
 ---
 
