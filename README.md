@@ -11,8 +11,11 @@ Also check out [**Redux Arcanum**](https://github.com/jumbocarrot0/Redux-Arcanum
 
 ## Branch changes
 
-Except for Fork changes, this branch is mostly like vanilla Codex Arcanum 1.1.4
-
+Except for Fork changes, this branch also introduces:
+* Changed Mutated Joker Chips per unique Alchemical from +10 to +15 (just remember about the fact that Runner is a Common Joker too)
+* Blueprint that copies Studious Joker now can be sold for Alchemical! (I'm sure everyone wanted this)
+* Chain Reaction now **CAN** be copied by Blueprint, but will not give Negative edition to copies
+* Antimony makes copied Jokers cost $0 instead of being Eternal (now you can freely sell it to win Boss Blind)
 ---
 
 <p align="center">
