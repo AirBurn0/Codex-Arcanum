@@ -35,11 +35,11 @@ new_joker{
     rarity = 1,
     cost = 5,
     calculate = function(self, card, context)
-        -- sadly but that's how canon works
-        if context.selling_self and not context.blueprint and G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
-            add_random_alchemical(card)
-            card_eval_status_text(card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy })
-            return { card = card }
+        if context.selling_self and G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
+            local _card = context.blueprint_card or card
+            add_random_alchemical(_card)
+            card_eval_status_text(_card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy })
+            return { card = _card }
         elseif context.joker_main then
             return { message = localize { type = "variable", key = "a_mult", vars = { card.ability.mult } }, mult_mod = card.ability.mult }
         end
