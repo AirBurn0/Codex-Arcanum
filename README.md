@@ -9,7 +9,6 @@ Any bug/incompatibility reports are ___welcome___, but before reporting any issu
 
 Also check out [**Redux Arcanum**](https://github.com/jumbocarrot0/Redux-Arcanum)!
 
----
 ## branch
 
 This branch is mostly like vanilla Codex Arcanum 1.1.4
