@@ -46,15 +46,17 @@ Except for Fork changes, this branch is mostly like vanilla Codex Arcanum 1.1.4
 
 **Codex Arcanum** is a mod that aims to expand Balatro by adding a new type of consumable card: **Alchemical Cards**!
 
-Alchemical cards possess powerful abilities that you can use in a blind, like adding hands and discards, drawing cards, reducing the blind, and much more!
+It adds:
+ 
+<img width=300px src="promos/content.png?raw=true" alt="Content"></a>
 
-<img width=300px src="promos/alchemical_1_menu.png?raw=true" alt="Showcase of alchemical tab 1"></a> <img width=300px src="promos/alchemical_2_menu.png?raw=true" alt="Showcase of alchemical tab 2"></a>
+**Alchemical cards** possess powerful abilities that you can use during single Blind, like adding hands and discards, drawing cards, reducing the blind, and much more!
 
-The are a total of 12 alchemical cards, with more coming in further updates!
+<img width=300px src="promos/alchemicals_1.png?raw=true" alt="Alchemicals 1"></a> <img width=300px src="promos/alchemicals_2.png?raw=true" alt="Alchemicals 2"></a> <img width=300px src="promos/alchemicals_3.png?raw=true" alt="Alchemicals 3"></a>
 
-The mod also adds **7 new jokers**, **2 new vouchers** and **7 new booster packs**, to expand the game and allow a smoother experience with alchemical cards.
+**New Jokers** will help with alchemical cards game experience.
 
-<img width=600px src="promos/jokers_menu.png?raw=true" alt="Showcase of joker tab 1">
+<img width=300px src="promos/jokers.png?raw=true" alt="Jokers"></a>
 
 ## ⬇ How to Download <a name = "how_to_download"></a>
 
@@ -84,6 +86,6 @@ For alternative versions (like rebalance):
 
 ## 🎉 Credits <a name = "credits"></a>
 
-- The mod was written by [**Itayfeder**](https://github.com/stars/itayfeder/lists/balatro-modding);
-- art created by [**Lyman**](https://github.com/spikeof2010);
-- fixes introduced by [**Jumbo**](https://github.com/jumbocarrot0), [**lshtech**](https://github.com/lshtech) and  [**AirBurn**](https://github.com/AirBurn0).
+- The original mod was written by [**Itayfeder**](https://github.com/stars/itayfeder/lists/balatro-modding);
+- Art created by [**Lyman**](https://github.com/spikeof2010);
+- Fixes and reworks introduced by [**Jumbo**](https://github.com/jumbocarrot0), [**lshtech**](https://github.com/lshtech) and [**AirBurn**](https://github.com/AirBurn0).
