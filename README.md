@@ -48,15 +48,19 @@ Except for Fork changes, this branch is mostly like vanilla Codex Arcanum 1.1.4
 
 It adds:
  
-<img width=300px src="promos/content.png?raw=true" alt="Content"></a>
+<img width=800px src="promos/content.png?raw=true" alt="Content"></a>
 
 **Alchemical cards** possess powerful abilities that you can use during single Blind, like adding hands and discards, drawing cards, reducing the blind, and much more!
 
-<img width=300px src="promos/alchemicals_1.png?raw=true" alt="Alchemicals 1"></a> <img width=300px src="promos/alchemicals_2.png?raw=true" alt="Alchemicals 2"></a> <img width=300px src="promos/alchemicals_3.png?raw=true" alt="Alchemicals 3"></a>
+<img width=800px src="promos/alchemicals_1.png?raw=true" alt="Alchemicals 1"></a>
+
+<img width=800px src="promos/alchemicals_2.png?raw=true" alt="Alchemicals 2"></a> 
+
+<img width=800px src="promos/alchemicals_3.png?raw=true" alt="Alchemicals 3"></a>
 
 **New Jokers** will help with alchemical cards game experience.
 
-<img width=300px src="promos/jokers.png?raw=true" alt="Jokers"></a>
+<img width=800px src="promos/jokers.png?raw=true" alt="Jokers"></a>
 
 ## ⬇ How to Download <a name = "how_to_download"></a>
 
