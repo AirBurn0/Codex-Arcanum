@@ -219,8 +219,8 @@ new_joker{
             delay = 0.1, 
             func = function()
                 local choice = pseudorandom(pseudoseed("breaking_bozo"))
-                if choice < 0.33 or (not G.GAME.blind.in_blind and context.consumeable.config.center.key == "c_alchemy_salt") then
-                    local money = card.ability.extra.money
+                if choice < 0.33 or (not G.GAME.blind.in_blind and context.consumeable.config.center.key == "c_alchemy_salt") then -- jesse we need to cook
+                    local money = card.ability.extra.money * (G.GAME.blind.in_blind and 2 or 1) -- there is no other option if you not in blind so x2 money seems fair.
                     alchemy_card_eval_text(_card, (money <-0.01 and "-" or "")..localize("$")..tostring(math.abs(money)), nil, money <-0.01 and G.C.RED or G.C.MONEY, nil, nil, true, function()
                         ease_dollars(money, true)
                     end)
