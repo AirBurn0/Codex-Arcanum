@@ -35,7 +35,7 @@ new_joker{
     rarity = 1,
     cost = 5,
     calculate = function(self, card, context)
-        if context.selling_self and not context.blueprint then
+        if context.selling_self then -- be able to sell blueprint for alchemical? WHY NOT?
             local _card = context.blueprint_card or card
             add_random_alchemical(_card)
             card_eval_status_text(_card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy })
