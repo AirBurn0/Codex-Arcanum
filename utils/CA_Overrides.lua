@@ -1,70 +1,3 @@
--- TODO review
-local set_discover_talliesref = set_discover_tallies
-function set_discover_tallies()
-    set_discover_talliesref()
-    G.DISCOVER_TALLIES.alchemicals = { tally = 0, of = 0 }
-    for _, v in pairs(G.P_CENTERS) do
-        if not v.omit and v.set and v.consumeable and v.set == "Alchemical" then
-            G.DISCOVER_TALLIES.alchemicals.of = G.DISCOVER_TALLIES.alchemicals.of + 1
-            if v.discovered then
-                G.DISCOVER_TALLIES.alchemicals.tally = G.DISCOVER_TALLIES.alchemicals.tally + 1
-            end
-        end
-    end
-end
-
--- TODO review
-local create_card_for_shopref = create_card_for_shop
-function create_card_for_shop(area)
-    if G.GAME.alchemical_rate and G.GAME.alchemical_rate > 0 then
-        if area == G.shop_jokers and G.SETTINGS.tutorial_progress and G.SETTINGS.tutorial_progress.forced_shop and G.SETTINGS.tutorial_progress.forced_shop[#G.SETTINGS.tutorial_progress.forced_shop] then
-            local t = G.SETTINGS.tutorial_progress.forced_shop
-            local _center = G.P_CENTERS[t[#t]] or G.P_CENTERS.c_empress
-            local card = Card(area.T.x + area.T.w / 2, area.T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, _center, { bypass_discovery_center = true, bypass_discovery_ui = true })
-            t[#t] = nil
-            if not t[1] then
-                G.SETTINGS.tutorial_progress.forced_shop = nil
-            end
-            create_shop_card_ui(card)
-            return card
-        else
-            G.GAME.spectral_rate = G.GAME.spectral_rate or 0
-            local total_rate = G.GAME.joker_rate + G.GAME.tarot_rate + G.GAME.planet_rate + G.GAME.playing_card_rate + G.GAME.spectral_rate + G.GAME.alchemical_rate
-            local polled_rate = pseudorandom(pseudoseed("cdt" .. G.GAME.round_resets.ante)) * total_rate
-            local check_rate = 0
-            for _, v in ipairs({ 
-              { type = "Joker", val = G.GAME.joker_rate }, 
-              { type = "Tarot", val = G.GAME.tarot_rate },
-              { type = "Planet", val = G.GAME.planet_rate },
-              { type = "Alchemical", val = G.GAME.alchemical_rate },
-              { type = (G.GAME.used_vouchers["v_illusion"] and pseudorandom(pseudoseed("illusion")) > 0.6) and "Enhanced" or "Base", val = G.GAME.playing_card_rate },
-              { type = "Spectral", val = G.GAME.spectral_rate }
-            }) do
-                if polled_rate > check_rate and polled_rate <= check_rate + v.val then
-                    local card = create_card(v.type, area, nil, nil, nil, nil, nil, "sho")
-                    create_shop_card_ui(card, v.type, area)
-                    if (v.type == "Base" or v.type == "Enhanced") and G.GAME.used_vouchers["v_illusion"] and pseudorandom(pseudoseed("illusion")) > 0.8 then
-                        local edition_poll = pseudorandom(pseudoseed("illusion"))
-                        local edition = {}
-                        if edition_poll > 1 - 0.15 then
-                            edition.polychrome = true
-                        elseif edition_poll > 0.5 then
-                            edition.holo = true
-                        else
-                            edition.foil = true
-                        end
-                        card:set_edition(edition)
-                    end
-                    return card
-                end
-                check_rate = check_rate + v.val
-            end
-        end
-    else
-        return create_card_for_shopref(area)
-    end
-end
-
 -- creates philo cards and negative cards in boosters
 local create_cardref = create_card
 function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
@@ -483,10 +416,12 @@ function Game:update_round_eval(dt)
 
     update_round_evalref(self, dt)
     -- runs through undo tables of cards
-    for k, v in pairs(G.deck.config.alchemy_undo_table) do
-        if v then -- empty is also allowed in case that no table is needed actually
-            G.P_CENTERS[k]:undo(v)
+    if G.deck.config.alchemy_undo_table then
+        for k, v in pairs(G.deck.config.alchemy_undo_table) do
+            if v then -- empty is also allowed in case that no table is needed actually
+                G.P_CENTERS[k]:undo(v)
+            end
+            G.deck.config.alchemy_undo_table[k] = nil
         end
-        G.deck.config.alchemy_undo_table[k] = nil
     end
 end

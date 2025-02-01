@@ -455,7 +455,6 @@ new_alchemical{
     pos = { x = 5, y = 1 },
     default_can_use = function(self, card) return #G.jokers.cards > 0 end,
     use = function(self, card, area, copier)
---TODO undo table
         G.jokers.config.antimony = G.jokers.config.antimony or {}
         if #G.jokers.cards > 0 then 
             G.E_MANAGER:add_event(Event({
