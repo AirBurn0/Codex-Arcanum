@@ -87,7 +87,7 @@ new_joker{
         end
         return { vars = { card.ability.extra.chips, expected_total_chips } }
     end,
-    config = { extra = { chips = 10 } },
+    config = { extra = { chips = 15 } },
     rarity = 1,
     cost = 5,
     calculate = function(self, card, context)
