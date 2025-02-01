@@ -465,7 +465,8 @@ new_alchemical{
                         local chosen_joker = pseudorandom_element(G.jokers.cards, pseudoseed("invisible"))
                         local card = copy_card(chosen_joker, nil, nil, nil, chosen_joker.edition and chosen_joker.edition.negative)
                         card:set_edition({negative = true}, true)
-                        card:set_eternal(true)
+                        card.cost = 0
+                        card.sell_cost = 0
                         card:add_to_deck()
                         G.jokers:emplace(card)
                         table.insert(G.jokers.config.antimony, card.unique_val)

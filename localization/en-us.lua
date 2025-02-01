@@ -83,7 +83,7 @@ return {
                 name = "Antimony",
                 text = {
                     "Create #1# {C:dark_edition}Negative{}",
-                    "{C:eternal}eternal{} {C:attention}#2#{} of",
+                    "{C:money}$0{} {C:attention}#2#{} of",
                     "a random joker",
                     "for current {C:attention}Blind{}"
                 }
