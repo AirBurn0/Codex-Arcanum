@@ -283,7 +283,7 @@ return {
             j_alchemy_catalyst_joker = {
                 name = "Catalyst Joker", 
                 text = { 
-                    "{C:attention}+1{} consumable slots.", 
+                    "{C:attention}+#1#{} consumable slots.", 
                     "Gains {X:mult,C:white}X#2#{} Mult for", 
                     "every {C:attention}Consumable Card{} held", 
                     "{C:inactive}(Currently {X:mult,C:white}X#3#{C:inactive} Mult)"
