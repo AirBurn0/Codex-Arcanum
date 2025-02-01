@@ -266,7 +266,8 @@ return {
                 text = { 
                     "Create a {C:attention}copy{} of th", 
                     "first {C:alchemical}Alchemical{} ", 
-                    "card used each {C:attention}Blind{}" 
+                    "card used each {C:attention}Blind{}",
+                    "{C:inactive}(Must have room)"
                 } 
             },
             j_alchemy_breaking_bozo = {
