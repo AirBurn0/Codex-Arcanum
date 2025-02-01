@@ -11,7 +11,7 @@ Also check out [**Redux Arcanum**](https://github.com/jumbocarrot0/Redux-Arcanum
 
 <p align="center">
   <a href="" rel="noopener">
- <img width=600px src="assets/promos/logo.png?raw=true" alt="Project logo"></a>
+ <img width=600px src="promos/logo.png?raw=true" alt="Project logo"></a>
 </p>
 
 
@@ -42,13 +42,13 @@ Also check out [**Redux Arcanum**](https://github.com/jumbocarrot0/Redux-Arcanum
 
 Alchemical cards possess powerful abilities that you can use in a blind, like adding hands and discards, drawing cards, reducing the blind, and much more!
 
-<img width=300px src="assets/promos/alchemical_1_menu.png?raw=true" alt="Showcase of alchemical tab 1"></a> <img width=300px src="assets/promos/alchemical_2_menu.png?raw=true" alt="Showcase of alchemical tab 2"></a>
+<img width=300px src="promos/alchemical_1_menu.png?raw=true" alt="Showcase of alchemical tab 1"></a> <img width=300px src="promos/alchemical_2_menu.png?raw=true" alt="Showcase of alchemical tab 2"></a>
 
 The are a total of 12 alchemical cards, with more coming in further updates!
 
 The mod also adds **7 new jokers**, **2 new vouchers** and **7 new booster packs**, to expand the game and allow a smoother experience with alchemical cards.
 
-<img width=600px src="assets/promos/jokers_menu.png?raw=true" alt="Showcase of joker tab 1">
+<img width=600px src="promos/jokers_menu.png?raw=true" alt="Showcase of joker tab 1">
 
 ## ⬇ How to Download <a name = "how_to_download"></a>
 

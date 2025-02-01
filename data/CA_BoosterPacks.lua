@@ -1,29 +1,23 @@
-SMODS.Atlas({
-    key = 'ca_booster_atlas',
+SMODS.Atlas{
+    key = 'booster_atlas',
     path = 'ca_booster_atlas.png',
     px = '71',
     py = '95'
-})
+}
 
-function create_alchemical_booster(booster) 
-    SMODS.Booster {
-        key = booster.key,
-        loc_txt = {
-            group_name = "Alchemy Pack",
-            name = (booster.name and booster.name.." Alchemy Pack") or "Alchemy Pack",
-            text = {
-                "Choose {C:attention}#1#{} of up to",
-                "{C:attention}#2#{C:alchemical} Alchemical{} cards to",
-                "add to your consumeables"
-            }
-        },
+-- kinda default constructor
+local function new_booster(booster) 
+        -- create booster pack
+    SMODS.Booster{
+        key = booster.type.."_"..tostring(booster.index),
         kind = "Alchemical",
+        group_key = "k_alchemy_pack",
         loc_vars = function(self, info_queue, card)
-            return { vars = { card.ability.choose, card.ability.extra } }
+            return { vars = { card.ability.choose, card.ability.extra }, key = "p_"..booster.type }
         end,
         config = { extra = booster.extra, choose = booster.choose, name = "Alchemical" },
         pos = booster.pos,
-        atlas = 'ca_booster_atlas',
+        atlas = 'booster_atlas',
         weight = booster.weight or 1,
         cost = booster.cost or 4,
         in_pool = function() 
@@ -35,15 +29,32 @@ function create_alchemical_booster(booster)
     }
 end
 
-function CodexArcanum.INIT.CA_BoosterPacks()
-    G.localization.misc.dictionary["k_alchemy_pack"] = "Alchemy Pack"
-
-    for i = 1, 4 do
-        create_alchemical_booster({ key = "alchemy_normal_"..i, choose = 1, extra = 2, pos = { x = i - 1, y = 0 } })
-    end
-    for i = 1, 2 do
-        create_alchemical_booster({ key = "alchemy_jumbo_"..i, name = "Jumbo", choose = 1, extra = 4, pos = { x = i - 1, y = 1 }, cost = 6 })
-    end
-    create_alchemical_booster({ key = "alchemy_mega_1", name = "Mega", choose = 2, extra = 4, pos = { x = 2, y = 1 }, cost = 8, weight = 0.25 })
-
+for i = 1, 4 do
+    new_booster{
+        type = "alchemy_normal",
+        index = i,
+        pos = { x = i - 1, y = 0 },
+        choose = 1,
+        extra = 2,
+        cost = 4
+    }
 end
+for i = 1, 2 do
+    new_booster{
+        type = "alchemy_jumbo",
+        index = i,
+        pos = { x = i - 1, y = 1 },
+        choose = 1,
+        extra = 4,
+        cost = 6
+    }
+end
+new_booster{
+    type = "alchemy_mega",
+    index = 1,
+    pos = { x = 2, y = 1 },
+    choose = 2,
+    extra = 4,
+    cost = 8,
+    weight = 0.25
+}
