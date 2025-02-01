@@ -66,7 +66,7 @@ function alchemy_check_for_chips_win()
 	return alchemy_talisman_number(G.GAME.chips) >= alchemy_talisman_number(G.GAME.blind.chips) 
 end
 
-function alchemy_card_eval_text(card, text, sound, color, text_scale, hold, delayed)
+function alchemy_card_eval_text(card, text, sound, color, text_scale, hold, delayed, after_func)
 	local card_aligned = "bm"
 	local y_off = 0.15 * G.CARD_H
 	if card.area == G.jokers or card.area == G.consumeables then
@@ -86,6 +86,9 @@ function alchemy_card_eval_text(card, text, sound, color, text_scale, hold, dela
 			offset = {x = 0, y = y_off}
 		})
 		play_sound(sound, 0.98 + 0.04 * math.random(), 1)
+		if after_func and type(after_func) == "function" then
+			after_func()
+		end
 		return true
 	end
 	if delayed then

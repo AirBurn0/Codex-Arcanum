@@ -131,16 +131,16 @@ new_joker{
             juice_card_until(card, function(_card) return not _card.ability.extra.used end, true)
         end
         if G.GAME.blind.in_blind and context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == "Alchemical" and not card.ability.extra.used then
-            local _card = card
             G.E_MANAGER:add_event(Event({
                 trigger = "after", 
                 delay = 0.1, 
                 func = function()
-                    card_eval_status_text(_card, "extra", nil, nil, nil, { message = "Copied", colour = G.C.SECONDARY_SET.Alchemy })
-                    local _card = copy_card(context.consumeable, nil, nil, nil)
-                    _card:set_edition({ negative = true }, true)
-                    _card:add_to_deck()
-                    G.consumeables:emplace(_card)
+                    alchemy_card_eval_text(card, localize("k_copied_ex"), "generic1", G.C.SECONDARY_SET.Alchemy, nil, nil, true, function() 
+                        local _card = copy_card(context.consumeable, nil, nil, nil)
+                        _card:set_edition({ negative = true }, true)
+                        _card:add_to_deck()
+                        G.consumeables:emplace(_card)
+                    end)                    
                     return true
                 end
             }))
@@ -218,28 +218,26 @@ new_joker{
             trigger = "after", 
             delay = 0.1, 
             func = function()
-                if not G.GAME.blind.in_blind and context.consumeable.config.center.key == "c_alchemy_salt" then
-                    ease_dollars(card.ability.extra.money, true)
-                    card_eval_status_text(_card, "dollars", card.ability.extra.money, nil, nil, { instant = true })
-                    return true
-                end
                 local choice = pseudorandom(pseudoseed("breaking_bozo"))
-                if choice < 0.33 then
-                    G.FUNCS.draw_from_deck_to_hand(card.ability.extra.cards)
-                    card_eval_status_text(_card, "extra", nil, nil, nil, { instant = true, message = localize("p_alchemy_plus_card"), colour = G.C.SECONDARY_SET.Alchemy })
+                if choice < 0.33 or (not G.GAME.blind.in_blind and context.consumeable.config.center.key == "c_alchemy_salt") then
+                    local money = card.ability.extra.money
+                    alchemy_card_eval_text(_card, (money <-0.01 and "-" or "")..localize("$")..tostring(math.abs(money)), nil, money <-0.01 and G.C.RED or G.C.MONEY, nil, nil, true, function()
+                        ease_dollars(money, true)
+                    end)
                 elseif choice < 0.66 then
-                    ease_dollars(card.ability.extra.money, true)
-                    card_eval_status_text(_card, "dollars", card.ability.extra.money, nil, nil, { instant = true })
+                    G.FUNCS.draw_from_deck_to_hand(card.ability.extra.cards)
+                    alchemy_card_eval_text(_card, localize("p_alchemy_plus_card"), "generic1", G.C.SECONDARY_SET.Alchemy, nil, nil, true)
                 else
-                    local newScore = math.floor(G.GAME.blind.chips * (1 - card.ability.extra.blind_reduce))
-                    local difference = G.GAME.blind.chips - newScore
-                    G.GAME.blind.chips = newScore
-                    G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-                    G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
-                    G.HUD_blind:recalculate()
-                    G.hand_text_area.blind_chips:juice_up()
-                    alchemy_card_eval_text(_card, localize{ type ="variable", key="a_alchemy_reduce_blind", vars = { difference } }, "chips2", G.C.SECONDARY_SET.Alchemy, 0.5, 1)
-                    G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
+                    alchemy_card_eval_text(_card, localize{ type ="variable", key="a_alchemy_reduce_blind", vars = { difference } }, "chips2", G.C.SECONDARY_SET.Alchemy, 0.5, nil, true, function() 
+                        local newScore = math.floor(G.GAME.blind.chips * (1 - card.ability.extra.blind_reduce))
+                        local difference = G.GAME.blind.chips - newScore
+                        G.GAME.blind.chips = newScore
+                        G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+                        G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
+                        G.HUD_blind:recalculate()
+                        G.hand_text_area.blind_chips:juice_up()
+                        G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
+                    end)
                 end
                 return true
             end
