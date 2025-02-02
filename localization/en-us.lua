@@ -304,8 +304,8 @@ return {
             j_alchemy_chain_reaction = {
                 name = "Chain Reaction", 
                 text = { 
-                    "Create a {C:attention}copy{} of th", 
-                    "first {C:alchemical}Alchemical{} ", 
+                    "Create a {C:attention}copy{} of", 
+                    "the first {C:alchemical}Alchemical{} ", 
                     "card used each {C:attention}Blind{}",
                     "{C:inactive}(Must have room)"
                 } 
