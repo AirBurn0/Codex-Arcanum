@@ -5,20 +5,6 @@ SMODS.Atlas{
     py = 95
 }
 
-SMODS.Atlas{
-    key = "undiscovered",
-    path = "c_alchemy_undiscovered.png",
-    px = 71,
-    py = 95
-}
-
-SMODS.Atlas{
-    key = "locked",
-    path = "c_alchemy_locked.png",
-    px = 71,
-    py = 95
-}
-
 SMODS.ConsumableType{
     key = "Alchemical",
     primary_colour = G.C.SECONDARY_SET.Alchemy,
@@ -30,8 +16,20 @@ SMODS.ConsumableType{
 
 SMODS.UndiscoveredSprite{
     key = "Alchemical",
-    atlas = "undiscovered",
-    pos = { x = 0, y = 0 }
+    atlas = "alchemicals_atlas",
+    pos = { x = 4, y = 4 }
+}
+
+-- Until SMODS do 'LockedSprite' it will be like that
+G.c_alchemy_locked = {
+    name = "Locked",
+    pos = { x = 5, y = 4 },
+    atlas = "alchemy_alchemicals_atlas",
+    set = "Alchemical",
+    unlocked = false,
+    max = 1,
+    cost_mult = 1.0,
+    config = { }
 }
 
 local function get_most_common_suit() 
