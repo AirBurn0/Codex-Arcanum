@@ -178,6 +178,7 @@ new_joker{
         if not (used.edition and used.edition.negative) and G.consumeables.config.card_limit <= (#G.consumeables.cards + G.GAME.consumeable_buffer) then
             return
         end
+        G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
         return { 
             message = localize("k_copied_ex"), 
             colour = G.C.SECONDARY_SET.Alchemy, 
@@ -188,6 +189,7 @@ new_joker{
                         local _card = copy_card(context.consumeable, nil, nil, nil)
                         _card:add_to_deck()
                         G.consumeables:emplace(_card)
+                        G.GAME.consumeable_buffer = 0 -- event can be interrupted
                         return true
                     end
                 }))
