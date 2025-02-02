@@ -6,7 +6,7 @@
 --- MOD_DESCRIPTION: Adds a new set of cards: Alchemy!
 --- BADGE_COLOUR: C09D75
 --- PRIORITY: 1000
---- VERSION: 1.1.5
+--- VERSION: 1.1.6r
 --- DEPENDENCIES: [Steamodded>=1.0.0~ALPHA-1401a]
 ----------------------------------------------
 ------------MOD CODE -------------------------
