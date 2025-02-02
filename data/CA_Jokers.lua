@@ -12,7 +12,7 @@ local function add_random_alchemical(self)
             local card = create_alchemical()
             card:add_to_deck()
             G.consumeables:emplace(card)
-            G.GAME.consumeable_buffer = math.max(0, G.GAME.consumeable_buffer - 1) -- event can be interrupted
+            G.GAME.consumeable_buffer = 0 -- event can be interrupted
             return true
         end
     }))
