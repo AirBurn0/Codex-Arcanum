@@ -186,7 +186,6 @@ new_joker{
                     trigger = "after",
                     func = function()
                         local _card = copy_card(context.consumeable, nil, nil, nil)
-                        _card:set_edition({ negative = true }, true)
                         _card:add_to_deck()
                         G.consumeables:emplace(_card)
                         return true
