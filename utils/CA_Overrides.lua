@@ -104,7 +104,8 @@ function Card:set_sprites(_center, _front)
     set_spritesref(self, _center, _front);
     if _center and _center.set == "Alchemical" and not _center.unlocked and not self.params.bypass_discovery_center then
         self.bypass_discovery_center = true -- hide (?) icon
-        self.children.center = Sprite(self.T.x, self.T.y, self.T.w, self.T.h, G.ASSET_ATLAS["alchemy_locked"], { x = 0, y = 0 })
+        -- Until SMODS do 'LockedSprite' it will be like that
+        self.children.center = Sprite(self.T.x, self.T.y, self.T.w, self.T.h, G.ASSET_ATLAS["alchemy_alchemicals_atlas"], G.c_alchemy_locked.pos)
         self.children.center.states.hover = self.states.hover
         self.children.center.states.click = self.states.click
         self.children.center.states.drag = self.states.drag
@@ -284,25 +285,24 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
     }))
 end
 
--- unlocks UI
+-- unlocks achievement popup
 local create_UIBox_notify_alertref = create_UIBox_notify_alert
 function create_UIBox_notify_alert(_achievement, _type)
-    local retval = create_UIBox_notify_alertref(_achievement, _type)
+    local uibox = create_UIBox_notify_alertref(_achievement, _type)
     if _type == "Alchemical" then
         local _c = G.P_CENTERS[_achievement]
         local _atlas = G.ASSET_ATLAS[_c.atlas]
 
-        local t_s = Sprite(0, 0, 1.5 * (_atlas.px / _atlas.py), 1.5, _atlas, _c and _c.pos or { x = 3, y = 0 })
+        local t_s = Sprite(0, 0, 1.5 * (_atlas.px / _atlas.py), 1.5, _atlas, _c and _c.pos or { x = 5, y = 4 })
         t_s.states.drag.can = false
         t_s.states.hover.can = false
         t_s.states.collide.can = false
 
         local subtext = localize("k_alchemical")
         -- hell nah I'm not gonna format this
-        local t = {n=G.UIT.ROOT,config={align="cl",r=0.1,padding=0.06,colour=G.C.UI.TRANSPARENT_DARK},nodes={{n=G.UIT.R,config={align="cl",padding=0.2,minw=20,r=0.1,colour=G.C.BLACK,outline=1.5,outline_colour=G.C.GREY},nodes={{n=G.UIT.R,config={align="cm",r=0.1},nodes={{n=G.UIT.R,config={align="cm",r=0.1},nodes={{n=G.UIT.O,config={object=t_s}}}},_type~="achievement"and{n=G.UIT.R,config={align="cm",padding=0.04},nodes={{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=subtext,scale=0.5,colour=G.C.FILTER,shadow=true}}}},{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=localize("k_unlocked_ex"),scale=0.35,colour=G.C.FILTER,shadow=true}}}}}}or{n=G.UIT.R,config={align="cm",padding=0.04},nodes={{n=G.UIT.R,config={align="cm",maxw=3.4,padding=0.1},nodes={{n=G.UIT.T,config={text=name,scale=0.4,colour=G.C.UI.TEXT_LIGHT,shadow=true}}}},{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=subtext,scale=0.3,colour=G.C.FILTER,shadow=true}}}},{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=localize("k_unlocked_ex"),scale=0.35,colour=G.C.FILTER,shadow=true}}}}}}}}}}}}
-        return t
+        return {n=G.UIT.ROOT,config={align="cl",r=0.1,padding=0.06,colour=G.C.UI.TRANSPARENT_DARK},nodes={{n=G.UIT.R,config={align="cl",padding=0.2,minw=20,r=0.1,colour=G.C.BLACK,outline=1.5,outline_colour=G.C.GREY},nodes={{n=G.UIT.R,config={align="cm",r=0.1},nodes={{n=G.UIT.R,config={align="cm",r=0.1},nodes={{n=G.UIT.O,config={object=t_s}}}},_type~="achievement"and{n=G.UIT.R,config={align="cm",padding=0.04},nodes={{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=subtext,scale=0.5,colour=G.C.FILTER,shadow=true}}}},{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=localize("k_unlocked_ex"),scale=0.35,colour=G.C.FILTER,shadow=true}}}}}}or{n=G.UIT.R,config={align="cm",padding=0.04},nodes={{n=G.UIT.R,config={align="cm",maxw=3.4,padding=0.1},nodes={{n=G.UIT.T,config={text=name,scale=0.4,colour=G.C.UI.TEXT_LIGHT,shadow=true}}}},{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=subtext,scale=0.3,colour=G.C.FILTER,shadow=true}}}},{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=localize("k_unlocked_ex"),scale=0.35,colour=G.C.FILTER,shadow=true}}}}}}}}}}}}
     end
-    return retval
+    return uibox
 end
 
 -- iterate over alchemicals to check for unlocks
@@ -330,7 +330,7 @@ end
 -- options -> stats -> card stats -> Alchemicals
 local usage_tabsref = G.UIDEF.usage_tabs
 function G.UIDEF.usage_tabs(args)
-    local retval = usage_tabsref(args)
+    local tabs = usage_tabsref(args)
     args = args or {}
     args.colour = args.colour or G.C.RED
     args.tab_alignment = args.tab_alignment or "cm"
@@ -340,9 +340,11 @@ function G.UIDEF.usage_tabs(args)
     args.tab_h = args.tab_h or 0
     args.text_scale = (args.text_scale or 0.5)
     local v = { label = localize("b_stat_alchemicals"), tab_definition_function = create_UIBox_usage, tab_definition_function_args = { "consumeable_usage", "Alchemical" } }
-    local new_tab = UIBox_button { id = "tab_but_" .. (v.label or ""), ref_table = v, button = "change_tab", label = { v.label }, minh = 0.8 * args.scale, minw = 2.5 * args.scale, col = true, choice = true, scale = args.text_scale, chosen = v.chosen, func = v.func, focus_args = { type = "none" } }
-    table.insert(retval.nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[2].nodes, 6, new_tab)
-    return retval
+    local new_tab = UIBox_button{ id = "tab_but_" .. (v.label or ""), ref_table = v, button = "change_tab", label = { v.label }, minh = 0.8 * args.scale, minw = 2.5 * args.scale, col = true, choice = true, scale = args.text_scale, chosen = v.chosen, func = v.func, focus_args = { type = "none" } }
+    -- Jokers1 Consumables2 Tarots3 Planets4 Spectrals5 <Alchemicals>6 Vouchers7
+    -- trying to insert after Spectrals wich is 5, so insert as 6
+    table.insert(tabs.nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[2].nodes, 6, new_tab)
+    return tabs
 end
 
 -- herbalist's deck ability hooks
