@@ -305,7 +305,7 @@ return {
                 name = "Chain Reaction", 
                 text = { 
                     "Create a {C:attention}copy{} of", 
-                    "the first {C:alchemical}Alchemical{} ", 
+                    "the first {C:alchemical}Alchemical{}", 
                     "card used each {C:attention}Blind{}",
                     "{C:inactive}(Must have room)"
                 } 
