@@ -13,23 +13,6 @@ function take_cards_from_discard(count)
         end
     }))
 end
-  
-function add_random_alchemical(self)
-    if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-        G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-        G.E_MANAGER:add_event(Event({
-            trigger = 'after',
-            delay = 0.1,
-            func = function()
-                local card = create_alchemical()
-                card:add_to_deck()
-                G.consumeables:emplace(card)
-                G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
-                return true
-            end
-        }))
-    end
-end
 
 function return_to_deck(count, card)
     if not (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK) and G.hand.config.card_limit <= 0 and #G.hand.cards == 0 then 

@@ -624,6 +624,7 @@ new_alchemical{
                     _card:change_suit(top_suit)
                     table.insert(undo_table, { id = _card.unique_val, suit = prev_suit })
                 end
+                G.hand:parse_highlighted()
                 return true
             end
         }))       
