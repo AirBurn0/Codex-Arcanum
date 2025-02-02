@@ -5,6 +5,19 @@ SMODS.Atlas{
     py = 95
 }
 
+local function add_random_alchemical(self)
+    G.E_MANAGER:add_event(Event({
+        trigger = "after",
+        func = function()
+            local card = create_alchemical()
+            card:add_to_deck()
+            G.consumeables:emplace(card)
+            G.GAME.consumeable_buffer = math.max(0, G.GAME.consumeable_buffer - 1) -- event can be interrupted
+            return true
+        end
+    }))
+end
+
 -- kinda default constructor
 local function new_joker(joker)
     -- create joker
@@ -37,11 +50,10 @@ new_joker{
     calculate = function(self, card, context)
         -- sadly but that's how canon works
         if context.selling_self and not context.blueprint and G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
-            add_random_alchemical(card)
-            card_eval_status_text(card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy })
-            return { card = card }
+            G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+            return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy, func = function() add_random_alchemical(card) end }
         elseif context.joker_main then
-            return { message = localize { type = "variable", key = "a_mult", vars = { card.ability.mult } }, mult_mod = card.ability.mult }
+            return { mult = card.ability.mult }
         end
     end
 }
@@ -58,19 +70,15 @@ new_joker{
     calculate = function(self, card, context)
         if context.cardarea == G.jokers and context.after then
             card.ability.loyalty_remaining = (card.ability.extra.every - 1 - (G.GAME.hands_played - card.ability.hands_played_at_create)) % (card.ability.extra.every + 1)
-            if context.blueprint then
-                if card.ability.loyalty_remaining == card.ability.extra.every then
-                    add_random_alchemical(card)
+            if card.ability.loyalty_remaining == 0 and not context.blueprint then
+                juice_card_until(card, function(_card) return (_card.ability.loyalty_remaining == 0) end, true)
+            elseif card.ability.loyalty_remaining == card.ability.extra.every then
+                if not context.blueprint then
                     card.ability.loyalty_remaining = card.ability.extra.every
-                    return { message = localize("p_plus_alchemical") }
                 end
-            else
-                if card.ability.loyalty_remaining == 0 then
-                    juice_card_until(card, function(_card) return (_card.ability.loyalty_remaining == 0) end, true)
-                elseif card.ability.loyalty_remaining == card.ability.extra.every then
-                    add_random_alchemical(card)
-                    card.ability.loyalty_remaining = card.ability.extra.every
-                    return { message = localize("p_plus_alchemical") }
+                if G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
+                    G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+                    return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy, func = function() add_random_alchemical(card) end }
                 end
             end
         end
@@ -93,12 +101,7 @@ new_joker{
     calculate = function(self, card, context)
         if context.using_consumeable and not context.blueprint and not context.consumeable.config.in_booster and context.consumeable.ability.set == "Alchemical" then
             if G.GAME.consumeable_usage and G.GAME.consumeable_usage[context.consumeable.config.center.key].count == 1 then
-                G.E_MANAGER:add_event(Event({
-                    func = function()
-                        card_eval_status_text(card, "extra", nil, nil, nil, { message = localize { type = "variable", key = "a_chips", vars = { card.ability.extra.chips } } })
-                        return true
-                    end
-                }))
+                return { message = localize{ type = "variable", key = "a_chips", vars = { card.ability.extra.chips } } }
             end
             return
         end
@@ -107,7 +110,7 @@ new_joker{
             if G.GAME.used_alchemical_consumeable_unique then
                 expected_total_chips = G.GAME.used_alchemical_consumeable_unique.count * card.ability.extra.chips
             end
-            return { message = localize { type = "variable", key = "a_chips", vars = { expected_total_chips } }, chip_mod = expected_total_chips }
+            return { message = localize{ type = "variable", key = "a_chips", vars = { expected_total_chips } }, chip_mod = expected_total_chips }
         end
     end
 }
@@ -131,21 +134,23 @@ new_joker{
             juice_card_until(card, function(_card) return not _card.ability.extra.used end, true)
         end
         if G.GAME.blind.in_blind and context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == "Alchemical" and not card.ability.extra.used then
-            G.E_MANAGER:add_event(Event({
-                trigger = "after", 
-                delay = 0.1, 
-                func = function()
-                    alchemy_card_eval_text(card, localize("k_copied_ex"), "generic1", G.C.SECONDARY_SET.Alchemy, nil, nil, true, function() 
-                        local _card = copy_card(context.consumeable, nil, nil, nil)
-                        _card:set_edition({ negative = true }, true)
-                        _card:add_to_deck()
-                        G.consumeables:emplace(_card)
-                    end)                    
-                    return true
-                end
-            }))
             card.ability.extra.used = true
-            return
+            return { 
+                message = localize("k_copied_ex"), 
+                colour = G.C.SECONDARY_SET.Alchemy, 
+                func = function()
+                    G.E_MANAGER:add_event(Event({
+                        trigger = "after",
+                        func = function()
+                            local _card = copy_card(context.consumeable, nil, nil, nil)
+                            _card:set_edition({ negative = true }, true)
+                            _card:add_to_deck()
+                            G.consumeables:emplace(_card)
+                            return true
+                        end
+                    }))
+                end
+            }
         end
     end
 }
@@ -162,13 +167,7 @@ new_joker{
     calculate = function(self, card, context)
         if context.using_consumeable and not context.blueprint and not context.consumeable.config.in_booster and context.consumeable.ability.set == "Alchemical" then
             card.ability.x_mult = card.ability.x_mult + card.ability.extra
-            G.E_MANAGER:add_event(Event({
-                func = function()
-                    card_eval_status_text(card, "extra", nil, nil, nil, { message = localize { type = "variable", key = "a_xmult", vars = { card.ability.x_mult } } });
-                    return true
-                end
-            }))
-            return
+            return { message = localize{ type = "variable", key = "a_xmult", vars = { card.ability.x_mult } } }
         end
     end
 }
@@ -193,9 +192,8 @@ new_joker{
         and (discarded.config.center == G.P_CENTERS.m_steel or discarded.config.center == G.P_CENTERS.m_gold or discarded.config.center == G.P_CENTERS.m_stone) 
         and pseudorandom("shock_humor") < G.GAME.probabilities.normal / card.ability.extra.odds 
         then
-            local _card = context.blueprint_card or card
-            add_random_alchemical(_card)
-            card_eval_status_text(_card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy })
+            G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+            return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy, func = function() add_random_alchemical(card) end }
         end
     end
 }
@@ -210,38 +208,36 @@ new_joker{
     rarity = 3,
     cost = 7,
     calculate = function(self, card, context)
-        if not context.using_consumeable or context.consumeable.config.in_booster or context.consumeable.ability.set ~= "Alchemical" then
+        if not context.using_consumeable or context.consumeable.config.in_booster or context.consumeable.ability.set ~= "Alchemical" then            
             return
         end
-        local _card = context.blueprint_card or card
-        G.E_MANAGER:add_event(Event({ 
-            trigger = "after", 
-            delay = 0.1, 
-            func = function()
-                local choice = pseudorandom(pseudoseed("breaking_bozo"))
-                if choice < 0.33 or (not G.GAME.blind.in_blind and context.consumeable.config.center.key == "c_alchemy_salt") then
-                    local money = card.ability.extra.money
-                    alchemy_card_eval_text(_card, (money <-0.01 and "-" or "")..localize("$")..tostring(math.abs(money)), nil, money <-0.01 and G.C.RED or G.C.MONEY, nil, nil, true, function()
-                        ease_dollars(money, true)
-                    end)
-                elseif choice < 0.66 then
-                    G.FUNCS.draw_from_deck_to_hand(card.ability.extra.cards)
-                    alchemy_card_eval_text(_card, localize("p_alchemy_plus_card"), "generic1", G.C.SECONDARY_SET.Alchemy, nil, nil, true)
-                else
-                    alchemy_card_eval_text(_card, localize{ type ="variable", key="a_alchemy_reduce_blind", vars = { difference } }, "chips2", G.C.SECONDARY_SET.Alchemy, 0.5, nil, true, function() 
-                        local newScore = math.floor(G.GAME.blind.chips * (1 - card.ability.extra.blind_reduce))
-                        local difference = G.GAME.blind.chips - newScore
-                        G.GAME.blind.chips = newScore
-                        G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-                        G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
-                        G.HUD_blind:recalculate()
-                        G.hand_text_area.blind_chips:juice_up()
-                        G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
-                    end)
-                end
-                return true
-            end
-        }))
+        local choice = pseudorandom(pseudoseed("breaking_bozo"))
+        if choice < 0.33 or (not G.GAME.blind.in_blind and context.consumeable.config.center.key == "c_alchemy_salt") then
+            return { dollars = card.ability.extra.money }
+        elseif choice < 0.66 then
+            return { message = localize("p_alchemy_plus_card"), colour = G.C.SECONDARY_SET.Alchemy, func = function() G.FUNCS.draw_from_deck_to_hand(card.ability.extra.cards) end }
+        else
+            return {
+                message = localize{ type = "variable", key= "a_alchemy_reduce_blind", vars = { difference } }, 
+                colour = G.C.SECONDARY_SET.Alchemy, 0.5,
+                func = function() 
+                    G.E_MANAGER:add_event(Event({
+                        trigger = "after",
+                        func = function()
+                            local newScore = math.floor(G.GAME.blind.chips * (1 - card.ability.extra.blind_reduce))
+                            local difference = G.GAME.blind.chips - newScore
+                            G.GAME.blind.chips = newScore
+                            G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+                            G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
+                            G.HUD_blind:recalculate()
+                            G.hand_text_area.blind_chips:juice_up()
+                            G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
+                            return true
+                        end
+                    }))
+                end 
+            }
+        end
     end
 }
 
