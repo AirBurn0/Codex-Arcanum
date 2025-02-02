@@ -936,3 +936,87 @@ new_alchemical{
         end
     end
 }
+
+new_alchemical{
+    key = "lithium",
+    loc_vars = function(self, info_queue, center)
+        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        return { vars = { } } 
+    end,
+    config = { select_cards = 4 },
+    pos = { x = 0, y = 4 },
+    unlock = function(card, args) 
+        return false
+    end,
+    use = function(self, card, area, copier, undo_table)
+    end
+}
+
+new_alchemical{
+    key = "honey",
+    loc_vars = function(self, info_queue, center)
+        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        return { vars = { } } 
+    end,
+    config = { select_cards = 4 },
+    pos = { x = 1, y = 4 },
+    unlock = function(card, args) 
+        return false
+    end,
+    use = function(self, card, area, copier, undo_table)
+    end
+}
+
+new_alchemical{
+    key = "chlorine",
+    loc_vars = function(self, info_queue, center)
+        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        return { vars = { } } 
+    end,
+    config = { select_cards = 4 },
+    pos = { x = 2, y = 4 },
+    unlock = function(card, args) 
+        return false
+    end,
+    use = function(self, card, area, copier, undo_table)
+    end
+}
+
+new_alchemical{
+    key = "stone",
+    loc_vars = function(self, info_queue, center)
+        info_queue[#info_queue+1] = G.P_CENTERS.m_stone
+        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        local select_cards = max_selected_cards(center)
+        return { vars = { select_cards, plural("card", select_cards) } } 
+    end,
+    config = { select_cards = 4 },
+    pos = { x = 3, y = 4 },
+    unlock = function(card, args) 
+        return false
+    end,
+    use = function(self, card, area, copier, undo_table)
+        G.E_MANAGER:add_event(Event({
+            trigger = "after",
+            delay = 0.1,
+            func = function()
+                for k, _card in ipairs(G.hand.highlighted) do
+                    delay(0.05)
+                    _card:juice_up(1, 0.5)
+                    _card:set_ability(G.P_CENTERS.m_stone)
+                    table.insert(undo_table, _card.unique_val)
+                end
+                return true
+            end
+        }))     
+    end,
+    undo = function(self, undo_table)
+        for _, silver_id in ipairs(undo_table) do
+            for k, card in ipairs(G.playing_cards) do
+                if card.unique_val == silver_id and card.config.center == G.P_CENTERS.m_stone then
+                    card:set_ability(G.P_CENTERS.c_base, nil, true)
+                end
+            end
+        end
+    end
+}

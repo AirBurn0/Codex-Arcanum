@@ -197,6 +197,45 @@ return {
                     "{E:1,C:alchemical}Alchemical{} cards in",
                     "the same run"
                 }
+            },
+            c_alchemy_lithium = {
+                name = "Lithium",
+                text = {
+                    "Coming soon..."
+                },
+                unlock = {
+                    "Coming soon..."
+                }
+            },
+            c_alchemy_honey = {
+                name = "Honey",
+                text = {
+                    "Coming soon..."
+                },
+                unlock = {
+                    "Coming soon..."
+                }
+            },
+            c_alchemy_chlorine = {
+                name = "Chlorine",
+                text = {
+                    "Coming soon..."
+                },
+                unlock = {
+                    "Coming soon..."
+                }
+            },
+            c_alchemy_stone = {
+                name = "Stone",
+                text = {
+                    "Enhances up to",
+                    "{C:attention}#1#{} selected #2#",
+                    "into {C:attention}Stone #2#",
+                    "for current {C:attention}Blind{}"
+                },
+                unlock = {
+                    "Coming soon..."
+                }
             }
         },
         Back = {
