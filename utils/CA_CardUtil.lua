@@ -88,7 +88,7 @@ end
 -- Serpent fix, plz do not be like Serpent and don't override what must not be overriden
 function alchemy_draw_cards(amount) 
 	local serpent = G.GAME.blind.disabled
-	G.GAME.blind.disabled = false
+	G.GAME.blind.disabled = true
 	G.FUNCS.draw_from_deck_to_hand(amount)
 	G.GAME.blind.disabled = serpent
 end
