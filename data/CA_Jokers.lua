@@ -209,7 +209,7 @@ new_joker{
         if choice < 0.33 or (not G.GAME.blind.in_blind and context.consumeable.config.center.key == "c_alchemy_salt") then
             return { dollars = card.ability.extra.money }
         elseif choice < 0.66 then
-            G.FUNCS.draw_from_deck_to_hand(card.ability.extra.cards)
+            alchemy_draw_cards(alchemy_ability_round(card.ability.extra.cards))
             return {
                 message = localize("p_alchemy_plus_card"),
                 colour = G.C.SECONDARY_SET.Alchemy
