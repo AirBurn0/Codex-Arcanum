@@ -5,11 +5,11 @@ SMODS.Atlas{
     py = 95
 }
 
-local function add_random_alchemical(self)
+local function add_card_event(self, card_func) -- card creation delayed
     G.E_MANAGER:add_event(Event({
-        trigger = "after",
+        trigger = "before",
         func = function()
-            local card = create_alchemical()
+            local card = card_func()
             card:add_to_deck()
             G.consumeables:emplace(card)
             G.GAME.consumeable_buffer = 0 -- event can be interrupted
@@ -51,7 +51,8 @@ new_joker{
         -- sell blueprint for alchemical? HELL YEAH!!
         if context.selling_self and G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
             G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-            return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy, func = function() add_random_alchemical(card) end }
+            add_card_event(card, create_alchemical)
+            return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy }
         elseif context.joker_main then
             return { mult = card.ability.mult }
         end
@@ -78,7 +79,8 @@ new_joker{
                 end
                 if G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
                     G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-                    return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy, func = function() add_random_alchemical(card) end }
+                    add_card_event(card, create_alchemical)
+                    return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy }
                 end
             end
         end
@@ -152,8 +154,10 @@ new_joker{
         and (discarded.config.center == G.P_CENTERS.m_steel or discarded.config.center == G.P_CENTERS.m_gold or discarded.config.center == G.P_CENTERS.m_stone) 
         and pseudorandom("shock_humor") < G.GAME.probabilities.normal / card.ability.extra.odds 
         then
+            local _card = context.blueprint_card or card
             G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-            return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy, func = function() add_random_alchemical(card) end }
+            add_card_event(_card, create_alchemical)
+            card_eval_status_text(_card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy })
         end
     end
 }
@@ -175,26 +179,14 @@ new_joker{
         if not context.blueprint then
             card.ability.extra.used = true
         end
-        if not (used.edition and used.edition.negative) and G.consumeables.config.card_limit <= (#G.consumeables.cards + G.GAME.consumeable_buffer) then
-            return
-        end
-        G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-        return { 
-            message = localize("k_copied_ex"), 
-            colour = G.C.SECONDARY_SET.Alchemy, 
-            func = function()
-                G.E_MANAGER:add_event(Event({
-                    trigger = "after",
-                    func = function()
-                        local _card = copy_card(context.consumeable, nil, nil, nil)
-                        _card:add_to_deck()
-                        G.consumeables:emplace(_card)
-                        G.GAME.consumeable_buffer = 0 -- event can be interrupted
-                        return true
-                    end
-                }))
+        if not (used.edition and used.edition.negative) then
+            if G.consumeables.config.card_limit <= (#G.consumeables.cards + G.GAME.consumeable_buffer) then
+                return
             end
-        }
+            G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+        end
+        add_card_event(card, function() return copy_card(context.consumeable, nil, nil, nil) end)
+        return { message = localize("k_copied_ex"), colour = G.C.SECONDARY_SET.Alchemy }
     end
 }
 
@@ -215,27 +207,29 @@ new_joker{
         if choice < 0.33 or (not G.GAME.blind.in_blind and context.consumeable.config.center.key == "c_alchemy_salt") then -- jesse we need to cook
             return { dollars = card.ability.extra.money * (G.GAME.blind.in_blind and 2 or 1) } -- there is no other option if you not in blind so x2 money seems fair.
         elseif choice < 0.66 then
-            return { message = localize("p_alchemy_plus_card"), colour = G.C.SECONDARY_SET.Alchemy, func = function() G.FUNCS.draw_from_deck_to_hand(card.ability.extra.cards) end }
+            alchemy_draw_cards(alchemy_ability_round(card.ability.extra.cards))
+            return {
+                message = localize("p_alchemy_plus_card"),
+                colour = G.C.SECONDARY_SET.Alchemy
+            }
         else
+            G.E_MANAGER:add_event(Event({
+                trigger = "before",
+                func = function()
+                    local newScore = math.floor(G.GAME.blind.chips * (1 - card.ability.extra.blind_reduce))
+                    local difference = G.GAME.blind.chips - newScore
+                    G.GAME.blind.chips = newScore
+                    G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+                    G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
+                    G.HUD_blind:recalculate()
+                    G.hand_text_area.blind_chips:juice_up()
+                    G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
+                    return true
+                end
+            }))
             return {
                 message = localize{ type = "variable", key= "a_alchemy_reduce_blind", vars = { difference } }, 
-                colour = G.C.SECONDARY_SET.Alchemy, 0.5,
-                func = function() 
-                    G.E_MANAGER:add_event(Event({
-                        trigger = "after",
-                        func = function()
-                            local newScore = math.floor(G.GAME.blind.chips * (1 - card.ability.extra.blind_reduce))
-                            local difference = G.GAME.blind.chips - newScore
-                            G.GAME.blind.chips = newScore
-                            G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-                            G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
-                            G.HUD_blind:recalculate()
-                            G.hand_text_area.blind_chips:juice_up()
-                            G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
-                            return true
-                        end
-                    }))
-                end 
+                colour = G.C.SECONDARY_SET.Alchemy, 0.5
             }
         end
     end

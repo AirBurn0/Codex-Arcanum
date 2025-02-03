@@ -84,3 +84,19 @@ function alchemy_card_eval_text(card, text, sound, color, text_scale, hold, dela
 		text_func()
 	end
 end
+
+-- Serpent fix, plz do not be like Serpent and don't override what must not be overriden
+function alchemy_draw_cards(amount) 
+	local serpent = G.GAME.blind.disabled
+	G.GAME.blind.disabled = false
+	G.FUNCS.draw_from_deck_to_hand(amount)
+	G.GAME.blind.disabled = serpent
+end
+
+ -- for cryptid enjoyers
+function alchemy_ability_round(ability)
+	if not ability or type(ability) ~= "number" then
+		return 0
+	end
+	return math.floor(ability + 0.5)
+end
