@@ -210,10 +210,7 @@ new_joker{
             return { dollars = card.ability.extra.money }
         elseif choice < 0.66 then
             alchemy_draw_cards(alchemy_ability_round(card.ability.extra.cards))
-            return {
-                message = localize("p_alchemy_plus_card"),
-                colour = G.C.SECONDARY_SET.Alchemy
-            }
+            return { message = localize("p_alchemy_plus_card"), colour = G.C.SECONDARY_SET.Alchemy }
         else
             G.E_MANAGER:add_event(Event({
                 trigger = "before",
@@ -229,10 +226,7 @@ new_joker{
                     return true
                 end
             }))
-            return {
-                message = localize{ type = "variable", key= "a_alchemy_reduce_blind", vars = { difference } }, 
-                colour = G.C.SECONDARY_SET.Alchemy, 0.5
-            }
+            return { message = localize{ type = "variable", key= "a_alchemy_reduce_blind", vars = { difference } }, colour = G.C.SECONDARY_SET.Alchemy }
         end
     end
 }
