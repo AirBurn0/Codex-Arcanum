@@ -420,11 +420,9 @@ new_alchemical{
                 ease_hands_played(temp_discards)
                 ease_discard(temp_hands)
                 -- why stop player from being stupid? Let bro cook!
-                if temp_discards <= 0 then 
-                    if G.STAGE == G.STAGES.RUN then
-                        G.STATE = G.STATES.GAME_OVER; 
-                        G.STATE_COMPLETE = false
-                    end
+                if temp_discards <= 0 and G.STAGE == G.STAGES.RUN then 
+                    G.STATE = G.STATES.GAME_OVER; 
+                    G.STATE_COMPLETE = false
                 end
                 Game:update_hand_played(nil)
                 return true
@@ -558,13 +556,14 @@ new_alchemical{
         local extra = alchemy_ability_round(center.ability.extra)
         return { vars = { extra, plural("copy", extra) } } 
     end,
-    config = { select_cards = 1, extra = 2 },
+    config = { select_cards = "1", extra = 2 },
     pos = { x = 2, y = 2 },
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
             delay = 0.1,
             func = function()
+                local new_table = {}
                 for i = 1, alchemy_ability_round(card.ability.extra) do
                     G.playing_card = (G.playing_card and G.playing_card + 1) or 1
                     local _card = copy_card(G.hand.highlighted[1], nil, nil, G.playing_card)
@@ -572,10 +571,10 @@ new_alchemical{
                     G.deck.config.card_limit = G.deck.config.card_limit + 1
                     table.insert(G.playing_cards, _card)
                     G.hand:emplace(_card)
-                    _card:start_materialize(nil, _first_dissolve)
                     table.insert(undo_table, _card.unique_val)
+                    table.insert(new_table, _card.unique_val)
                 end
-                playing_card_joker_effects(new_cards)
+                playing_card_joker_effects(new_table)
                 return true
             end
         }))
@@ -818,17 +817,17 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
+                local removed_table = {}
                 for k, _card in ipairs(G.hand.highlighted) do
                     for k, v in ipairs(G.playing_cards) do
                         if v:get_id() == _card:get_id() then
                             table.insert(undo_table, v)
+                            table.insert(removed_table, v)
                             v:start_dissolve({ HEX("E3FF37") }, nil, 1.6)
                         end 
                     end
-                    for j = 1, #G.jokers.cards do
-                        eval_card(G.jokers.cards[j], { cardarea = G.jokers, remove_playing_cards = true, removed = undo_table })
-                    end
                 end
+                SMODS.calculate_context({ remove_playing_cards = true, removed = removed_table })
                 return true
             end
         }))
@@ -866,7 +865,6 @@ new_alchemical{
                         G.jokers.cards[i]:juice_up()
                         break
                     end
-
                 end
                 return true
             end
