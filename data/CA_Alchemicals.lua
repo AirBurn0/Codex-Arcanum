@@ -41,7 +41,9 @@ local function get_most_common_suit()
 	end
 	if G.playing_cards then
 		for _, v in pairs(G.playing_cards) do
-			suit_to_card_couner[v.base.suit] = suit_to_card_couner[v.base.suit] + 1
+            if not (SMODS.has_no_suit(v) or SMODS.has_any_suit(v)) then -- stone cards should count as no suit, wildcards should count as any suit
+                suit_to_card_couner[v.base.suit] = suit_to_card_couner[v.base.suit] + 1
+            end
 		end
 	end
 	local top_suit = "";
@@ -619,7 +621,7 @@ new_alchemical{
                 G.hand:parse_highlighted()
                 return true
             end
-        }))       
+        }))
     end,
     undo = function(self, undo_table)
         for _, borax_table in ipairs(undo_table) do
@@ -655,7 +657,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))       
+        }))
     end,
     undo = function(self, undo_table)
         for _, glass_id in ipairs(undo_table) do
@@ -682,18 +684,23 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                local cur_rank = G.hand.highlighted[1].base.id
+                local _selected = G.hand.highlighted[1]
+                local cur_rank = SMODS.has_no_rank(_selected) and "no_rank" or _selected.base.id
                 local count = alchemy_ability_round(card.ability.extra)
                 for _, v in pairs(G.deck.cards) do
-                    if v.base.id == cur_rank and count > 0 then
+                    local no_rank = (cur_rank == "no_rank" and SMODS.has_no_rank(v))
+                    if (cur_rank == "no_rank" and SMODS.has_no_rank(v)) or (cur_rank ~= "no_rank" and not SMODS.has_no_rank(v) and v.base.id == cur_rank) then
                         delay(0.05)
                         draw_card(G.deck, G.hand, 100, "up", true, v)
                         count = count - 1
                     end
+                    if count < 1 then
+                        return true
+                    end
                 end
                 return true
             end
-        }))      
+        }))
     end
 }
 
@@ -720,7 +727,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))     
+        }))
     end,
     undo = function(self, undo_table)
         for _, gold_id in ipairs(undo_table) do
@@ -756,7 +763,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))     
+        }))
     end,
     undo = function(self, undo_table)
         for _, silver_id in ipairs(undo_table) do

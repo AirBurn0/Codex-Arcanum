@@ -5,14 +5,14 @@ return {
                 name = "Ignis",
                 text = {
                     "Gain {C:red}+#1#{} #2#",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_aqua = {
                 name = "Aqua",
                 text = {
                     "Gain {C:blue}+#1#{} #2#",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_terra = {
@@ -31,7 +31,7 @@ return {
                 name = "Quicksilver",
                 text = {
                     "{C:attention}+#1#{} hand size",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_salt = {
@@ -61,7 +61,7 @@ return {
                     "Converts up to",
                     "{C:attention}#1#{} selected #2#",
                     "to {C:dark_edition}Polychrome{}",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_cobalt = {
@@ -85,7 +85,7 @@ return {
                     "Create #1# {C:dark_edition}Negative{}",
                     "{C:money}$0{} {C:attention}#2#{} of",
                     "a random joker",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_soap = {
@@ -102,7 +102,7 @@ return {
                     "Enhances up to",
                     "{C:attention}#1#{} selected #2#",
                     "into {C:attention}Steel #2#",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_wax = {
@@ -110,7 +110,7 @@ return {
                 text = {
                     "Create {C:attention}#1#{} temporary",
                     "{C:attention}#2#{} of selected card",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_borax = {
@@ -119,7 +119,7 @@ return {
                     "Converts up to",
                     "{C:attention}#1#{} selected #2# into",
                     "the most common {C:attention}suit{}",
-                    "for current {C:attention}Blind{}",
+                    "for current {C:attention}Blind",
                     "{C:inactive}(Current suit: {V:1}#3#{C:inactive})"
                 }
             },
@@ -129,14 +129,14 @@ return {
                     "Enhances up to",
                     "{C:attention}#1#{} selected #2#",
                     "into {C:attention}Glass #2#",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_magnet = {
                 name = "Magnet",
                 text = {
                     "Draw {C:attention}#1#{} #2#",
-                    "of the same rank",
+                    "of the same {C:attention}rank",
                     "as the selected card"
                 }
             },
@@ -146,7 +146,7 @@ return {
                     "Enhances up to",
                     "{C:attention}#1#{} selected #2#",
                     "into {C:attention}Gold #2#",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_silver = {
@@ -155,7 +155,7 @@ return {
                     "Enhances up to",
                     "{C:attention}#1#{} selected #2#",
                     "into {C:attention}Lucky #2#",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_oil = {
@@ -163,7 +163,7 @@ return {
                 text = {
                     "Removes {C:attention}debuffs{} from",
                     "all cards in hand",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_acid = {
@@ -172,7 +172,7 @@ return {
                     "{C:attention}Destroy{} all cards",
                     "of the same rank",
                     "as#1# selected #2#",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_brimstone = {
@@ -181,7 +181,7 @@ return {
                     "{C:blue}+#1# #2#{}, {C:red}+#3# #4#{}",
                     "{C:attention}Debuff{} the left most",
                     "non-debuffed joker",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             },
             c_alchemy_uranium = {
@@ -190,7 +190,7 @@ return {
                     "Copy the selected card's",
                     "{C:attention}enhancement{}, {C:attention}seal{}, and {C:attention}edition",
                     "to {C:attention}#1#{} unenhanced #2#",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 },
                 unlock = {
                     "Use {C:attention}5",
@@ -245,7 +245,7 @@ return {
                     "Start run with the", 
                     "{C:tarot,T:v_mortar_and_pestle}Mortar and Pestle{} voucher", 
                     "Gain an {C:alchemical}Alchemical{} card", 
-                    "before each {C:attention}Boss Blind{}" 
+                    "before each {C:attention}Boss Blind" 
                 }
             },
             b_alchemy_philosopher = {
@@ -306,7 +306,7 @@ return {
                 text = { 
                     "Create a {C:attention}copy{} of", 
                     "the first {C:alchemical}Alchemical{}", 
-                    "card used each {C:attention}Blind{}",
+                    "card used each {C:attention}Blind",
                     "{C:inactive}(Must have room)"
                 } 
             },
@@ -345,7 +345,7 @@ return {
                 name = "Philosopher's Stone",
                 text = {
                     "{C:attention}Retrigger{} all played cards",
-                    "for current {C:attention}Blind{}"
+                    "for current {C:attention}Blind"
                 }
             }
         },
@@ -427,7 +427,7 @@ return {
                 name = "Alchemical",
                 text = {
                     "Can only be used",
-                    "during a {C:attention}Blind{}"
+                    "during a {C:attention}Blind"
                 }
             }
         }
