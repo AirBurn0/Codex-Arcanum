@@ -41,7 +41,9 @@ local function get_most_common_suit()
 	end
 	if G.playing_cards then
 		for _, v in pairs(G.playing_cards) do
-			suit_to_card_couner[v.base.suit] = suit_to_card_couner[v.base.suit] + 1
+            if not (SMODS.has_no_suit(v) or SMODS.has_any_suit(v)) then -- stone cards should count as no suit, wildcards should count as any suit
+                suit_to_card_couner[v.base.suit] = suit_to_card_couner[v.base.suit] + 1
+            end
 		end
 	end
 	local top_suit = "";
@@ -618,7 +620,7 @@ new_alchemical{
                 G.hand:parse_highlighted()
                 return true
             end
-        }))       
+        }))
     end,
     undo = function(self, undo_table)
         for _, borax_table in ipairs(undo_table) do
@@ -654,7 +656,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))       
+        }))
     end,
     undo = function(self, undo_table)
         for _, glass_id in ipairs(undo_table) do
@@ -692,7 +694,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))      
+        }))
     end
 }
 
@@ -719,7 +721,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))     
+        }))
     end,
     undo = function(self, undo_table)
         for _, gold_id in ipairs(undo_table) do
@@ -755,7 +757,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))     
+        }))
     end,
     undo = function(self, undo_table)
         for _, silver_id in ipairs(undo_table) do

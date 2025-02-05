@@ -7,7 +7,7 @@ function take_cards_from_discard(count)
         trigger = 'immediate',
         func = function()
             for i=1, count do --draw cards from deck
-                draw_card(G.discard, G.deck, i * 100 / count,'up', nil ,nil, 0.005, i % 2 == 0, nil, math.max((21 - i)/ 20, 0.7))
+                draw_card(G.discard, G.deck, i * 100 / count, 'up', nil, nil, 0.005, i % 2 == 0, nil, math.max((21 - i)/ 20, 0.7))
             end
             return true
         end
