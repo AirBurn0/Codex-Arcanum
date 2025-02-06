@@ -18,7 +18,7 @@ return {
             c_alchemy_terra = {
                 name = "Terra",
                 text = {
-                    "Reduce {C:attention}Blind score{} by {C:attention}#1#%{}"
+                    "Reduce {C:attention}Blind score{} by {C:attention}#1#%"
                 }
             },
             c_alchemy_aero = {
@@ -43,7 +43,7 @@ return {
             c_alchemy_sulfur = {
                 name = "Sulfur",
                 text = {
-                    "Reduce {C:blue}hands{} to {C:blue}1{}",
+                    "Reduce {C:blue}hands{} to {C:blue}1",
                     "Gain {C:money}$#1#{} for each",
                     "hand removed"
                 }
@@ -60,7 +60,7 @@ return {
                 text = {
                     "Converts up to",
                     "{C:attention}#1#{} selected #2#",
-                    "to {C:dark_edition}Polychrome{}",
+                    "to {C:dark_edition}Polychrome",
                     "for current {C:attention}Blind"
                 }
             },
@@ -76,13 +76,13 @@ return {
                 name = "Arsenic",
                 text = {
                     "{C:attention}Swap{} your current",
-                    "{C:blue}hands{} and {C:red}discards{}"
+                    "{C:blue}hands{} and {C:red}discards"
                 }
             },
             c_alchemy_antimony = {
                 name = "Antimony",
                 text = {
-                    "Create #1# {C:dark_edition}Negative{}",
+                    "Create #1# {C:dark_edition}Negative",
                     "{C:eternal}eternal{} {C:attention}#2#{} of",
                     "a random joker",
                     "for current {C:attention}Blind"
@@ -91,7 +91,7 @@ return {
             c_alchemy_soap = {
                 name = "Soap",
                 text = {
-                    "Replace up to {C:attention}#1#{}",
+                    "Replace up to {C:attention}#1#",
                     "selected #2# with",
                     "#2# from your deck"
                 }
@@ -118,7 +118,7 @@ return {
                 text = {
                     "Converts up to",
                     "{C:attention}#1#{} selected #2# into",
-                    "the most common {C:attention}suit{}",
+                    "the most common {C:attention}suit",
                     "for current {C:attention}Blind",
                     "{C:inactive}(Current suit: {V:1}#3#{C:inactive})"
                 }
@@ -178,7 +178,7 @@ return {
             c_alchemy_brimstone = {
                 name = "Brimstone",
                 text = {
-                    "{C:blue}+#1# #2#{}, {C:red}+#3# #4#{}",
+                    "{C:blue}+#1# #2#{}, {C:red}+#3# #4#",
                     "{C:attention}Debuff{} the left most",
                     "non-debuffed joker",
                     "for current {C:attention}Blind"
@@ -214,7 +214,7 @@ return {
                 text = {
                     "Start run with the",
                     "{C:tarot,T:v_alchemical_merchant}Alchemical Merchant{} voucher",
-                    "and a copy of {C:tarot,T:c_seeker}The Seeker{}"
+                    "and a copy of {C:tarot,T:c_seeker}The Seeker"
                 }
             }
         },
@@ -247,7 +247,7 @@ return {
             j_alchemy_chain_reaction = {
                 name = "Chain Reaction", 
                 text = { 
-                    "Create a {C:dark_edition}Negative{} {C:attention}copy{}", 
+                    "Create a {C:dark_edition}Negative{} {C:attention}copy", 
                     "of the first {C:alchemical}Alchemical{} ", 
                     "card used each {C:attention}Blind" 
                 } 
@@ -273,11 +273,11 @@ return {
             j_alchemy_breaking_bozo = {
                 name = "Breaking Bozo", 
                 text = { 
-                    "After you use an {C:alchemical}Alchemical{}",
+                    "After you use an {C:alchemical}Alchemical",
                     "card, does one the following: ",
-                    "Reduce {C:attention}Blind score{} by {C:attention}#1#%{}",
+                    "Reduce {C:attention}Blind score{} by {C:attention}#1#%",
                     "Draw {C:attention}#2#{} cards", 
-                    "Earn {C:money}$#3#{}" 
+                    "Earn {C:money}$#3#" 
                 }
             },
             j_alchemy_catalyst_joker = {
