@@ -371,6 +371,12 @@ return {
                     "{C:alchemical}Alchemical{} cards from",
                     "{C:alchemical}Alchemy Packs{} may come",
                     "with the {C:dark_edition}Negative{} Edition"
+                },
+                unlock = {
+                    "Select a total of {C:attention}#1#",
+                    "{C:alchemical}Alchemical{} cards from any",
+                    "{C:alchemical}Alchemy Pack",
+                    "{C:inactive}(#2#)",
                 }
             },
             v_alchemy_alchemical_merchant = {
@@ -387,6 +393,12 @@ return {
                     "{C:alchemical}Alchemical{} cards appear",
                     "{C:attention}2X{} more frequently",
                     "in the shop"
+                },
+                unlock = {
+                    "Buy a total of",
+                    "{C:attention}#1#{C:alchemical} Alchemical{} cards",
+                    "from the shop",
+                    "{C:inactive}(#2#)",
                 }
             },
         },

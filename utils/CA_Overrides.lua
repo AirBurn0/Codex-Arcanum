@@ -208,7 +208,10 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
     if card.area then
         card.area:remove_card(card)
     end
-
+    if card.ability.set == "Alchemical" then
+        local stat = "c_alchemy_alchemicals_selected"
+        inc_career_stat(stat, 1)
+    end 
     if card.ability.set == "Alchemical" or card.ability.name == "c_alchemy_philosopher_stone" then
         card:add_to_deck()
         G.consumeables:emplace(card)
@@ -308,11 +311,12 @@ end
 -- iterate over alchemicals to check for unlocks
 local check_for_unlockref = check_for_unlock
 function check_for_unlock(args)
-    if next(args) and not G.GAME.seeded then
-        for _, v in ipairs(G.P_CENTER_POOLS["Alchemical"]) do
-            if not v.unlocked and v.unlock then
-                v:unlock(args)
-            end
+    if not next(args) or G.GAME.seeded then
+        return check_for_unlockref(args)
+    end
+    for _, v in ipairs(G.P_CENTER_POOLS["Alchemical"]) do
+        if not v.unlocked and v.unlock then
+            v:unlock(args)
         end
     end
     return check_for_unlockref(args)

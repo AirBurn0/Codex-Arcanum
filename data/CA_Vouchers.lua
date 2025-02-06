@@ -17,7 +17,9 @@ local function new_voucher(voucher)
         requires = voucher.requires,
         cost = voucher.cost or 10,
         discovered = false,
-        unlocked = not voucher.locked,
+        unlocked = not voucher.unlock_condition,
+        locked_loc_vars = voucher.locked_loc_vars,
+        unlock_condition = voucher.unlock_condition,
         redeem = voucher.redeem or function() end
     }
 end
@@ -40,6 +42,15 @@ new_voucher{
     key = "cauldron",
     config = { extra = 1 },
     pos = { x = 0, y = 1 },
+    unlocked = false,
+    unlock_condition = {
+        type = "c_alchemy_alchemicals_selected",
+        extra = 40
+    },
+    locked_loc_vars = function(self, info_queue)
+        local conditions = self.unlock_condition
+        return { vars = { conditions.extra, G.PROFILES[G.SETTINGS.profile].career_stats[conditions.type] or 0 } }
+    end,
     requires = { "v_alchemy_mortar_and_pestle" }
 }
 
@@ -52,7 +63,7 @@ new_voucher{
             func = function()
                 G.GAME.alchemical_rate = center and center.ability.extra or self.config.extra
                 return true
-            end 
+            end
         }))
     end
 }
@@ -62,6 +73,15 @@ new_voucher{
     config = { extra = 4.8 * 2 },
     pos = { x = 1, y = 1 },
     requires = { "v_alchemy_alchemical_merchant" },
+    unlocked = false,
+    unlock_condition = {
+        type = "c_alchemy_alchemicals_bought",
+        extra = 10
+    },
+    locked_loc_vars = function(self, info_queue)
+        local conditions = self.unlock_condition
+        return { vars = { conditions.extra, G.PROFILES[G.SETTINGS.profile].career_stats[conditions.type] or 0 } }
+    end,
     redeem = function(self, center)
         G.E_MANAGER:add_event(Event({ 
             func = function()
