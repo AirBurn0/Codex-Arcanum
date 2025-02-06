@@ -310,7 +310,7 @@ local check_for_unlockref = check_for_unlock
 function check_for_unlock(args)
     if next(args) and not G.GAME.seeded then
         for _, v in ipairs(G.P_CENTER_POOLS["Alchemical"]) do
-            if not v.unlocked and v.unlock then
+            if not v.unlocked and v.unlock and args.type == v.unlock_condition.type then
                 v:unlock(args)
             end
         end
