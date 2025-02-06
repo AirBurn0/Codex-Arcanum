@@ -7,7 +7,7 @@ SMODS.Atlas{
 
 -- kinda default constructor
 local function new_voucher(voucher)
-    -- create joker
+    -- create voucher
     SMODS.Voucher {
         key = voucher.key,
         pos = voucher.pos or { x = 0, y = 0 },
