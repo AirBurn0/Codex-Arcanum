@@ -376,8 +376,9 @@ return {
             v_alchemy_alchemical_merchant = {
                 name = "Alchemical Merchant",
                 text = {
-                    "{C:alchemical}Alchemical{} cards can",
-                    "appear in the shop"
+                    "{C:alchemical}Alchemical{C:attention} cards{} can",
+                    "be purchased",
+                    "from the {C:attention}shop"
                 }
             },
             v_alchemy_alchemical_tycoon = {
