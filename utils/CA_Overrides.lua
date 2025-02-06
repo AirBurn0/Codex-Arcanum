@@ -360,7 +360,7 @@ function new_round()
         trigger = "immediate",
         func = function()
             if G.GAME.blind:get_type() == "Boss" then
-                G.GAME.selected_back:trigger_effect({ context = "start_boss" })
+                G.GAME.selected_back:trigger_effect{ context = "start_boss" }
             end
             return true
         end

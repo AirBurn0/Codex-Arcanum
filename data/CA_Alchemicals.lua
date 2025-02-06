@@ -139,7 +139,7 @@ local function new_alchemical(alchemical)
             else -- or else just evaluate
                 alchemical.use(self, card, area, copier)
             end
-            check_for_unlock({type = "used_alchemical"})
+            check_for_unlock{type = "used_alchemical"}
             return true
         end,
         undo = alchemical.undo
@@ -835,7 +835,7 @@ new_alchemical{
                         end 
                     end
                 end
-                SMODS.calculate_context({ remove_playing_cards = true, removed = removed_table })
+                SMODS.calculate_context{ remove_playing_cards = true, removed = removed_table }
                 return true
             end
         }))

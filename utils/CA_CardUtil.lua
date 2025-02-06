@@ -59,7 +59,7 @@ function alchemy_card_eval_text(card, text, sound, color, text_scale, hold, dela
 		card_aligned = "tm"
 	end
 	local text_func = function()
-		attention_text({
+		attention_text{
 			text = text,
 			scale = text_scale or 1, 
 			hold = hold or 0.6,
@@ -67,7 +67,7 @@ function alchemy_card_eval_text(card, text, sound, color, text_scale, hold, dela
 			align = card_aligned,
 			major = card,
 			offset = {x = 0, y = y_off}
-		})
+		}
 		play_sound(sound, 0.98 + 0.04 * math.random(), 1)
 		if after_func and type(after_func) == "function" then
 			after_func()
