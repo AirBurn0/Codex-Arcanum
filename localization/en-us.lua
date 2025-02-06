@@ -193,9 +193,10 @@ return {
                     "for current {C:attention}Blind"
                 },
                 unlock = {
-                    "Use {C:attention}5",
+                    "Use {C:attention}#1#",
                     "{E:1,C:alchemical}Alchemical{} cards in",
-                    "the same run"
+                    "the same run",
+                    "{C:inactive}(#2#)"
                 }
             },
             c_alchemy_lithium = {

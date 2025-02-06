@@ -98,6 +98,8 @@ local function new_alchemical(alchemical)
         loc_vars = alchemical.loc_vars,
         unlocked = not alchemical.unlock and true or false,
         unlock = alchemical.unlock,
+        unlock_condition = alchemical.unlock_condition,
+        locked_loc_vars = alchemical.locked_loc_vars,
         discovered = false,
         config = alchemical.config or {},
         cost = alchemical.cost or 3,
@@ -800,7 +802,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))   
+        }))
     end,
     undo = function(self, undo_table)
         for k, card in ipairs(undo_table) do
@@ -876,7 +878,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))    
+        }))
     end
 }
 
@@ -889,9 +891,13 @@ new_alchemical{
     end,
     config = { select_cards = "1", extra = 3 },
     pos = { x = 5, y = 3 },
-    unlock = function(card, args) 
-        if args.type == 'used_alchemical' and G.GAME.consumeable_usage_total.alchemical > 4 then
-            unlock_card(card)
+    locked_loc_vars = function(self, info_queue, center)
+        return { vars = { self.unlock_condition.extra, G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical or 0 } }
+    end,
+    unlock_condition = { type = "used_alchemical", extra = 5 },
+    unlock = function(self, args) 
+        if G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra then
+            unlock_card(self)
             return true
         end
     end,
