@@ -548,6 +548,15 @@ new_alchemical{
     end,
     config = { select_cards = 4 },
     pos = { x = 1, y = 2 },
+    locked_loc_vars = function(self, info_queue, center)
+        local condition = self.unlock_condition.extra.count
+        local loc = { vars = { condition, plural("card", condition) } }
+        if G.STAGE == G.STAGES.RUN then
+            loc.main_end = get_progress_info{ count_enhanced_cards("Steel Card") }
+        end
+        return loc
+    end,
+    unlock_condition = { type = "modify_deck", extra = { enhancement = "Steel Card", count = 8} },
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -670,11 +679,11 @@ new_alchemical{
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ count_enhanced_cards("m_glass") }
+            loc.main_end = get_progress_info{ count_enhanced_cards("Glass Card") }
         end
         return loc
     end,
-    unlock_condition = { type = "modify_deck", extra = { enhancement = "m_glass", count = 8} },
+    unlock_condition = { type = "modify_deck", extra = { enhancement = "Glass Card", count = 8} },
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -749,11 +758,11 @@ new_alchemical{
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ count_enhanced_cards("m_gold") }
+            loc.main_end = get_progress_info{ count_enhanced_cards("Gold Card") }
         end
         return loc
     end,
-    unlock_condition = { type = "modify_deck", extra = { enhancement = "m_gold", count = 8} },
+    unlock_condition = { type = "modify_deck", extra = { enhancement = "Gold Card", count = 8} },
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -794,11 +803,11 @@ new_alchemical{
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ count_enhanced_cards("m_lucky") }
+            loc.main_end = get_progress_info{ count_enhanced_cards("Lucky Card") }
         end
         return loc
     end,
-    unlock_condition = { type = "modify_deck", extra = { enhancement = "m_lucky", count = 8} },
+    unlock_condition = { type = "modify_deck", extra = { enhancement = "Lucky Card", count = 8} },
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -1060,11 +1069,11 @@ new_alchemical{
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ count_enhanced_cards("m_wild") }
+            loc.main_end = get_progress_info{ count_enhanced_cards("Wild Card") }
         end
         return loc
     end,
-    unlock_condition = { type = "modify_deck", extra = { enhancement = "m_wild", count = 6} },
+    unlock_condition = { type = "modify_deck", extra = { enhancement = "Wild Card", count = 6} },
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -1105,11 +1114,11 @@ new_alchemical{
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ count_enhanced_cards("m_stone") }
+            loc.main_end = get_progress_info{ count_enhanced_cards("Stone Card") }
         end
         return loc
     end,
-    unlock_condition = { type = "modify_deck", extra = { enhancement = "m_stone", count = 8} },
+    unlock_condition = { type = "modify_deck", extra = { enhancement = "Stone Card", count = 8} },
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
