@@ -105,7 +105,7 @@ return {
                     "for current {C:attention}Blind"
                 },
                 unlock = {
-                    "Have at least #1#",
+                    "Have at least {C:attention}#1#",
                     "{E:1,C:attention}Steel #2#{} in",
                     "your deck"
                 }
@@ -137,7 +137,7 @@ return {
                     "for current {C:attention}Blind"
                 },
                 unlock = {
-                    "Have at least #1#",
+                    "Have at least {C:attention}#1#",
                     "{E:1,C:attention}Glass #2#{} in",
                     "your deck"
                 }
@@ -163,7 +163,7 @@ return {
                     "for current {C:attention}Blind"
                 },
                 unlock = {
-                    "Have at least #1#",
+                    "Have at least {C:attention}#1#",
                     "{E:1,C:attention}Gold #2#{} in",
                     "your deck"
                 }
@@ -177,7 +177,7 @@ return {
                     "for current {C:attention}Blind"
                 },
                 unlock = {
-                    "Have at least #1#",
+                    "Have at least {C:attention}#1#",
                     "{E:1,C:attention}Lucky #2#{} in",
                     "your deck"
                 }
@@ -221,7 +221,6 @@ return {
                     "{E:1,C:alchemical}Alchemical{} cards in",
                     "the same run"
                 },
-                unlock_counter = "{C:inactive}(#1#)"
             },
             c_alchemy_lithium = {
                 name = "Lithium",
@@ -256,7 +255,7 @@ return {
                     "for current {C:attention}Blind"
                 },
                 unlock = {
-                    "Have at least #1#",
+                    "Have at least {C:attention}#1#",
                     "{E:1,C:attention}Wild #2#{} in",
                     "your deck"
                 }
@@ -270,7 +269,7 @@ return {
                     "for current {C:attention}Blind"
                 },
                 unlock = {
-                    "Have at least #1#",
+                    "Have at least {C:attention}#1#",
                     "{E:1,C:attention}Stone #2#{} in",
                     "your deck"
                 }
@@ -480,6 +479,11 @@ return {
                     "Can only be used",
                     "during a {C:attention}Blind"
                 }
+            },
+            a_alchemy_unlock_counter = {
+                text = {
+                    "{C:inactive}(#1#)"
+                }
             }
         }
     },
@@ -491,8 +495,6 @@ return {
             p_alchemy_plus_card = "+2 Cards",
             b_stat_alchemicals = "Alchemicals",
             b_alchemical_cards = "Alchemical Cards",
-        },
-        v_dictionary = {
             a_alchemy_reduce_blind = "Reduce score"
         },
         --I'm not a schizo, different languages ​​may have several variants of plural form

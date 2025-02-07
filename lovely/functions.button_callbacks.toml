@@ -1,7 +1,7 @@
 manifest = { version = "1.0.0", dump_lua = true, priority = -10 }
 
 patches = [
-    ## Replace locked back for Alchemicals in Achievement view
+    ## Increment total alchemicals bought in shop stat
     { pattern = { target = "functions/button_callbacks.lua", pattern = "elseif c1.config.center.set == 'Tarot' then", position = "before", times = 1, match_indent = true, payload = '''
 elseif c1.config.center.set == 'Alchemical' then
     inc_career_stat('c_alchemy_alchemicals_bought', 1)''' } }

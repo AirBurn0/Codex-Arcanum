@@ -224,7 +224,7 @@ new_joker{
                     return true
                 end
             }))
-            return { message = localize{ type = "variable", key= "a_alchemy_reduce_blind", vars = { difference } }, colour = G.C.SECONDARY_SET.Alchemy }
+            return { message = localize("a_alchemy_reduce_blind"), colour = G.C.SECONDARY_SET.Alchemy }
         end
     end
 }
