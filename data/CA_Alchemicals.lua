@@ -92,6 +92,16 @@ local function get_progress_info(card_def, vars)
     return main_end[1]
 end
 
+local function count_enhanced_cards(enhance)
+    local count = 0
+    for _, v in pairs(G.playing_cards) do
+        if v.ability.name == enhance then 
+            count = count + 1 
+        end
+    end
+    return count
+end
+
 -- kinda default constructor
 local function new_alchemical(alchemical)
     -- can_use function builder
@@ -118,7 +128,7 @@ local function new_alchemical(alchemical)
         atlas = alchemical.atlas or "alchemicals_atlas",
         pos = alchemical.pos or { x = 3, y = 5 }, -- default is stone lol
         loc_vars = alchemical.loc_vars,
-        unlocked = not alchemical.unlock and true or false,
+        unlocked = not (alchemical.unlock or alchemical.unlock_condition) and true or false,
         unlock = alchemical.unlock,
         unlock_condition = alchemical.unlock_condition,
         locked_loc_vars = alchemical.locked_loc_vars,
@@ -660,6 +670,15 @@ new_alchemical{
     end,
     config = { select_cards = 4 },
     pos = { x = 4, y = 2 },
+    locked_loc_vars = function(self, info_queue, center)
+        local condition = self.unlock_condition.extra.count
+        local loc = { vars = { condition, plural("card", condition) } }
+        if G.STAGE == G.STAGES.RUN then
+            loc.main_end = get_progress_info(self, { count_enhanced_cards("m_glass") })
+        end
+        return loc
+    end,
+    unlock_condition = { type = "modify_deck", extra = { enhancement = "m_glass", count = 8} },
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -730,6 +749,15 @@ new_alchemical{
     end,
     config = { select_cards = 4 },
     pos = { x = 0, y = 3 },
+    locked_loc_vars = function(self, info_queue, center)
+        local condition = self.unlock_condition.extra.count
+        local loc = { vars = { condition, plural("card", condition) } }
+        if G.STAGE == G.STAGES.RUN then
+            loc.main_end = get_progress_info(self, { count_enhanced_cards("m_gold") })
+        end
+        return loc
+    end,
+    unlock_condition = { type = "modify_deck", extra = { enhancement = "m_gold", count = 8} },
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -766,6 +794,15 @@ new_alchemical{
     end,
     config = { select_cards = 4 },
     pos = { x = 1, y = 3 },
+    locked_loc_vars = function(self, info_queue, center)
+        local condition = self.unlock_condition.extra.count
+        local loc = { vars = { condition, plural("card", condition) } }
+        if G.STAGE == G.STAGES.RUN then
+            loc.main_end = get_progress_info(self, { count_enhanced_cards("m_lucky") })
+        end
+        return loc
+    end,
+    unlock_condition = { type = "modify_deck", extra = { enhancement = "m_lucky", count = 8} },
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -973,7 +1010,6 @@ new_alchemical{
     end,
     use = function(self, card, area, copier, undo_table)
         for _, v in ipairs(G.jokers.highlighted) do
-            -- lldebugger.start()
             G.E_MANAGER:add_event(Event({
                 trigger = "after",
                 delay = 0.1,
@@ -1024,9 +1060,15 @@ new_alchemical{
     end,
     config = { select_cards = 3 },
     pos = { x = 2, y = 4 },
-    unlock = function(card, args) 
-        return false
+    locked_loc_vars = function(self, info_queue, center)
+        local condition = self.unlock_condition.extra.count
+        local loc = { vars = { condition, plural("card", condition) } }
+        if G.STAGE == G.STAGES.RUN then
+            loc.main_end = get_progress_info(self, { count_enhanced_cards("m_wild") })
+        end
+        return loc
     end,
+    unlock_condition = { type = "modify_deck", extra = { enhancement = "m_wild", count = 6} },
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -1063,9 +1105,15 @@ new_alchemical{
     end,
     config = { select_cards = 4 },
     pos = { x = 3, y = 4 },
-    unlock = function(card, args) 
-        return false
+    locked_loc_vars = function(self, info_queue, center)
+        local condition = self.unlock_condition.extra.count
+        local loc = { vars = { condition, plural("card", condition) } }
+        if G.STAGE == G.STAGES.RUN then
+            loc.main_end = get_progress_info(self, { count_enhanced_cards("m_stone") })
+        end
+        return loc
     end,
+    unlock_condition = { type = "modify_deck", extra = { enhancement = "m_stone", count = 8} },
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",

@@ -103,6 +103,11 @@ return {
                     "{C:attention}#1#{} selected #2#",
                     "into {C:attention}Steel #2#",
                     "for current {C:attention}Blind"
+                },
+                unlock = {
+                    "Have at least #1#",
+                    "{E:1,C:attention}Steel #2#{} in",
+                    "your deck"
                 }
             },
             c_alchemy_wax = {
@@ -130,6 +135,11 @@ return {
                     "{C:attention}#1#{} selected #2#",
                     "into {C:attention}Glass #2#",
                     "for current {C:attention}Blind"
+                },
+                unlock = {
+                    "Have at least #1#",
+                    "{E:1,C:attention}Glass #2#{} in",
+                    "your deck"
                 }
             },
             c_alchemy_magnet = {
@@ -138,6 +148,10 @@ return {
                     "Draw {C:attention}#1#{} #2#",
                     "of the same {C:attention}rank",
                     "as the selected card"
+                },
+                unlock = {
+                    "Discard a",
+                    "{C:attention}Two Pair"
                 }
             },
             c_alchemy_gold = {
@@ -147,6 +161,11 @@ return {
                     "{C:attention}#1#{} selected #2#",
                     "into {C:attention}Gold #2#",
                     "for current {C:attention}Blind"
+                },
+                unlock = {
+                    "Have at least #1#",
+                    "{E:1,C:attention}Gold #2#{} in",
+                    "your deck"
                 }
             },
             c_alchemy_silver = {
@@ -156,6 +175,11 @@ return {
                     "{C:attention}#1#{} selected #2#",
                     "into {C:attention}Lucky #2#",
                     "for current {C:attention}Blind"
+                },
+                unlock = {
+                    "Have at least #1#",
+                    "{E:1,C:attention}Lucky #2#{} in",
+                    "your deck"
                 }
             },
             c_alchemy_oil = {
@@ -207,7 +231,8 @@ return {
                     "selected {C:attention}Joker"
                 },
                 unlock = {
-                    "Coming soon..."
+                    "Beat {E:1,C:attention}Crimson Heart",
+                    "or {E:1,C:attention}Verdant Leaf"
                 }
             },
             c_alchemy_honey = {
@@ -218,7 +243,8 @@ return {
                     "{C:attention}Boss Blind{} effect"
                 },
                 unlock = {
-                    "Coming soon..."
+                    "Beat {E:1,C:attention}The Wall{} or",
+                    "{E:1,C:attention}Violet Vessel"
                 }
             },
             c_alchemy_chlorine = {
@@ -230,7 +256,9 @@ return {
                     "for current {C:attention}Blind"
                 },
                 unlock = {
-                    "Coming soon..."
+                    "Have at least #1#",
+                    "{E:1,C:attention}Wild #2#{} in",
+                    "your deck"
                 }
             },
             c_alchemy_stone = {
@@ -242,7 +270,9 @@ return {
                     "for current {C:attention}Blind"
                 },
                 unlock = {
-                    "Coming soon..."
+                    "Have at least #1#",
+                    "{E:1,C:attention}Stone #2#{} in",
+                    "your deck"
                 }
             }
         },
