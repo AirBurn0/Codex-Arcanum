@@ -195,9 +195,9 @@ return {
                 unlock = {
                     "Use {C:attention}#1#",
                     "{E:1,C:alchemical}Alchemical{} cards in",
-                    "the same run",
-                    "{C:inactive}(#2#)"
-                }
+                    "the same run"
+                },
+                unlock_counter = "{C:inactive}(#1#)"
             },
             c_alchemy_lithium = {
                 name = "Lithium",

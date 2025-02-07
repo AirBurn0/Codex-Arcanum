@@ -70,6 +70,16 @@ local function plural(word, count)
     return plurals(count)
 end
 
+local function get_progress_info(card_def, vars)
+    local info = G.localization.descriptions[card_def.set][card_def.name]
+    local temp = info.unlock_parsed
+    info.unlock_parsed = { loc_parse_string(info.unlock_counter) }
+    local main_end = {}
+    localize{ type = "unlocks", set = card_def.set, key = card_def.name, nodes = main_end, vars = vars }
+    info.unlock_parsed = temp
+    return main_end[1]
+end
+
 -- kinda default constructor
 local function new_alchemical(alchemical)
     -- can_use function builder
@@ -887,15 +897,19 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = math.max(1, alchemy_ability_round(center.ability.extra))
-        return { vars = { extra, plural("card", extra) } } 
+        return { vars = { extra, plural("card", extra) } }
     end,
     config = { select_cards = "1", extra = 3 },
     pos = { x = 5, y = 3 },
     locked_loc_vars = function(self, info_queue, center)
-        return { vars = { self.unlock_condition.extra, G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical or 0 } }
+        local loc = { vars = { self.unlock_condition.extra } }
+        if G.STAGE == G.STAGES.RUN then
+            loc.main_end = get_progress_info(self, { G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical or 0 })
+        end
+        return loc
     end,
     unlock_condition = { type = "used_alchemical", extra = 5 },
-    unlock = function(self, args) 
+    unlock = function(self, args)
         if G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra then
             unlock_card(self)
             return true
