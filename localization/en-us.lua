@@ -196,8 +196,7 @@ return {
                     "Use {C:attention}#1#",
                     "{E:1,C:alchemical}Alchemical{} cards in",
                     "the same run"
-                },
-                unlock_counter = "{C:inactive}(#1#)"
+                }
             }
         },
         Back = {
@@ -391,6 +390,11 @@ return {
                     "Can only be used",
                     "during a {C:attention}Blind"
                 }
+            },
+            a_alchemy_unlock_counter = {
+                text = {
+                    "{C:inactive}(#1#)"
+                }
             }
         }
     },
@@ -402,8 +406,6 @@ return {
             p_alchemy_plus_card = "+2 Cards",
             b_stat_alchemicals = "Alchemicals",
             b_alchemical_cards = "Alchemical Cards",
-        },
-        v_dictionary = {
             a_alchemy_reduce_blind = "Reduce score"
         },
         --I'm not a schizo, different languages ​​may have several variants of plural form
