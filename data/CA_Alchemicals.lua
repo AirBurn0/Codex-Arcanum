@@ -908,7 +908,7 @@ new_alchemical{
         end
         return loc
     end,
-    unlock_condition = { type = "used_alchemical", extra = 5 },
+    unlock_condition = { type = "used_alchemical", extra = 10 },
     unlock = function(self, args)
         if G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra then
             unlock_card(self)
