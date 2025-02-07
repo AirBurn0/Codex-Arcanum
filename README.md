@@ -19,6 +19,10 @@ Except for Fork changes, this branch also introduces:
 * Uranium require 10 (was 5) Alchemical cards to be used in the same run to be unlocked
 * Cauldron voucher require 40 Alchemical cards to be selected from any Alchemy Pack to be unlocked
 * Alchemical Tycoon voucher require 10 Alchemical cards to be bought from shop to be unlocked
+* New Alchemical - Lithium: Removes Eternal, Perishable, Rental and Debuff from selected Joker
+* New Alchemical - Honey: x2 Blind score, disables Boss Blind effect (similar to Chicot / selling Luchador)
+* New Alchemical - Chlorine: Enhances up to 3 cards to Wild card
+* New Alchemical - Stone: Enhances up to 3 cards to Stone card
 ---
 
 <p align="center">

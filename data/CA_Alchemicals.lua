@@ -70,6 +70,18 @@ local function plural(word, count)
     return plurals(count)
 end
 
+local function mult_blind_score(by_percent)
+    G.GAME.blind.chips = math.floor(G.GAME.blind.chips * math.max(0, by_percent))
+    G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+    G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
+    G.HUD_blind:recalculate() 
+    G.hand_text_area.blind_chips:juice_up()
+    if not silent then 
+        play_sound("chips2") 
+    end
+    G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
+end
+
 local function get_progress_info(card_def, vars)
     local info = G.localization.descriptions[card_def.set][card_def.name]
     local temp = info.unlock_parsed
@@ -213,15 +225,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                G.GAME.blind.chips = math.floor(G.GAME.blind.chips * math.max(0, (1 - card.ability.extra)))
-                G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-                G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
-                G.HUD_blind:recalculate() 
-                G.hand_text_area.blind_chips:juice_up()
-                if not silent then 
-                    play_sound("chips2") 
-                end
-                G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
+                   mult_blind_score(1 - card.ability.extra)
                 return true
             end
         }))
@@ -962,12 +966,27 @@ new_alchemical{
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         return { vars = { } } 
     end,
-    config = { select_cards = 4 },
     pos = { x = 0, y = 4 },
+    can_use = function() return #G.jokers.highlighted > 0 and G.STATE ~= G.STATES.HAND_PLAYED and G.STATE ~= G.STATES.DRAW_TO_HAND and G.STATE ~= G.STATES.PLAY_TAROT end,
     unlock = function(card, args) 
         return false
     end,
     use = function(self, card, area, copier, undo_table)
+        for _, v in ipairs(G.jokers.highlighted) do
+            -- lldebugger.start()
+            G.E_MANAGER:add_event(Event({
+                trigger = "after",
+                delay = 0.1,
+                func = function()
+                    v:juice_up(1, 0.5)
+                    v:set_debuff(false)
+                    v:set_eternal()
+                    v.ability.perishable = nil
+                    v:set_rental()
+                    return true
+                end
+            }))
+        end
     end
 }
 
@@ -975,29 +994,62 @@ new_alchemical{
     key = "honey",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
-        return { vars = { } } 
+        return { vars = { math.max(0, center.ability.extra) } } 
     end,
-    config = { select_cards = 4 },
+    config = { extra = 2 },
     pos = { x = 1, y = 4 },
     unlock = function(card, args) 
         return false
     end,
     use = function(self, card, area, copier, undo_table)
+        G.E_MANAGER:add_event(Event({
+            trigger = "after",
+            delay = 0.1,
+            func = function()
+                G.GAME.blind:disable()
+                mult_blind_score(math.max(0, card.ability.extra))
+                return true
+            end
+        }))
     end
 }
 
 new_alchemical{
     key = "chlorine",
     loc_vars = function(self, info_queue, center)
+        info_queue[#info_queue+1] = G.P_CENTERS.m_wild
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
-        return { vars = { } } 
+        local select_cards = max_selected_cards(center)
+        return { vars = { select_cards, plural("card", select_cards) } } 
     end,
-    config = { select_cards = 4 },
+    config = { select_cards = 3 },
     pos = { x = 2, y = 4 },
     unlock = function(card, args) 
         return false
     end,
     use = function(self, card, area, copier, undo_table)
+        G.E_MANAGER:add_event(Event({
+            trigger = "after",
+            delay = 0.1,
+            func = function()
+                for k, _card in ipairs(G.hand.highlighted) do
+                    delay(0.05)
+                    _card:juice_up(1, 0.5)
+                    _card:set_ability(G.P_CENTERS.m_wild)
+                    table.insert(undo_table, _card.unique_val)
+                end
+                return true
+            end
+        }))     
+    end,
+    undo = function(self, undo_table)
+        for _, silver_id in ipairs(undo_table) do
+            for k, card in ipairs(G.playing_cards) do
+                if card.unique_val == silver_id and card.config.center == G.P_CENTERS.m_wild then
+                    card:set_ability(G.P_CENTERS.c_base, nil, true)
+                end
+            end
+        end
     end
 }
 

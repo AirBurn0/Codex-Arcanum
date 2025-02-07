@@ -202,7 +202,9 @@ return {
             c_alchemy_lithium = {
                 name = "Lithium",
                 text = {
-                    "Coming soon..."
+                    "Removes all {C:attention}bad",
+                    "effects from",
+                    "selected {C:attention}Joker"
                 },
                 unlock = {
                     "Coming soon..."
@@ -211,7 +213,9 @@ return {
             c_alchemy_honey = {
                 name = "Honey",
                 text = {
-                    "Coming soon..."
+                    "Increases {C:attention}Blind score{}",
+                    "by {C:attention}x#1#{}, disables",
+                    "{C:attention}Boss Blind{} effect"
                 },
                 unlock = {
                     "Coming soon..."
@@ -220,7 +224,10 @@ return {
             c_alchemy_chlorine = {
                 name = "Chlorine",
                 text = {
-                    "Coming soon..."
+                    "Enhances up to",
+                    "{C:attention}#1#{} selected #2#",
+                    "into {C:attention}Wild #2#",
+                    "for current {C:attention}Blind"
                 },
                 unlock = {
                     "Coming soon..."

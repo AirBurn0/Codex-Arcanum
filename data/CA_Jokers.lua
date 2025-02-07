@@ -204,8 +204,8 @@ new_joker{
             return
         end
         local choice = pseudorandom(pseudoseed("breaking_bozo"))
-        if choice < 0.33 or (not G.GAME.blind.in_blind and context.consumeable.config.center.key == "c_alchemy_salt") then -- jesse we need to cook
-            return { dollars = card.ability.extra.money * (G.GAME.blind.in_blind and 2 or 1) } -- there is no other option if you not in blind so x2 money seems fair.
+        if choice < 0.33 or not G.GAME.blind.in_blind then
+            return { dollars = card.ability.extra.money * (G.GAME.blind.in_blind and context.consumeable.config.center.key == "c_alchemy_salt" and 2 or 1) } -- jesse we need to cook
         elseif choice < 0.66 then
             alchemy_draw_cards(alchemy_ability_round(card.ability.extra.cards))
             return { message = localize("p_alchemy_plus_card"), colour = G.C.SECONDARY_SET.Alchemy }
