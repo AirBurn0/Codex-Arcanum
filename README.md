@@ -16,6 +16,9 @@ Except for Fork changes, this branch also introduces:
 * Blueprint that copies Studious Joker now can be sold for Alchemical! (I'm sure everyone wanted this)
 * Chain Reaction now **CAN** be copied by Blueprint, but will not give Negative edition to copies
 * Antimony makes copied Jokers cost $0 instead of being Eternal (now you can freely sell it to win Boss Blind)
+* Uranium require 10 (was 5) Alchemical cards to be used in the same run to be unlocked
+* Cauldron voucher require 40 Alchemical cards to be selected from any Alchemy Pack to be unlocked
+* Alchemical Tycoon voucher require 10 Alchemical cards to be bought from shop to be unlocked
 ---
 
 <p align="center">
