@@ -312,7 +312,7 @@ function check_for_unlock(args)
         return check_for_unlockref(args)
     end
     for _, v in ipairs(G.P_CENTER_POOLS["Alchemical"]) do
-        if not v.unlocked and v.unlock and args.type == v.unlock_condition.type then
+        if not v.unlocked and v.unlock and (not v.unlock_condition or args.type == v.unlock_condition.type) then
             v:unlock(args)
         end
     end
