@@ -305,7 +305,8 @@ return {
                 text = {
                     "Start run with the",
                     "{C:tarot,T:v_alchemy_alchemical_merchant}Alchemical Merchant{} voucher",
-                    "and a copy of {C:tarot,T:c_alchemy_philosopher_stone}Philosopher's Stone"
+                    "{C:tarot,T:c_alchemy_philosopher_stone}Philosopher's Stone{} appears",
+                    "more often"
                 },
                 unlock = {
                     "Discover",

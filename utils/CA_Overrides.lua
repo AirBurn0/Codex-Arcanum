@@ -6,9 +6,23 @@ function create_card(_type, area, legendary, _rarity, skip_materialize, soulable
     and not G.GAME.banned_keys["c_soul"]
     and (_type == "Alchemical" or _type == "Spectral") 
     and not (G.GAME.used_jokers["c_alchemy_philosopher_stone"] 
-    and not next(find_joker("Showman"))) 
-    and pseudorandom("philosopher_stone_" .. _type .. G.GAME.round_resets.ante) > 0.997 then
-        forced_key = "c_alchemy_philosopher_stone"
+    and not next(find_joker("Showman"))) then
+        local chance = 0.003
+        local philosopher = G.GAME.selected_back.name == "b_alchemy_philosopher"
+        if philosopher then
+            chance = math.min(0.5, chance * 10 + (G.GAME.alchemy_philosopher or 0))
+        end
+        local succcess = pseudorandom("philosopher_stone_" .. _type .. G.GAME.round_resets.ante) > (1 - chance)
+        if succcess then
+            forced_key = "c_alchemy_philosopher_stone"
+        end
+        if philosopher then
+            if succcess then
+                G.GAME.alchemy_philosopher = nil
+            else
+                G.GAME.alchemy_philosopher = (G.GAME.alchemy_philosopher or 0) + 0.01
+            end
+        end
     end
     local card = create_cardref(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
     if G.GAME.used_vouchers.v_alchemy_cauldron and pseudorandom("cauldron") > 0.5 and _type == "Alchemical" then
