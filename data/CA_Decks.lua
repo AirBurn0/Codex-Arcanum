@@ -21,7 +21,7 @@ end
 
 new_deck{
     key = "philosopher",
-    config = { vouchers = { "v_alchemy_alchemical_merchant" }, consumables = { "c_alchemy_seeker" }, atlas = "decks_atlas" },
+    config = { vouchers = { "v_alchemy_alchemical_merchant" }, consumables = { "c_alchemy_philosopher_stone" }, atlas = "decks_atlas" },
     pos = { x = 0, y = 0 },
     check_for_unlock = function(self, args)
         if args.type == "discover_amount" and G.P_CENTERS.c_alchemy_philosopher_stone.discovered then
