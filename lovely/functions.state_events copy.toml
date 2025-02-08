@@ -1,0 +1,9 @@
+manifest = { version = "1.0.0", dump_lua = true, priority = -10 }
+
+patches = [
+    ## Oil unlock checker
+    { pattern = { target = "functions/state_events.lua", pattern = "for i=1, #G.hand.highlighted do", position = "after", times = 1, match_indent = true, payload = '''
+    if G.hand.highlighted[i].debuff then 
+        check_for_unlock{ type = 'c_alchemy_unlock_oil' }
+    end''' } }
+]

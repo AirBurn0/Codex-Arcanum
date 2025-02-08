@@ -401,9 +401,18 @@ function Card:remove_from_deck(from_debuff)
     remove_from_deckref(self, from_debuff)
 end
 
--- alchemical undos and end round evals
+
 local update_round_evalref = Game.update_round_eval
 function Game:update_round_eval(dt)
+    if G.GAME.blind:get_type() == "Boss" then
+        local boss_key = G.GAME.blind.config.blind.key
+        if boss_key == "bl_final_leaf" or boss_key == "bl_final_heart" then
+            check_for_unlock{ type = "c_alchemy_unlock_lithium" }
+        elseif boss_key == "bl_wall" or boss_key == "bl_final_vessel" then
+            check_for_unlock{ type = "c_alchemy_unlock_honey" }
+        end
+    end
+    -- alchemical undos and end round evals
     if G.deck.config.quicksilver then
         G.hand:change_size(-G.deck.config.quicksilver)
         G.deck.config.quicksilver = nil

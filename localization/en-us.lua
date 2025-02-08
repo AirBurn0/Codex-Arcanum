@@ -96,18 +96,12 @@ return {
                     "#2# from your deck"
                 }
             },
-            c_alchemy_manganese = {
-                name = "Manganese",
+            c_alchemy_magnet = {
+                name = "Magnet",
                 text = {
-                    "Enhances up to",
-                    "{C:attention}#1#{} selected #2#",
-                    "into {C:attention}Steel #2#",
-                    "for current {C:attention}Blind"
-                },
-                unlock = {
-                    "Have at least {C:attention}#1#",
-                    "{E:1,C:attention}Steel #2#{} in",
-                    "your deck"
+                    "Draw {C:attention}#1#{} #2#",
+                    "of the same {C:attention}rank",
+                    "as the selected card"
                 }
             },
             c_alchemy_wax = {
@@ -142,16 +136,18 @@ return {
                     "your deck"
                 }
             },
-            c_alchemy_magnet = {
-                name = "Magnet",
+            c_alchemy_manganese = {
+                name = "Manganese",
                 text = {
-                    "Draw {C:attention}#1#{} #2#",
-                    "of the same {C:attention}rank",
-                    "as the selected card"
+                    "Enhances up to",
+                    "{C:attention}#1#{} selected #2#",
+                    "into {C:attention}Steel #2#",
+                    "for current {C:attention}Blind"
                 },
                 unlock = {
-                    "Discard a",
-                    "{C:attention}Two Pair"
+                    "Have at least {C:attention}#1#",
+                    "{E:1,C:attention}Steel #2#{} in",
+                    "your deck"
                 }
             },
             c_alchemy_gold = {
@@ -188,6 +184,11 @@ return {
                     "Removes {C:attention}debuffs{} from",
                     "all cards in hand",
                     "for current {C:attention}Blind"
+                },
+                unlock = {
+                    "Play",
+                    "{C:attention}debuffed{}",
+                    "card"
                 }
             },
             c_alchemy_acid = {
@@ -197,6 +198,11 @@ return {
                     "of the same rank",
                     "as#1# selected #2#",
                     "for current {C:attention}Blind"
+                },
+                unlock = {
+                    "Have more than",
+                    "{C:attention}#1#{} cards in",
+                    "your {C:attention}full deck{}"
                 }
             },
             c_alchemy_brimstone = {
@@ -206,6 +212,10 @@ return {
                     "{C:attention}Debuff{} the left most",
                     "non-debuffed joker",
                     "for current {C:attention}Blind"
+                },
+                unlock = {
+                    "Discard a",
+                    "{C:attention}Pair{} of {C:attention}2{}'s"
                 }
             },
             c_alchemy_uranium = {

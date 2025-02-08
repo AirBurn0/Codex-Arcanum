@@ -539,47 +539,36 @@ new_alchemical{
 }
 
 new_alchemical{
-    key = "manganese",
+    key = "magnet",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = G.P_CENTERS.m_steel
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        local extra = alchemy_ability_round(center.ability.extra)
+        return { vars = { extra, plural("card", extra) } } 
     end,
-    config = { select_cards = 4 },
-    pos = { x = 1, y = 2 },
-    locked_loc_vars = function(self, info_queue, center)
-        local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, plural("card", condition) } }
-        if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ count_enhanced_cards("Steel Card") }
-        end
-        return loc
-    end,
-    unlock_condition = { type = "modify_deck", extra = { enhancement = "Steel Card", count = 8} },
-    use = function(self, card, area, copier, undo_table)
+    config = { select_cards = "1", extra = 2 },
+    pos = { x = 5, y = 2 },
+    use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
             delay = 0.1,
             func = function()
-                for k, _card in ipairs(G.hand.highlighted) do
-                    delay(0.05)
-                    _card:juice_up(1, 0.5)
-                    _card:set_ability(G.P_CENTERS.m_steel)
-                    table.insert(undo_table, _card.unique_val)
+                local _selected = G.hand.highlighted[1]
+                local cur_rank = SMODS.has_no_rank(_selected) and "no_rank" or _selected.base.id
+                local count = alchemy_ability_round(card.ability.extra)
+                for _, v in pairs(G.deck.cards) do
+                    local no_rank = (cur_rank == "no_rank" and SMODS.has_no_rank(v))
+                    if (cur_rank == "no_rank" and SMODS.has_no_rank(v)) or (cur_rank ~= "no_rank" and not SMODS.has_no_rank(v) and v.base.id == cur_rank) then
+                        delay(0.05)
+                        draw_card(G.deck, G.hand, 100, "up", true, v)
+                        count = count - 1
+                    end
+                    if count < 1 then
+                        return true
+                    end
                 end
                 return true
             end
         }))
-    end,
-    undo = function(self, undo_table)
-        for _, manganese_id in ipairs(undo_table) do
-            for k, card in ipairs(G.playing_cards) do
-                if card.unique_val == manganese_id and card.config.center == G.P_CENTERS.m_steel then
-                    card:set_ability(G.P_CENTERS.c_base, nil, true)
-                end
-            end
-        end
     end
 }
 
@@ -711,36 +700,47 @@ new_alchemical{
 }
 
 new_alchemical{
-    key = "magnet",
+    key = "manganese",
     loc_vars = function(self, info_queue, center)
+        info_queue[#info_queue+1] = G.P_CENTERS.m_steel
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
-        local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("card", extra) } } 
+        local select_cards = max_selected_cards(center)
+        return { vars = { select_cards, plural("card", select_cards) } } 
     end,
-    config = { select_cards = "1", extra = 2 },
-    pos = { x = 5, y = 2 },
-    use = function(self, card, area, copier)
+    config = { select_cards = 4 },
+    pos = { x = 1, y = 2 },
+    locked_loc_vars = function(self, info_queue, center)
+        local condition = self.unlock_condition.extra.count
+        local loc = { vars = { condition, plural("card", condition) } }
+        if G.STAGE == G.STAGES.RUN then
+            loc.main_end = get_progress_info{ count_enhanced_cards("Steel Card") }
+        end
+        return loc
+    end,
+    unlock_condition = { type = "modify_deck", extra = { enhancement = "Steel Card", count = 8} },
+    use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
             delay = 0.1,
             func = function()
-                local _selected = G.hand.highlighted[1]
-                local cur_rank = SMODS.has_no_rank(_selected) and "no_rank" or _selected.base.id
-                local count = alchemy_ability_round(card.ability.extra)
-                for _, v in pairs(G.deck.cards) do
-                    local no_rank = (cur_rank == "no_rank" and SMODS.has_no_rank(v))
-                    if (cur_rank == "no_rank" and SMODS.has_no_rank(v)) or (cur_rank ~= "no_rank" and not SMODS.has_no_rank(v) and v.base.id == cur_rank) then
-                        delay(0.05)
-                        draw_card(G.deck, G.hand, 100, "up", true, v)
-                        count = count - 1
-                    end
-                    if count < 1 then
-                        return true
-                    end
+                for k, _card in ipairs(G.hand.highlighted) do
+                    delay(0.05)
+                    _card:juice_up(1, 0.5)
+                    _card:set_ability(G.P_CENTERS.m_steel)
+                    table.insert(undo_table, _card.unique_val)
                 end
                 return true
             end
         }))
+    end,
+    undo = function(self, undo_table)
+        for _, manganese_id in ipairs(undo_table) do
+            for k, card in ipairs(G.playing_cards) do
+                if card.unique_val == manganese_id and card.config.center == G.P_CENTERS.m_steel then
+                    card:set_ability(G.P_CENTERS.c_base, nil, true)
+                end
+            end
+        end
     end
 }
 
@@ -840,6 +840,11 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
     end,
+    unlock_condition = { type = "c_alchemy_unlock_oil", extra = 1 },
+    unlock = function(self, args)
+        unlock_card(self)
+        return true
+    end,
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -878,6 +883,21 @@ new_alchemical{
         return { vars = {  select_cards > 1 and " "..tostring(select_cards) or "", plural("card", select_cards) } } 
     end,
     config = { select_cards = 1 },
+    locked_loc_vars = function(self, info_queue, center)
+        local condition = self.unlock_condition.extra.count
+        local loc = { vars = { condition, plural("card", condition) } }
+        if G.STAGE == G.STAGES.RUN then
+            loc.main_end = get_progress_info{ #G.playing_cards }
+        end
+        return loc
+    end,
+    unlock_condition = { type = "modify_deck", extra = { count = 68 } },
+    unlock = function(self, args)
+        if #G.playing_cards > 0 and #G.playing_cards > self.unlock_condition.extra.count then
+            unlock_card(self)
+            return true
+        end
+    end,
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -918,6 +938,7 @@ new_alchemical{
     end,
     config = { extra = { hands = 2, discards = 2} },
     pos = { x = 4, y = 3 },
+    unlock_condition = { type = "discard_custom" },
     use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -1010,8 +1031,10 @@ new_alchemical{
     end,
     pos = { x = 0, y = 4 },
     can_use = function() return #G.jokers.highlighted > 0 and G.STATE ~= G.STATES.HAND_PLAYED and G.STATE ~= G.STATES.DRAW_TO_HAND and G.STATE ~= G.STATES.PLAY_TAROT end,
-    unlock = function(card, args) 
-        return false
+    unlock_condition = { type = "c_alchemy_unlock_lithium" },
+    unlock = function(self, args)
+        unlock_card(self)
+        return true
     end,
     use = function(self, card, area, copier, undo_table)
         for _, v in ipairs(G.jokers.highlighted) do
@@ -1039,8 +1062,10 @@ new_alchemical{
     end,
     config = { extra = 2 },
     pos = { x = 1, y = 4 },
-    unlock = function(card, args) 
-        return false
+    unlock_condition = { type = "c_alchemy_unlock_honey" },
+    unlock = function(self, args)
+        unlock_card(self)
+        return true
     end,
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({

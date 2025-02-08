@@ -1,0 +1,21 @@
+manifest = { version = "1.0.0", dump_lua = true, priority = -10 }
+
+patches = [
+    ## Brimstone unlock checker
+    { pattern = { target = "functions/common_events.lua", pattern = "if args.type == 'discard_custom' then", position = "after", times = 1, match_indent = true, payload = '''
+    if card.name == 'c_alchemy_brimstone' then 
+        local eval = evaluate_poker_hand(args.cards)
+        if next(eval['Pair']) then
+            local flag = true
+            for j = 1, #args.cards do
+                if args.cards[j]:get_id() ~= 2 then
+                    flag = false
+                end
+            end
+            if flag then
+                ret = true
+                unlock_card(card)
+            end
+        end
+    end''' } }
+]
