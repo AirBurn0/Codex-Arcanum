@@ -290,7 +290,7 @@ return {
                 name = "Herbalist's Deck",
                 text = {
                     "Start run with the", 
-                    "{C:tarot,T:v_mortar_and_pestle}Mortar and Pestle{} voucher", 
+                    "{C:tarot,T:v_alchemy_mortar_and_pestle}Mortar and Pestle{} voucher", 
                     "Gain an {C:alchemical}Alchemical{} card", 
                     "before each {C:attention}Boss Blind" 
                 },
@@ -304,8 +304,8 @@ return {
                 name = "Philosopher's Deck",
                 text = {
                     "Start run with the",
-                    "{C:tarot,T:v_alchemical_merchant}Alchemical Merchant{} voucher",
-                    "and a copy of {C:tarot,T:c_seeker}The Seeker"
+                    "{C:tarot,T:v_alchemy_alchemical_merchant}Alchemical Merchant{} voucher",
+                    "and a copy of {C:tarot,T:c_alchemy_seeker}The Seeker"
                 },
                 unlock = {
                     "Discover",
