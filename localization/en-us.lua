@@ -293,6 +293,11 @@ return {
                     "{C:tarot,T:v_mortar_and_pestle}Mortar and Pestle{} voucher", 
                     "Gain an {C:alchemical}Alchemical{} card", 
                     "before each {C:attention}Boss Blind" 
+                },
+                unlock = {
+                    "Discover",
+                    "{C:tarot,T:c_alchemy_seeker}The Seeker{}",
+                    "card"
                 }
             },
             b_alchemy_philosopher = {
@@ -301,6 +306,11 @@ return {
                     "Start run with the",
                     "{C:tarot,T:v_alchemical_merchant}Alchemical Merchant{} voucher",
                     "and a copy of {C:tarot,T:c_seeker}The Seeker"
+                },
+                unlock = {
+                    "Discover",
+                    "{C:spectral,T:c_alchemy_philosopher_stone}Philosopher's Stone{}",
+                    "card"
                 }
             }
         },

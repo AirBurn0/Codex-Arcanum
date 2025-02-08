@@ -33,6 +33,8 @@ Add new unlock conditions:
 * Oil requires to play debuffed card
 * Acid requires to have more than 68 cards in your full deck
 * Brimstone requires to discard a **Pair** **2**'s
+* Philosopher's Deck requires to discover a Philosopher's Stone card
+* Herbalist's Deck requires to discover The Seeker card
 ---
 
 <p align="center">
