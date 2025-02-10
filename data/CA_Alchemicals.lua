@@ -979,9 +979,7 @@ new_alchemical{
     end,
     unlock_condition = { type = "used_alchemical", extra = 10 },
     check_for_unlock = function(self, args)
-        if args.type == self.unlock_condition.type and G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra then
-            return true
-        end
+        return args.type == self.unlock_condition.type and G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra
     end,
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
@@ -1034,9 +1032,7 @@ new_alchemical{
     can_use = function() return #G.jokers.highlighted > 0 and G.STATE ~= G.STATES.HAND_PLAYED and G.STATE ~= G.STATES.DRAW_TO_HAND and G.STATE ~= G.STATES.PLAY_TAROT end,
     unlock_condition = { type = "c_alchemy_unlock_lithium" },
     check_for_unlock = function(self, args)
-        if args.type == self.unlock_condition.type then
-            return true
-        end
+        return args.type == self.unlock_condition.type
     end,
     use = function(self, card, area, copier, undo_table)
         for _, v in ipairs(G.jokers.highlighted) do
@@ -1066,9 +1062,7 @@ new_alchemical{
     pos = { x = 1, y = 4 },
     unlock_condition = { type = "c_alchemy_unlock_honey" },
     check_for_unlock = function(self, args)
-        if args.type == self.unlock_condition.type then
-            return true
-        end
+        return args.type == self.unlock_condition.type
     end,
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
