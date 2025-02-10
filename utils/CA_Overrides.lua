@@ -305,20 +305,6 @@ function create_UIBox_notify_alert(_achievement, _type)
     return uibox
 end
 
--- iterate over alchemicals to check for unlocks
-local check_for_unlockref = check_for_unlock
-function check_for_unlock(args)
-    if not next(args) or G.GAME.seeded then
-        return check_for_unlockref(args)
-    end
-    for _, v in ipairs(G.P_CENTER_POOLS["Alchemical"]) do
-        if not v.unlocked and v.unlock and (not v.unlock_condition or args.type == v.unlock_condition.type) then
-            v:unlock(args)
-        end
-    end
-    return check_for_unlockref(args)
-end
-
 -- can't debuff oiled cards
 local blind_debuff_cardref = Blind.debuff_card
 function Blind:debuff_card(card, from_blind)

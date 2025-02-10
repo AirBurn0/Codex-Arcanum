@@ -100,3 +100,12 @@ function alchemy_ability_round(ability)
 	end
 	return math.floor(ability + 0.5)
 end
+
+
+function alchemy_loc_plural(word, count)
+    local plurals = G.localization.misc.CodexArcanum_plurals[word]
+    if not plurals then
+        return "nil"
+    end
+    return plurals(count)
+end

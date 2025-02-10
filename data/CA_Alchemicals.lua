@@ -62,14 +62,6 @@ local function max_selected_cards(card)
 	return math.max(1, alchemy_ability_round(card.ability.select_cards))
 end
 
-local function plural(word, count)
-    local plurals = G.localization.misc.CodexArcanum_plurals[word]
-    if not plural then
-        return "nil"
-    end
-    return plurals(count)
-end
-
 local function get_progress_info(vars)
     local main_end = {}
     localize{ type = "descriptions", set = "Other", key = "a_alchemy_unlock_counter", nodes = main_end, vars = vars }
@@ -102,9 +94,9 @@ local function new_alchemical(alchemical)
         atlas = alchemical.atlas or "alchemicals_atlas",
         pos = alchemical.pos or { x = 3, y = 5 }, -- default is stone lol
         loc_vars = alchemical.loc_vars,
-        unlocked = not alchemical.unlock and true or false,
-        unlock = alchemical.unlock,
+        unlocked = not (alchemical.check_for_unlock or alchemical.check_for_unlock),
         unlock_condition = alchemical.unlock_condition,
+        check_for_unlock  = alchemical.check_for_unlock,
         locked_loc_vars = alchemical.locked_loc_vars,
         discovered = false,
         config = alchemical.config or {},
@@ -904,11 +896,8 @@ new_alchemical{
         return loc
     end,
     unlock_condition = { type = "used_alchemical", extra = 5 },
-    unlock = function(self, args)
-        if G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra then
-            unlock_card(self)
-            return true
-        end
+    check_for_unlock = function(self, args)
+        return args.type == self.unlock_condition.type and G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra
     end,
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
