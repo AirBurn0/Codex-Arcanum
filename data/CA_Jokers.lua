@@ -29,7 +29,10 @@ local function new_joker(joker)
         config = joker.config or {},
         rarity = joker.rarity or 1, 
         cost = joker.cost or 5, 
-        unlocked = not joker.locked, 
+        locked_loc_vars = joker.locked_loc_vars,
+        unlock_condition = joker.unlock_condition,
+        check_for_unlock = joker.check_for_unlock,
+        unlocked = not (joker.unlock_condition or joker.check_for_unlock), 
         discovered = joker.discovered or false, 
         blueprint_compat = not joker.no_blueprint, 
         perishable_compat = true, 
@@ -168,6 +171,17 @@ new_joker{
     config = { extra = { used = false } },
     rarity = 3,
     cost = 6,
+    locked_loc_vars = function(self, info_queue, center)
+        local condition = self.unlock_condition.count
+        return { vars = { condition, alchemy_loc_plural("card", condition), (self.unlock_condition.tally and G.DISCOVER_TALLIES) and G.DISCOVER_TALLIES[self.unlock_condition.tally].tally or 0 } }
+    end,
+    unlock_condition = { type = "discover_amount", tally = "alchemicals", count = 24 },
+    check_for_unlock = function(self, args) 
+        if args.type == self.unlock_condition.type and self.unlock_condition.tally and G.DISCOVER_TALLIES and G.DISCOVER_TALLIES[self.unlock_condition.tally] then 
+            local tally = G.DISCOVER_TALLIES[self.unlock_condition.tally]
+            return self.unlock_condition.count <= tally.tally
+        end
+    end,
     calculate = function(self, card, context)
         if context.first_hand_drawn and not context.blueprint then
             juice_card_until(card, function(_card) return not _card.ability.extra.used end, true)

@@ -62,14 +62,6 @@ local function max_selected_cards(card)
 	return math.max(1, alchemy_ability_round(card.ability.select_cards))
 end
 
-local function plural(word, count)
-    local plurals = G.localization.misc.CodexArcanum_plurals[word]
-    if not plural then
-        return "nil"
-    end
-    return plurals(count)
-end
-
 local function mult_blind_score(by_percent)
     G.GAME.blind.chips = math.floor(G.GAME.blind.chips * math.max(0, by_percent))
     G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
@@ -124,9 +116,9 @@ local function new_alchemical(alchemical)
         atlas = alchemical.atlas or "alchemicals_atlas",
         pos = alchemical.pos or { x = 3, y = 5 }, -- default is stone lol
         loc_vars = alchemical.loc_vars,
-        unlocked = not (alchemical.unlock or alchemical.unlock_condition) and true or false,
-        unlock = alchemical.unlock,
+        unlocked = not (alchemical.unlock_condition or alchemical.check_for_unlock),
         unlock_condition = alchemical.unlock_condition,
+        check_for_unlock = alchemical.check_for_unlock,
         locked_loc_vars = alchemical.locked_loc_vars,
         discovered = false,
         config = alchemical.config or {},
@@ -181,7 +173,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("discard", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("discard", extra) } } 
     end,
     config = { extra = 1 },
     pos = { x = 0, y = 0 },
@@ -202,7 +194,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("hand", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("hand", extra) } } 
     end,
     config = { extra = 1 },
     pos = { x = 1, y = 0 },
@@ -243,7 +235,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("card", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("card", extra) } } 
     end,
     config = { extra = 4 },
     pos = { x = 3, y = 0 },
@@ -285,7 +277,7 @@ new_alchemical{
     key = "salt",
     loc_vars = function(self, info_queue, center)
         local extra = math.max(1, alchemy_ability_round(center.ability.extra))
-        return { vars = { extra, plural("tag", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("tag", extra) } } 
     end,
     config = { extra = 1 },
     pos = { x = 5, y = 0 },
@@ -367,7 +359,7 @@ new_alchemical{
         info_queue[#info_queue+1] = G.P_CENTERS.e_polychrome
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } }
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
     end,
     config = { select_cards = 2 },
     pos = { x = 2, y = 1 },
@@ -400,7 +392,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("level", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("level", extra) } } 
     end,
     config = { extra = 2 },
     pos = { x = 3, y = 1 },
@@ -462,7 +454,7 @@ new_alchemical{
         info_queue[#info_queue+1] = {key = "eternal", set = "Other"}
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("copy", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("copy", extra) } } 
     end,
     config = { extra = 1 },
     pos = { x = 5, y = 1 },
@@ -518,7 +510,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 3 },
     pos = { x = 0, y = 2 },
@@ -543,7 +535,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("card", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("card", extra) } } 
     end,
     config = { select_cards = "1", extra = 2 },
     pos = { x = 5, y = 2 },
@@ -577,7 +569,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("copy", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("copy", extra) } } 
     end,
     config = { select_cards = "1", extra = 2 },
     pos = { x = 2, y = 2 },
@@ -621,7 +613,7 @@ new_alchemical{
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local top_suit = get_most_common_suit()
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards), top_suit, colours = { G.C.SUITS[top_suit] } } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards), top_suit, colours = { G.C.SUITS[top_suit] } } } 
     end,
     config = { select_cards = 4 },
     pos = { x = 3, y = 2 },
@@ -660,13 +652,13 @@ new_alchemical{
         info_queue[#info_queue+1] = G.P_CENTERS.m_glass
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 4 },
     pos = { x = 4, y = 2 },
     locked_loc_vars = function(self, info_queue, center)
         local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, plural("card", condition) } }
+        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
             loc.main_end = get_progress_info{ count_enhanced_cards("Glass Card") }
         end
@@ -705,13 +697,13 @@ new_alchemical{
         info_queue[#info_queue+1] = G.P_CENTERS.m_steel
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 4 },
     pos = { x = 1, y = 2 },
     locked_loc_vars = function(self, info_queue, center)
         local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, plural("card", condition) } }
+        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
             loc.main_end = get_progress_info{ count_enhanced_cards("Steel Card") }
         end
@@ -750,13 +742,13 @@ new_alchemical{
         info_queue[#info_queue+1] = G.P_CENTERS.m_gold
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 4 },
     pos = { x = 0, y = 3 },
     locked_loc_vars = function(self, info_queue, center)
         local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, plural("card", condition) } }
+        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
             loc.main_end = get_progress_info{ count_enhanced_cards("Gold Card") }
         end
@@ -795,13 +787,13 @@ new_alchemical{
         info_queue[#info_queue+1] = G.P_CENTERS.m_lucky
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 4 },
     pos = { x = 1, y = 3 },
     locked_loc_vars = function(self, info_queue, center)
         local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, plural("card", condition) } }
+        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
             loc.main_end = get_progress_info{ count_enhanced_cards("Lucky Card") }
         end
@@ -840,10 +832,9 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
     end,
-    unlock_condition = { type = "c_alchemy_unlock_oil", extra = 1 },
-    unlock = function(self, args)
-        unlock_card(self)
-        return true
+    unlock_condition = { type = "c_alchemy_unlock_oil" },
+    check_for_unlock = function(self, args)
+        return args.type == self.unlock_condition.type
     end,
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
@@ -880,23 +871,20 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = {  select_cards > 1 and " "..tostring(select_cards) or "", plural("card", select_cards) } } 
+        return { vars = {  select_cards > 1 and " "..tostring(select_cards) or "", alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 1 },
     locked_loc_vars = function(self, info_queue, center)
         local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, plural("card", condition) } }
+        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
             loc.main_end = get_progress_info{ #G.playing_cards }
         end
         return loc
     end,
     unlock_condition = { type = "modify_deck", extra = { count = 68 } },
-    unlock = function(self, args)
-        if #G.playing_cards > 0 and #G.playing_cards > self.unlock_condition.extra.count then
-            unlock_card(self)
-            return true
-        end
+    check_for_unlock = function(self, args)
+        return args.type == self.unlock_condition.type and #G.playing_cards > 0 and #G.playing_cards > self.unlock_condition.extra.count
     end,
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
@@ -934,11 +922,25 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local hands, discards = alchemy_ability_round(center.ability.extra.hands), alchemy_ability_round(center.ability.extra.discards)
-        return { vars =  { hands, plural("hand", hands), discards, plural("discard", discards) } } 
+        return { vars =  { hands, alchemy_loc_plural("hand", hands), discards, alchemy_loc_plural("discard", discards) } } 
     end,
     config = { extra = { hands = 2, discards = 2} },
     pos = { x = 4, y = 3 },
     unlock_condition = { type = "discard_custom" },
+    check_for_unlock = function(self, args)
+        if args.type == self.unlock_condition.type then 
+            local eval = evaluate_poker_hand(args.cards)
+            if next(eval['Pair']) then
+                local flag = true
+                for j = 1, #args.cards do
+                    if args.cards[j]:get_id() ~= 2 then
+                        flag = false
+                    end
+                end
+                return flag
+            end
+        end
+    end,
     use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event({
             trigger = "after",
@@ -964,7 +966,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = math.max(1, alchemy_ability_round(center.ability.extra))
-        return { vars = { extra, plural("card", extra) } }
+        return { vars = { extra, alchemy_loc_plural("card", extra) } }
     end,
     config = { select_cards = "1", extra = 3 },
     pos = { x = 5, y = 3 },
@@ -976,9 +978,8 @@ new_alchemical{
         return loc
     end,
     unlock_condition = { type = "used_alchemical", extra = 10 },
-    unlock = function(self, args)
-        if G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra then
-            unlock_card(self)
+    check_for_unlock = function(self, args)
+        if args.type == self.unlock_condition.type and G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra then
             return true
         end
     end,
@@ -1032,9 +1033,10 @@ new_alchemical{
     pos = { x = 0, y = 4 },
     can_use = function() return #G.jokers.highlighted > 0 and G.STATE ~= G.STATES.HAND_PLAYED and G.STATE ~= G.STATES.DRAW_TO_HAND and G.STATE ~= G.STATES.PLAY_TAROT end,
     unlock_condition = { type = "c_alchemy_unlock_lithium" },
-    unlock = function(self, args)
-        unlock_card(self)
-        return true
+    check_for_unlock = function(self, args)
+        if args.type == self.unlock_condition.type then
+            return true
+        end
     end,
     use = function(self, card, area, copier, undo_table)
         for _, v in ipairs(G.jokers.highlighted) do
@@ -1063,9 +1065,10 @@ new_alchemical{
     config = { extra = 2 },
     pos = { x = 1, y = 4 },
     unlock_condition = { type = "c_alchemy_unlock_honey" },
-    unlock = function(self, args)
-        unlock_card(self)
-        return true
+    check_for_unlock = function(self, args)
+        if args.type == self.unlock_condition.type then
+            return true
+        end
     end,
     use = function(self, card, area, copier, undo_table)
         G.E_MANAGER:add_event(Event({
@@ -1086,13 +1089,13 @@ new_alchemical{
         info_queue[#info_queue+1] = G.P_CENTERS.m_wild
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 3 },
     pos = { x = 2, y = 4 },
     locked_loc_vars = function(self, info_queue, center)
         local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, plural("card", condition) } }
+        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
             loc.main_end = get_progress_info{ count_enhanced_cards("Wild Card") }
         end
@@ -1131,13 +1134,13 @@ new_alchemical{
         info_queue[#info_queue+1] = G.P_CENTERS.m_stone
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 4 },
     pos = { x = 3, y = 4 },
     locked_loc_vars = function(self, info_queue, center)
         local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, plural("card", condition) } }
+        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
             loc.main_end = get_progress_info{ count_enhanced_cards("Stone Card") }
         end

@@ -366,7 +366,12 @@ return {
                     "the first {C:alchemical}Alchemical", 
                     "card used each {C:attention}Blind",
                     "{C:inactive}(Must have room)"
-                } 
+                },
+                unlock = {
+                    "Discover #1#",
+                    "{E:1,C:alchemical}Alchemical{} #2#",
+                    "{C:inactive}(#3#)"
+                }
             },
             j_alchemy_breaking_bozo = {
                 name = "Breaking Bozo", 
