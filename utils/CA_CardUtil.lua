@@ -103,7 +103,7 @@ end
 
 function alchemy_loc_plural(word, count)
     local plurals = G.localization.misc.CodexArcanum_plurals[word]
-    if not alchemy_loc_plural then
+    if not plurals then
         return "nil"
     end
     return plurals(count)

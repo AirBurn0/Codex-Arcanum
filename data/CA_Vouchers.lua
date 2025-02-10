@@ -16,10 +16,11 @@ local function new_voucher(voucher)
         config = voucher.config or {},
         requires = voucher.requires,
         cost = voucher.cost or 10,
-        discovered = false,
-        unlocked = not voucher.unlock_condition,
-        locked_loc_vars = voucher.locked_loc_vars,
+        unlocked = not (voucher.check_for_unlock or voucher.check_for_unlock),
         unlock_condition = voucher.unlock_condition,
+        check_for_unlock  = voucher.check_for_unlock,
+        locked_loc_vars = voucher.locked_loc_vars,
+        discovered = false,
         redeem = voucher.redeem or function() end
     }
 end
