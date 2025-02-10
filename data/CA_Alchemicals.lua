@@ -151,7 +151,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("discard", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("discard", extra) } } 
     end,
     config = { extra = 1 },
     pos = { x = 0, y = 0 },
@@ -172,7 +172,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("hand", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("hand", extra) } } 
     end,
     config = { extra = 1 },
     pos = { x = 1, y = 0 },
@@ -221,7 +221,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("card", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("card", extra) } } 
     end,
     config = { extra = 4 },
     pos = { x = 3, y = 0 },
@@ -263,7 +263,7 @@ new_alchemical{
     key = "salt",
     loc_vars = function(self, info_queue, center)
         local extra = math.max(1, alchemy_ability_round(center.ability.extra))
-        return { vars = { extra, plural("tag", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("tag", extra) } } 
     end,
     config = { extra = 1 },
     pos = { x = 5, y = 0 },
@@ -345,7 +345,7 @@ new_alchemical{
         info_queue[#info_queue+1] = G.P_CENTERS.e_polychrome
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } }
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
     end,
     config = { select_cards = 2 },
     pos = { x = 2, y = 1 },
@@ -378,7 +378,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("level", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("level", extra) } } 
     end,
     config = { extra = 2 },
     pos = { x = 3, y = 1 },
@@ -440,7 +440,7 @@ new_alchemical{
         info_queue[#info_queue+1] = {key = "eternal", set = "Other"}
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("copy", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("copy", extra) } } 
     end,
     config = { extra = 1 },
     pos = { x = 5, y = 1 },
@@ -495,7 +495,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 3 },
     pos = { x = 0, y = 2 },
@@ -521,7 +521,7 @@ new_alchemical{
         info_queue[#info_queue+1] = G.P_CENTERS.m_steel
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 4 },
     pos = { x = 1, y = 2 },
@@ -556,7 +556,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("copy", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("copy", extra) } } 
     end,
     config = { select_cards = "1", extra = 2 },
     pos = { x = 2, y = 2 },
@@ -600,7 +600,7 @@ new_alchemical{
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local top_suit = get_most_common_suit()
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards), top_suit, colours = { G.C.SUITS[top_suit] } } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards), top_suit, colours = { G.C.SUITS[top_suit] } } } 
     end,
     config = { select_cards = 4 },
     pos = { x = 3, y = 2 },
@@ -639,7 +639,7 @@ new_alchemical{
         info_queue[#info_queue+1] = G.P_CENTERS.m_glass
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 4 },
     pos = { x = 4, y = 2 },
@@ -674,7 +674,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, plural("card", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("card", extra) } } 
     end,
     config = { select_cards = "1", extra = 2 },
     pos = { x = 5, y = 2 },
@@ -709,7 +709,7 @@ new_alchemical{
         info_queue[#info_queue+1] = G.P_CENTERS.m_gold
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 4 },
     pos = { x = 0, y = 3 },
@@ -745,7 +745,7 @@ new_alchemical{
         info_queue[#info_queue+1] = G.P_CENTERS.m_lucky
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 4 },
     pos = { x = 1, y = 3 },
@@ -816,7 +816,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = {  select_cards > 1 and " "..tostring(select_cards) or "", plural("card", select_cards) } } 
+        return { vars = {  select_cards > 1 and " "..tostring(select_cards) or "", alchemy_loc_plural("card", select_cards) } } 
     end,
     config = { select_cards = 1 },
     use = function(self, card, area, copier, undo_table)
@@ -855,7 +855,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local hands, discards = alchemy_ability_round(center.ability.extra.hands), alchemy_ability_round(center.ability.extra.discards)
-        return { vars =  { hands, plural("hand", hands), discards, plural("discard", discards) } } 
+        return { vars =  { hands, alchemy_loc_plural("hand", hands), discards, alchemy_loc_plural("discard", discards) } } 
     end,
     config = { extra = { hands = 2, discards = 2} },
     pos = { x = 4, y = 3 },
@@ -884,7 +884,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
         local extra = math.max(1, alchemy_ability_round(center.ability.extra))
-        return { vars = { extra, plural("card", extra) } }
+        return { vars = { extra, alchemy_loc_plural("card", extra) } }
     end,
     config = { select_cards = "1", extra = 3 },
     pos = { x = 5, y = 3 },
