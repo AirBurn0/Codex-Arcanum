@@ -11,7 +11,7 @@ SMODS.ConsumableType{
     secondary_colour = G.C.SECONDARY_SET.Alchemy,
     collection_rows = { 4, 4 },
     shop_rate = 0,
-    default = "alchemicals_atlas"
+    default = "c_alchemy_ignis"
 }
 
 SMODS.UndiscoveredSprite{

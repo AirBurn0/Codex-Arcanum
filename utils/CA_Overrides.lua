@@ -1,12 +1,11 @@
--- creates philo cards and negative cards in boosters
+-- creates cards in boosters and etc.
 local create_cardref = create_card
 function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
     if not forced_key
     and soulable 
-    and not G.GAME.banned_keys["c_soul"]
+    and not G.GAME.banned_keys["c_soul"] -- game checks for G.GAME.banned_keys["c_soul"] even for black hole spectral
     and (_type == "Alchemical" or _type == "Spectral") 
-    and not (G.GAME.used_jokers["c_alchemy_philosopher_stone"] 
-    and not next(find_joker("Showman"))) then
+    and (not G.GAME.used_jokers["c_alchemy_philosopher_stone"] or next(find_joker("Showman"))) then
         local chance = 0.003
         local philosopher = G.GAME.selected_back.name == "b_alchemy_philosopher"
         if philosopher then
