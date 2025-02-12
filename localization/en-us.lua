@@ -247,9 +247,9 @@ return {
             c_alchemy_honey = {
                 name = "Honey",
                 text = {
-                    "Increases {C:attention}Blind score{}",
-                    "by {C:attention}x#1#{}, disables",
-                    "{C:attention}Boss Blind{} effect"
+                    "Disables {C:attention}Boss Blind{}",
+                    "effect and set",
+                    "{C:attention}Blind reward{} to {C:money}$0"
                 },
                 unlock = {
                     "Beat {E:1,C:attention}The Wall{} or",

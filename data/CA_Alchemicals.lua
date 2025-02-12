@@ -1051,9 +1051,8 @@ new_alchemical{
     key = "honey",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
-        return { vars = { math.max(0, center.ability.extra) } } 
+        return { vars = { } } 
     end,
-    config = { extra = 2 },
     pos = { x = 1, y = 4 },
     unlock_condition = { type = "c_alchemy_unlock_honey" },
     check_for_unlock = function(self, args)
@@ -1064,8 +1063,10 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
+                G.GAME.blind.dollars = G.GAME.blind.dollars * 0
+                G.GAME.current_round.dollars = G.GAME.current_round.dollars * 0
+                G.GAME.current_round.dollars_to_be_earned =  "$0"
                 G.GAME.blind:disable()
-                mult_blind_score(math.max(0, card.ability.extra))
                 return true
             end
         }))
