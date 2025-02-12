@@ -30,14 +30,17 @@ new_deck{
     config = { vouchers = { "v_alchemy_mortar_and_pestle" }, atlas = "decks_atlas" },
     pos = { x = 1, y = 0 },
     trigger_effect = function(self, context)
-        if context.setting_blind then
+        if context.setting_blind and G.GAME.blind:get_type() == "Boss" then
             delay(0.2)
             G.E_MANAGER:add_event(Event({
                 trigger = "immediate",
                 func = function()
-                    if G.consumeables.config.card_limit > #G.consumeables.cards then
+                    if G.consumeables.config.card_limit > #G.consumeables.cards or G.GAME.used_vouchers.v_alchemy_cauldron then
                         play_sound("timpani")
                         local card = create_card("Alchemical", G.consumeables, nil, nil, nil, nil, nil, "see")
+                        if G.consumeables.config.card_limit <= #G.consumeables.cards and G.GAME.used_vouchers.v_alchemy_cauldron then
+                            card:set_edition({ negative = true }, true) -- well...
+                        end
                         card:add_to_deck()
                         G.consumeables:emplace(card)
                     end
