@@ -333,34 +333,6 @@ function G.UIDEF.usage_tabs(args)
     return tabs
 end
 
--- herbalist's deck ability hooks
-local new_roundref = new_round
-function new_round()
-    new_roundref()
-    delay(0.2)
-    G.E_MANAGER:add_event(Event({
-        trigger = "immediate",
-        func = function()
-            if G.GAME.blind:get_type() == "Boss" then
-                G.GAME.selected_back:trigger_effect{ context = "start_boss" }
-            end
-            return true
-        end
-    }))
-end
-
--- herbalist's deck ability
-local trigger_effectref = Back.trigger_effect
-function Back:trigger_effect(args)
-    if self.name == "b_alchemy_herbalist" and args.context == "start_boss" and G.consumeables.config.card_limit > #G.consumeables.cards then
-        play_sound("timpani")
-        local card = create_card("Alchemical", G.consumeables, nil, nil, nil, nil, nil, "see")
-        card:add_to_deck()
-        G.consumeables:emplace(card)
-    end
-    return trigger_effectref(self, args)
-end
-
 -- add catalyst +1 consumable size
 local add_to_deckref = Card.add_to_deck
 function Card:add_to_deck(from_debuff)
