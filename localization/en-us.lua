@@ -194,7 +194,7 @@ return {
                 },
                 unlock = {
                     "Use {C:attention}#1#",
-                    "{E:1,C:alchemical}Alchemical{} cards in",
+                    "{E:1,C:alchemical}Alchemical{} #2# in",
                     "the same run"
                 }
             }

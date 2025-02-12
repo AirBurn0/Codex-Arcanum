@@ -889,7 +889,8 @@ new_alchemical{
     config = { select_cards = "1", extra = 3 },
     pos = { x = 5, y = 3 },
     locked_loc_vars = function(self, info_queue, center)
-        local loc = { vars = { self.unlock_condition.extra } }
+        local extra = self.unlock_condition.extra
+        local loc = { vars = { extra, alchemy_loc_plural("card", extra) } }
         if G.STAGE == G.STAGES.RUN then
             loc.main_end = get_progress_info{ G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical or 0 }
         end
