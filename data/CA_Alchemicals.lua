@@ -74,12 +74,6 @@ local function mult_blind_score(by_percent)
     G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
 end
 
-local function get_progress_info(vars)
-    local main_end = {}
-    localize{ type = "descriptions", set = "Other", key = "a_alchemy_unlock_counter", nodes = main_end, vars = vars }
-    return main_end[1]
-end
-
 local function count_enhanced_cards(enhance)
     local count = 0
     for _, v in pairs(G.playing_cards) do
@@ -660,7 +654,7 @@ new_alchemical{
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ count_enhanced_cards("Glass Card") }
+            loc.main_end = alchemy_get_progress_info{ count_enhanced_cards("Glass Card") }
         end
         return loc
     end,
@@ -705,7 +699,7 @@ new_alchemical{
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ count_enhanced_cards("Steel Card") }
+            loc.main_end = alchemy_get_progress_info{ count_enhanced_cards("Steel Card") }
         end
         return loc
     end,
@@ -750,7 +744,7 @@ new_alchemical{
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ count_enhanced_cards("Gold Card") }
+            loc.main_end = alchemy_get_progress_info{ count_enhanced_cards("Gold Card") }
         end
         return loc
     end,
@@ -795,7 +789,7 @@ new_alchemical{
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ count_enhanced_cards("Lucky Card") }
+            loc.main_end = alchemy_get_progress_info{ count_enhanced_cards("Lucky Card") }
         end
         return loc
     end,
@@ -878,7 +872,7 @@ new_alchemical{
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ #G.playing_cards }
+            loc.main_end = alchemy_get_progress_info{ #G.playing_cards }
         end
         return loc
     end,
@@ -974,7 +968,7 @@ new_alchemical{
         local extra = self.unlock_condition.extra
         local loc = { vars = { extra, alchemy_loc_plural("card", extra) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical or 0 }
+            loc.main_end = alchemy_get_progress_info{ G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical or 0 }
         end
         return loc
     end,
@@ -1092,7 +1086,7 @@ new_alchemical{
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ count_enhanced_cards("Wild Card") }
+            loc.main_end = alchemy_get_progress_info{ count_enhanced_cards("Wild Card") }
         end
         return loc
     end,
@@ -1137,7 +1131,7 @@ new_alchemical{
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ count_enhanced_cards("Stone Card") }
+            loc.main_end = alchemy_get_progress_info{ count_enhanced_cards("Stone Card") }
         end
         return loc
     end,

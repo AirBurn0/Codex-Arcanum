@@ -397,9 +397,9 @@ return {
                     "{C:inactive}(Currently {X:mult,C:white}X#3#{C:inactive} Mult)"
                 } ,
                 unlock = {
-                    "Use {C:attention}#1# {E:1,C:alchemical}Alchemical{} #2#",
-                    "in the same run and",
-                    "{E:1}lose{} before {C:attention}#3#{} ante"
+                    "Use at least {C:attention}#1#",
+                    "{C:attention}consumable{} #2#",
+                    "within one {C:attention}Blind"
                 }
             },
         },

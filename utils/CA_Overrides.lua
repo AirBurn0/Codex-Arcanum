@@ -403,6 +403,10 @@ end
 
 local update_round_evalref = Game.update_round_eval
 function Game:update_round_eval(dt)
+    if G.GAME.consumeable_usage_blind then
+        G.GAME.consumeable_usage_blind = nil
+    end
+
     if G.GAME.blind:get_type() == "Boss" then
         local boss_key = G.GAME.blind.config.blind.key
         if boss_key == "bl_final_leaf" or boss_key == "bl_final_heart" then

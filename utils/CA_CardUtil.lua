@@ -108,3 +108,9 @@ function alchemy_loc_plural(word, count)
     end
     return plurals(count)
 end
+
+function alchemy_get_progress_info(vars)
+    local main_end = {}
+    localize{ type = "descriptions", set = "Other", key = "a_alchemy_unlock_counter", nodes = main_end, vars = vars }
+    return main_end[1]
+end

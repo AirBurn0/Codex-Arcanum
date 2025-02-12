@@ -1,0 +1,10 @@
+manifest = { version = "1.0.0", dump_lua = true, priority = -10 }
+
+patches = [
+    ## Catalyst unlock checker
+    { pattern = { target = "functions/misc_functions.lua", pattern = "G.GAME.consumeable_usage_total.all = G.GAME.consumeable_usage_total.all + 1", position = "after", times = 1, match_indent = true, payload = '''
+if G.GAME.blind and G.GAME.blind.in_blind then
+    G.GAME.consumeable_usage_blind = (G.GAME.consumeable_usage_blind or 0) + 1
+end
+check_for_unlock{ type = 'c_consumable_used' }''' } }
+]

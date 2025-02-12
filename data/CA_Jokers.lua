@@ -217,7 +217,7 @@ new_joker{
         local condition = self.unlock_condition.extra
         local loc = { vars = { condition, alchemy_loc_plural("card", condition), self.unlock_condition.ante } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical or 0 }
+            loc.main_end = alchemy_get_progress_info{ G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical or 0 }
         end
         return loc
     end,
@@ -265,15 +265,16 @@ new_joker{
     rarity = 3,
     cost = 6,
     locked_loc_vars = function(self, info_queue, center)
-        local loc = { vars = { self.unlock_condition.extra } }
-        if G.STAGE == G.STAGES.RUN then
-            loc.main_end = get_progress_info{ G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical or 0 }
+        local condition = self.unlock_condition.extra
+        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
+        if G.STAGE == G.STAGES.RUN and G.GAME.blind and G.GAME.blind.in_blind then
+            loc.main_end = alchemy_get_progress_info{ G.GAME.consumeable_usage_blind or 0 }
         end
         return loc
     end,
-    unlock_condition = { type = "c_lose_run", extra = 5, ante = 6 },
+    unlock_condition = { type = "c_consumable_used", extra = 4 },
     check_for_unlock = function(self, args)
-        return args.type == self.unlock_condition.type and G.GAME.round_resets.ante < self.unlock_condition.ante and G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra
+        return args.type == self.unlock_condition.type and G.GAME.blind and G.GAME.blind.in_blind and (G.GAME.consumeable_usage_blind or 0) >= self.unlock_condition.extra
     end,
     calculate = function(self, card, context)
         if context.joker_main then
