@@ -1,0 +1,6 @@
+manifest = { version = "1.0.0", dump_lua = true, priority = -10 }
+
+patches = [
+    ## Breaking bozo unlock checker
+    { pattern = { target = "game.lua", pattern = "inc_career_stat('c_losses', 1)", position = "before", times = 1, match_indent = true, payload = "check_for_unlock{ type = 'c_lose_run' }" } }
+]

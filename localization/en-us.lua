@@ -230,7 +230,7 @@ return {
                     "Use {C:attention}#1#",
                     "{E:1,C:alchemical}Alchemical{} cards in",
                     "the same run"
-                },
+                }
             },
             c_alchemy_lithium = {
                 name = "Lithium",
@@ -318,7 +318,7 @@ return {
         Joker = {
             j_alchemy_studious_joker = {
                 name = "Studious Joker",
-                text = { 
+                text = {
                     "{C:mult}+#1#{} Mult. Sell this", 
                     "joker to get one", 
                     "{C:alchemical} Alchemical{} card" 
@@ -326,7 +326,7 @@ return {
             },
             j_alchemy_bottled_buffoon = {
                 name = "Bottled Buffoon", 
-                text = { 
+                text = {
                     "Create an {C:alchemical}Alchemical{} card", 
                     "every {C:attention}#1#{} hands played",
                     "{C:inactive}(#2#)" 
@@ -334,7 +334,7 @@ return {
             },
             j_alchemy_mutated_joker = {
                 name = "Mutated Joker", 
-                text = { 
+                text = {
                     "{C:chips}+#1#{} Chips for each", 
                     "unique {C:alchemical}Alchemical{} card", 
                     "used this run", 
@@ -343,7 +343,7 @@ return {
             },
             j_alchemy_essence_of_comedy = {
                 name = "Essence of Comedy", 
-                text = { 
+                text = {
                     "This Joker gains", 
                     "{X:mult,C:white}X#1#{} Mult every time an",
                     "{C:alchemical}Alchemical{} card is used",
@@ -352,7 +352,7 @@ return {
             },
             j_alchemy_shock_humor = {
                 name = "Shock Humor", 
-                text = { 
+                text = {
                     "{C:green}#1# in #2#{} chance to", 
                     "create an {C:alchemical}Alchemical{} card", 
                     "when you discard a {C:attention}Gold{},", 
@@ -361,36 +361,46 @@ return {
             },
             j_alchemy_chain_reaction = {
                 name = "Chain Reaction", 
-                text = { 
+                text = {
                     "Create a {C:attention}copy{} of", 
                     "the first {C:alchemical}Alchemical", 
                     "card used each {C:attention}Blind",
                     "{C:inactive}(Must have room)"
                 },
                 unlock = {
-                    "Discover #1#",
-                    "{E:1,C:alchemical}Alchemical{} #2#",
+                    "Discover at least",
+                    "{C:attention}#1# {E:1,C:alchemical}Alchemical{} #2#",
                     "{C:inactive}(#3#)"
                 }
             },
             j_alchemy_breaking_bozo = {
                 name = "Breaking Bozo", 
-                text = { 
+                text = {
                     "After you use an {C:alchemical}Alchemical",
                     "card, does one the following: ",
                     "Reduce {C:attention}Blind score{} by {C:attention}#1#%",
                     "Draw {C:attention}#2#{} cards", 
                     "Earn {C:money}$#3#" 
+                },
+                unlock = {
+                    "Use {C:attention}#1# {E:1,C:alchemical}Alchemical{} #2#",
+                    "in the same run and",
+                    "{E:1}lose{} before {C:attention}#3#{} ante"
                 }
             },
             j_alchemy_catalyst_joker = {
                 name = "Catalyst Joker", 
-                text = { 
+                text = {
                     "{C:attention}+#1#{} consumable slots.", 
                     "Gains {X:mult,C:white}X#2#{} Mult for", 
                     "every {C:attention}Consumable Card{} held", 
                     "{C:inactive}(Currently {X:mult,C:white}X#3#{C:inactive} Mult)"
-                } 
+                } ,
+                unlock = {
+                    "Use {C:attention}#1# {E:1,C:alchemical}Alchemical{} #2#",
+                    "in the same run and",
+                    "{E:1}lose{} before {C:attention}#3#{} ante"
+                }
             },
         },
         Tarot = {
