@@ -34,9 +34,9 @@ local function new_joker(joker)
         check_for_unlock = joker.check_for_unlock,
         locked_loc_vars = joker.locked_loc_vars,
         discovered = joker.discovered or false,
-        blueprint_compat = not joker.no_blueprint,
-        perishable_compat = true,
-        eternal_compat = true,
+        blueprint_compat = joker.blueprint_compat == nil or joker.blueprint_compat,
+        perishable_compat = joker.perishable_compat == nil or joker.perishable_compat,
+        eternal_compat = joker.eternal_compat == nil or joker.eternal_compat,
         calculate = joker.calculate or function(self, card, context) end
     }
 end
@@ -129,6 +129,7 @@ new_joker{
     config = { extra = 0.1, Xmult = 1 },
     rarity = 2,
     cost = 6,
+    perishable_compat = false,
     calculate = function(self, card, context)
         if context.using_consumeable and not context.blueprint and not context.consumeable.config.in_booster and context.consumeable.ability.set == "Alchemical" then
             card.ability.x_mult = card.ability.x_mult + card.ability.extra
