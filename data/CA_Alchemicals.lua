@@ -354,9 +354,9 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                for k, card in ipairs(G.hand.highlighted) do
-                    card:set_edition({ polychrome = true }, true)
-                    table.insert(undo_table, card.unique_val)
+                for _, _card in ipairs(G.hand.highlighted) do
+                    _card:set_edition({ polychrome = true }, true)
+                    table.insert(undo_table, _card.unique_val)
                 end
                 return true
             end
@@ -364,7 +364,7 @@ new_alchemical{
     end,
     undo = function(self, undo_table)
         for _, poly_id in ipairs(undo_table) do
-            for k, card in ipairs(G.playing_cards) do
+            for _, card in ipairs(G.playing_cards) do
                 if card.unique_val == poly_id and card.edition and card.edition.polychrome then
                     card:set_edition(nil, true)
                 end
@@ -454,12 +454,12 @@ new_alchemical{
                 func = function()
                     for _ = 1, alchemy_ability_round(card.ability.extra) or 1 do
                         local chosen_joker = pseudorandom_element(G.jokers.cards, pseudoseed("invisible"))
-                        local card = copy_card(chosen_joker, nil, nil, nil, chosen_joker.edition and chosen_joker.edition.negative)
-                        card:set_edition({ negative = true }, true)
-                        card:set_eternal(true)
-                        card:add_to_deck()
-                        G.jokers:emplace(card)
-                        table.insert(G.jokers.config.antimony, card.unique_val)
+                        local _card = copy_card(chosen_joker, nil, nil, nil, chosen_joker.edition and chosen_joker.edition.negative)
+                        _card:set_edition({ negative = true }, true)
+                        _card:set_eternal(true)
+                        _card:add_to_deck()
+                        G.jokers:emplace(_card)
+                        table.insert(G.jokers.config.antimony, _card.unique_val)
                     end
                     return true
                 end
@@ -469,7 +469,7 @@ new_alchemical{
     undo = function(self, undo_table)
         if G.jokers.config.antimony then
             for _, poly_id in ipairs(G.jokers.config.antimony) do
-                for k, joker in ipairs(G.jokers.cards) do
+                for _, joker in ipairs(G.jokers.cards) do
                     if joker.unique_val == poly_id then
                         G.E_MANAGER:add_event(Event{
                             trigger = "after",
@@ -541,7 +541,7 @@ new_alchemical{
     end,
     undo = function(self, undo_table)
         for _, manganese_id in ipairs(undo_table) do
-            for k, card in ipairs(G.playing_cards) do
+            for _, card in ipairs(G.playing_cards) do
                 if card.unique_val == manganese_id and card.config.center == G.P_CENTERS.m_steel then
                     card:set_ability(G.P_CENTERS.c_base, nil, true)
                 end
@@ -565,8 +565,8 @@ new_alchemical{
             delay = 0.1,
             func = function()
                 local new_table = {}
-                for i = 1, alchemy_ability_round(card.ability.extra) do
-                    G.playing_card = (G.playing_card and G.playing_card + 1) or 1
+                for _ = 1, alchemy_ability_round(card.ability.extra) do
+                    G.playing_card = (G.playing_card or 0) + 1
                     local _card = copy_card(G.hand.highlighted[1], nil, nil, G.playing_card)
                     _card:add_to_deck()
                     G.deck.config.card_limit = G.deck.config.card_limit + 1
@@ -583,7 +583,7 @@ new_alchemical{
     undo = function(self, undo_table)
         local _first_dissolve = false
         for _, wax_id in ipairs(undo_table) do
-            for k, card in ipairs(G.playing_cards) do
+            for _, card in ipairs(G.playing_cards) do
                 if card.unique_val == wax_id then
                     card:start_dissolve(nil, _first_dissolve)
                     _first_dissolve = true
@@ -609,7 +609,7 @@ new_alchemical{
             delay = 0.1,
             func = function()
                 top_suit = get_most_common_suit()
-                for k, _card in ipairs(G.hand.highlighted) do
+                for _, _card in ipairs(G.hand.highlighted) do
                     delay(0.05)
                     _card:juice_up(1, 0.5)
                     local prev_suit = _card.base.suit
@@ -623,7 +623,7 @@ new_alchemical{
     end,
     undo = function(self, undo_table)
         for _, borax_table in ipairs(undo_table) do
-            for k, card in ipairs(G.playing_cards) do
+            for _, card in ipairs(G.playing_cards) do
                 if card.unique_val == borax_table.id then
                     card:change_suit(borax_table.suit)
                 end
@@ -647,7 +647,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                for k, _card in ipairs(G.hand.highlighted) do
+                for _, _card in ipairs(G.hand.highlighted) do
                     delay(0.05)
                     _card:juice_up(1, 0.5)
                     _card:set_ability(G.P_CENTERS.m_glass)
@@ -659,7 +659,7 @@ new_alchemical{
     end,
     undo = function(self, undo_table)
         for _, glass_id in ipairs(undo_table) do
-            for k, card in ipairs(G.playing_cards) do
+            for _, card in ipairs(G.playing_cards) do
                 if card.unique_val == glass_id and card.config.center == G.P_CENTERS.m_glass then
                     card:set_ability(G.P_CENTERS.c_base, nil, true)
                 end
@@ -682,14 +682,13 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                local _selected = G.hand.highlighted[1]
-                local cur_rank = SMODS.has_no_rank(_selected) and "no_rank" or _selected.base.id
+                local target = G.hand.highlighted[1]
+                local t_rank = SMODS.has_no_rank(target) and "no_rank" or target.base.id
                 local count = alchemy_ability_round(card.ability.extra)
-                for _, v in pairs(G.deck.cards) do
-                    local no_rank = (cur_rank == "no_rank" and SMODS.has_no_rank(v))
-                    if (cur_rank == "no_rank" and SMODS.has_no_rank(v)) or (cur_rank ~= "no_rank" and not SMODS.has_no_rank(v) and v.base.id == cur_rank) then
+                for _, _card in pairs(G.deck.cards) do
+                    if (t_rank == "no_rank" and SMODS.has_no_rank(_card)) or (t_rank ~= "no_rank" and not SMODS.has_no_rank(_card) and _card.base.id == t_rank) then
                         delay(0.05)
-                        draw_card(G.deck, G.hand, 100, "up", true, v)
+                        draw_card(G.deck, G.hand, 100, "up", true, _card)
                         count = count - 1
                     end
                     if count < 1 then
@@ -717,7 +716,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                for k, _card in ipairs(G.hand.highlighted) do
+                for _, _card in ipairs(G.hand.highlighted) do
                     delay(0.05)
                     _card:juice_up(1, 0.5)
                     _card:set_ability(G.P_CENTERS.m_gold)
@@ -729,7 +728,7 @@ new_alchemical{
     end,
     undo = function(self, undo_table)
         for _, gold_id in ipairs(undo_table) do
-            for k, card in ipairs(G.playing_cards) do
+            for _, card in ipairs(G.playing_cards) do
                 if card.unique_val == gold_id and card.config.center == G.P_CENTERS.m_gold then
                     card:set_ability(G.P_CENTERS.c_base, nil, true)
                 end
@@ -753,7 +752,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                for k, _card in ipairs(G.hand.highlighted) do
+                for _, _card in ipairs(G.hand.highlighted) do
                     delay(0.05)
                     _card:juice_up(1, 0.5)
                     _card:set_ability(G.P_CENTERS.m_lucky)
@@ -765,7 +764,7 @@ new_alchemical{
     end,
     undo = function(self, undo_table)
         for _, silver_id in ipairs(undo_table) do
-            for k, card in ipairs(G.playing_cards) do
+            for _, card in ipairs(G.playing_cards) do
                 if card.unique_val == silver_id and card.config.center == G.P_CENTERS.m_lucky then
                     card:set_ability(G.P_CENTERS.c_base, nil, true)
                 end
@@ -785,15 +784,15 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                for k, v in ipairs(G.hand.cards) do
+                for _, _card in ipairs(G.hand.cards) do
                     delay(0.05)
-                    v:juice_up(1, 0.5)
-                    v:set_debuff(false)
-                    v.ability = v.ability or {}
-                    v.ability.oil = true
-                    table.insert(undo_table, v)
-                    if v.facing == "back" then
-                        v:flip()
+                    _card:juice_up(1, 0.5)
+                    _card:set_debuff(false)
+                    _card.ability = _card.ability or {}
+                    _card.ability.oil = true
+                    table.insert(undo_table, _card)
+                    if _card.facing == "back" then
+                        _card:flip()
                     end
                 end
                 return true
@@ -801,7 +800,7 @@ new_alchemical{
         })
     end,
     undo = function(self, undo_table)
-        for k, card in ipairs(undo_table) do
+        for _, card in ipairs(undo_table) do
             if card.ability and card.ability.oil then
                 card.ability.oil = nil
             end
@@ -824,9 +823,10 @@ new_alchemical{
             delay = 0.1,
             func = function()
                 local removed_table = {}
-                for k, _card in ipairs(G.hand.highlighted) do
-                    for k, v in ipairs(G.playing_cards) do
-                        if v:get_id() == _card:get_id() then
+                for _, _card in ipairs(G.hand.highlighted) do
+                    local t_rank = SMODS.has_no_rank(_card) and "no_rank" or _card.base.id
+                    for _, v in ipairs(G.playing_cards) do
+                        if (t_rank == "no_rank" and SMODS.has_no_rank(v)) or (t_rank ~= "no_rank" and not SMODS.has_no_rank(v) and v.base.id == t_rank) then
                             table.insert(undo_table, v)
                             table.insert(removed_table, v)
                             v:start_dissolve({ HEX("E3FF37") }, nil, 1.6)
@@ -904,6 +904,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
+                local target = G.hand.highlighted[1]
                 for i = 1, math.max(1, alchemy_ability_round(card.ability.extra)) do
                     local eligible_cards = {}
                     for k, v in ipairs(G.hand.cards) do
@@ -912,15 +913,15 @@ new_alchemical{
                         end
                     end
                     if #eligible_cards > 0 then
-                        local conv_card = pseudorandom_element(eligible_cards, pseudoseed(card.ability.name))
+                        local _card = pseudorandom_element(eligible_cards, pseudoseed(card.ability.name))
                         delay(0.05)
-                        if not (G.hand.highlighted[1].edition) then
-                            conv_card:juice_up(1, 0.5)
+                        if not (target.edition) then
+                            _card:juice_up(1, 0.5)
                         end
-                        conv_card:set_ability(G.hand.highlighted[1].config.center)
-                        conv_card:set_seal(G.hand.highlighted[1]:get_seal(true))
-                        conv_card:set_edition(G.hand.highlighted[1].edition)
-                        table.insert(undo_table, conv_card.unique_val)
+                        _card:set_ability(target.config.center)
+                        _card:set_seal(target:get_seal(true))
+                        _card:set_edition(target.edition)
+                        table.insert(undo_table, _card.unique_val)
                     end
                 end
                 return true
