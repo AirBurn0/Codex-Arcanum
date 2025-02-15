@@ -35,6 +35,9 @@ Add new unlock conditions:
 * Brimstone requires to discard a **Pair** **2**'s
 * Philosopher's Deck requires to discover a Philosopher's Stone card
 * Herbalist's Deck requires to discover The Seeker card
+* Chain Reaction requires to discover 24 or more Alchemical cards (That's kinda harder than before cuz only 12 of them is unlocked by default)
+* Breaking Bozo requires to use 5 or more Alchemical cards and then DIE before 6 ante
+* Catalyst Joker requires to use 4 or more consumables within one Blind
 ---
 
 <p align="center">
