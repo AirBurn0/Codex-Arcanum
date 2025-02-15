@@ -218,14 +218,7 @@ new_joker{
             G.E_MANAGER:add_event(Event{
                 trigger = "before",
                 func = function()
-                    local newScore = math.floor(G.GAME.blind.chips * (1 - card.ability.extra.blind_reduce))
-                    local difference = G.GAME.blind.chips - newScore
-                    G.GAME.blind.chips = newScore
-                    G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-                    G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
-                    G.HUD_blind:recalculate()
-                    G.hand_text_area.blind_chips:juice_up()
-                    G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
+                    alchemy_mult_blind_score(1 - card.ability.extra.blind_reduce)
                     return true
                 end
             })

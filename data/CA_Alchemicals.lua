@@ -201,15 +201,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                G.GAME.blind.chips = math.floor(G.GAME.blind.chips * math.max(0, (1 - card.ability.extra)))
-                G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-                G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
-                G.HUD_blind:recalculate()
-                G.hand_text_area.blind_chips:juice_up()
-                if not silent then
-                    play_sound("chips2")
-                end
-                G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
+                alchemy_mult_blind_score(1 - card.ability.extra)
                 return true
             end
         })
@@ -332,7 +324,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                take_cards_from_discard(#G.discard.cards)
+                take_cards_from_discard()
                 return true
             end
         })

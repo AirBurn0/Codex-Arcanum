@@ -2,10 +2,11 @@ function create_alchemical()
 	return create_card("Alchemical", G.pack_cards, nil, nil, true, true, nil, "alc")
 end
 
-function take_cards_from_discard(count)
+function take_cards_from_discard()
 	G.E_MANAGER:add_event(Event{
 		trigger = "immediate",
 		func = function()
+			local count = #G.discard.cards
 			for i = 1, count do --draw cards from deck
 				draw_card(G.discard, G.deck, i * 100 / count, "up", nil, nil, 0.005, i % 2 == 0, nil, math.max((21 - i) / 20, 0.7))
 			end
@@ -33,17 +34,8 @@ function is_in_booster_pack(state)
 		or state == G.STATES.SMODS_BOOSTER_OPENED
 end
 
--- Talisman compat API
-local function alchemy_talisman_number(arg)
-	local status, ret = pcall(to_big, arg)
-	if status then
-		return ret
-	end
-	return arg
-end
-
 function alchemy_check_for_chips_win()
-	return alchemy_talisman_number(G.GAME.chips) >= alchemy_talisman_number(G.GAME.blind.chips)
+	return G.GAME.chips >= G.GAME.blind.chips
 end
 
 function alchemy_card_eval_text(card, text, sound, color, text_scale, hold, delayed, after_func)
@@ -84,10 +76,14 @@ end
 
 -- Serpent fix, plz do not be like Serpent and don't override what must not be overriden
 function alchemy_draw_cards(amount)
-	local serpent = G.GAME.blind.disabled
-	G.GAME.blind.disabled = true
+	if G.GAME.blind:get_type() == "Boss" and G.GAME.blind.config.blind.key == "bl_serpent" then
+		local serpent = G.GAME.blind.disabled
+		G.GAME.blind.disabled = true
+		G.FUNCS.draw_from_deck_to_hand(amount)
+		G.GAME.blind.disabled = serpent
+		return
+	end
 	G.FUNCS.draw_from_deck_to_hand(amount)
-	G.GAME.blind.disabled = serpent
 end
 
 -- for cryptid enjoyers
@@ -104,4 +100,16 @@ function alchemy_loc_plural(word, count)
 		return "nil"
 	end
 	return plurals(count)
+end
+
+function alchemy_mult_blind_score(by_percent)
+    G.GAME.blind.chips = math.floor(G.GAME.blind.chips * math.max(0, by_percent))
+    G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+    G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
+    G.HUD_blind:recalculate()
+    G.hand_text_area.blind_chips:juice_up()
+    if not silent then
+        play_sound("chips2")
+    end
+    G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
 end
