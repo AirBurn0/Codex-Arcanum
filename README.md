@@ -23,7 +23,7 @@ And also - it says `after 1 round`, right? Well, we all knows what can happen wi
 * Alchemical Tycoon voucher require 10 Alchemical cards to be bought from shop to be unlocked
 * New Alchemical - Lithium: Removes Eternal, Perishable, Rental and Debuff from selected Joker. 
 Unlocks by beating Crimson Heart or Verdant Leaf
-* New Alchemical - Honey: x2 Blind score, disables Boss Blind effect (similar to Chicot / selling Luchador)
+* New Alchemical - Honey: Disables Boss Blind effect (similar to Chicot / selling Luchador), but sets Blind reward to $0.
 Unlocks by beating The Wall or Violet Vessel
 * New Alchemical - Chlorine: Enhances up to 3 cards to Wild card
 Unlocks by having at least 6 Wild cards in full deck
