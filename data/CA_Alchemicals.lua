@@ -900,33 +900,37 @@ new_alchemical{
         return args.type == self.unlock_condition.type and G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra
     end,
     use = function(self, card, area, copier, undo_table)
-        G.E_MANAGER:add_event(Event{
-            trigger = "after",
-            delay = 0.1,
-            func = function()
-                local target = G.hand.highlighted[1]
-                for i = 1, math.max(1, alchemy_ability_round(card.ability.extra)) do
-                    local eligible_cards = {}
-                    for k, v in ipairs(G.hand.cards) do
-                        if v.config.center == G.P_CENTERS.c_base and not (v.edition) and not (v.seal) then
-                            table.insert(eligible_cards, v)
-                        end
-                    end
-                    if #eligible_cards > 0 then
-                        local _card = pseudorandom_element(eligible_cards, pseudoseed(card.ability.name))
-                        delay(0.05)
-                        if not (target.edition) then
-                            _card:juice_up(1, 0.5)
-                        end
-                        _card:set_ability(target.config.center)
-                        _card:set_seal(target:get_seal(true))
-                        _card:set_edition(target.edition)
-                        table.insert(undo_table, _card.unique_val)
-                    end
-                end
-                return true
+        -- search for suitable cards
+        local eligible_cards = {}
+        for _, v in ipairs(G.hand.cards) do
+            if v.config.center == G.P_CENTERS.c_base and not (v.edition) and not (v.seal) then
+                table.insert(eligible_cards, v)
             end
-        })
+        end
+        -- randomsort array
+        for i = #eligible_cards, 2, -1 do
+            local j = pseudorandom(pseudoseed(card.ability.name), 1, i)
+            eligible_cards[i], eligible_cards[j] = eligible_cards[j], eligible_cards[i]
+        end
+        -- call it a day
+        local target = G.hand.highlighted[1]
+        for i = 1, math.max(1, alchemy_ability_round(card.ability.extra)) do
+            if #eligible_cards < 1 then
+                break
+            end
+            local _card = eligible_cards[i]
+            G.E_MANAGER:add_event(Event{
+                trigger = "after",
+                delay = 0.1,
+                func = function()
+                    _card:set_ability(target.config.center)
+                    _card:set_edition(target.edition, true)
+                    _card:set_seal(target:get_seal(true), false, true)
+                    table.insert(undo_table, _card.unique_val)
+                    return true
+                end
+            })
+        end
     end,
     undo = function(self, undo_table)
         for _, uranium_id in ipairs(undo_table) do
