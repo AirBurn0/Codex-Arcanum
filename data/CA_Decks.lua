@@ -9,7 +9,7 @@ SMODS.Atlas{
 local function new_deck(deck)
     -- create deck
     SMODS.Back{
-        key = deck.key,    
+        key = deck.key,
         config = deck.config or {},
         unlocked = true,
         apply = function(self) end,
@@ -32,7 +32,7 @@ new_deck{
     trigger_effect = function(self, context)
         if context.setting_blind and G.GAME.blind:get_type() == "Boss" then
             delay(0.2)
-            G.E_MANAGER:add_event(Event({
+            G.E_MANAGER:add_event(Event{
                 trigger = "immediate",
                 func = function()
                     if G.consumeables.config.card_limit > #G.consumeables.cards or G.GAME.used_vouchers.v_alchemy_cauldron then
@@ -46,7 +46,7 @@ new_deck{
                     end
                     return true
                 end
-            }))
+            })
         end
     end
 }

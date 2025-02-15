@@ -12,7 +12,7 @@
 ------------MOD CODE -------------------------
 G.C.SECONDARY_SET.Alchemy = HEX("C09D75")
 
-SMODS.Atlas { key = 'modicon', px = 32, py = 32, path = 'modicon.png' }
+SMODS.Atlas{ key = "modicon", px = 32, py = 32, path = "modicon.png" }
 
 SMODS.load_file("utils/CA_CardUtil.lua")()
 SMODS.load_file("utils/CA_Overrides.lua")()

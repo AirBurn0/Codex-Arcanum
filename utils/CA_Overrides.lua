@@ -2,10 +2,10 @@
 local create_cardref = create_card
 function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
     if not forced_key
-    and soulable 
-    and not G.GAME.banned_keys["c_soul"] -- game checks for G.GAME.banned_keys["c_soul"] even for black hole spectral
-    and (_type == "Alchemical" or _type == "Spectral") 
-    and (not G.GAME.used_jokers["c_alchemy_philosopher_stone"] or next(find_joker("Showman"))) 
+    and soulable
+    and not G.GAME.banned_keys["c_soul"]     -- game checks for G.GAME.banned_keys["c_soul"] even for black hole spectral
+    and (_type == "Alchemical" or _type == "Spectral")
+    and (not G.GAME.used_jokers["c_alchemy_philosopher_stone"] or next(find_joker("Showman")))
     and pseudorandom("philosopher_stone_" .. _type .. G.GAME.round_resets.ante) > 0.997 then
         forced_key = "c_alchemy_philosopher_stone"
     end
@@ -131,14 +131,14 @@ G.FUNCS.use_card = function(e, mute, nosave)
     local prev_state = G.STATE
     local dont_dissolve = nil
     local delay_fac = 1
-    if card:check_use() then 
-        G.E_MANAGER:add_event(Event({
+    if card:check_use() then
+        G.E_MANAGER:add_event(Event{
             func = function()
                 e.disable_button = nil
                 e.config.button = "use_card"
-                return true 
-            end 
-        }))
+                return true
+            end
+        })
         return
     end
     if card.ability.set == "Booster" and not nosave and G.STATE == G.STATES.SHOP then
@@ -216,14 +216,14 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
         dont_dissolve = true
         delay_fac = 0.2
     end
-    G.E_MANAGER:add_event(Event({
+    G.E_MANAGER:add_event(Event{
         trigger = "after",
         delay = 0.2,
         func = function()
             if not dont_dissolve then
                 card:start_dissolve()
             end
-            G.E_MANAGER:add_event(Event({
+            G.E_MANAGER:add_event(Event{
                 trigger = "after",
                 delay = 0.1,
                 func = function()
@@ -258,9 +258,9 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
                             G.round_eval.alignment.offset.py = nil
                         end
                         if area and area.cards[1] then
-                            G.E_MANAGER:add_event(Event({
+                            G.E_MANAGER:add_event(Event{
                                 func = function()
-                                    G.E_MANAGER:add_event(Event({
+                                    G.E_MANAGER:add_event(Event{
                                         func = function()
                                             G.CONTROLLER.interrupt.focus = nil
                                             if card.ability.set == "Voucher" then
@@ -270,18 +270,18 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
                                             end
                                             return true
                                         end
-                                    }))
+                                    })
                                     return true
                                 end
-                            }))
+                            })
                         end
                     end
                     return true
-                end 
-            }))
+                end
+            })
             return true
         end
-    }))
+    })
 end
 
 -- unlocks achievement popup
@@ -291,15 +291,72 @@ function create_UIBox_notify_alert(_achievement, _type)
     if _type == "Alchemical" then
         local _c = G.P_CENTERS[_achievement]
         local _atlas = G.ASSET_ATLAS[_c.atlas]
-
         local t_s = Sprite(0, 0, 1.5 * (_atlas.px / _atlas.py), 1.5, _atlas, _c and _c.pos or { x = 5, y = 4 })
         t_s.states.drag.can = false
         t_s.states.hover.can = false
         t_s.states.collide.can = false
-
         local subtext = localize("k_alchemical")
-        -- hell nah I'm not gonna format this
-        return {n=G.UIT.ROOT,config={align="cl",r=0.1,padding=0.06,colour=G.C.UI.TRANSPARENT_DARK},nodes={{n=G.UIT.R,config={align="cl",padding=0.2,minw=20,r=0.1,colour=G.C.BLACK,outline=1.5,outline_colour=G.C.GREY},nodes={{n=G.UIT.R,config={align="cm",r=0.1},nodes={{n=G.UIT.R,config={align="cm",r=0.1},nodes={{n=G.UIT.O,config={object=t_s}}}},_type~="achievement"and{n=G.UIT.R,config={align="cm",padding=0.04},nodes={{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=subtext,scale=0.5,colour=G.C.FILTER,shadow=true}}}},{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=localize("k_unlocked_ex"),scale=0.35,colour=G.C.FILTER,shadow=true}}}}}}or{n=G.UIT.R,config={align="cm",padding=0.04},nodes={{n=G.UIT.R,config={align="cm",maxw=3.4,padding=0.1},nodes={{n=G.UIT.T,config={text=name,scale=0.4,colour=G.C.UI.TEXT_LIGHT,shadow=true}}}},{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=subtext,scale=0.3,colour=G.C.FILTER,shadow=true}}}},{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=localize("k_unlocked_ex"),scale=0.35,colour=G.C.FILTER,shadow=true}}}}}}}}}}}}
+        return {
+            n = G.UIT.ROOT,
+            config = { align = "cl", r = 0.1, padding = 0.06, colour = G.C.UI.TRANSPARENT_DARK },
+            nodes = { {
+                n = G.UIT.R,
+                config = { align = "cl", padding = 0.2, minw = 20, r = 0.1, colour = G.C.BLACK, outline = 1.5, outline_colour = G.C.GREY },
+                nodes = { {
+                    n = G.UIT.R,
+                    config = { align = "cm", r = 0.1 },
+                    nodes = { {
+                        n = G.UIT.R,
+                        config = { align = "cm", r = 0.1 },
+                        nodes = { {
+                            n = G.UIT.O,
+                            config = { object = t_s }
+                        } }
+                    },
+                        _type ~= "achievement" and {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.04 },
+                            nodes = { {
+                                n = G.UIT.R,
+                                config = { align = "cm", maxw = 3.4 },
+                                nodes = { {
+                                    n = G.UIT.T,
+                                    config = { text = subtext, scale = 0.5, colour = G.C.FILTER, shadow = true }
+                                } }
+                            },
+                                {
+                                    n = G.UIT.R,
+                                    config = { align = "cm", maxw = 3.4 },
+                                    nodes = { {
+                                        n = G.UIT.T,
+                                        config = { text = localize("k_unlocked_ex"), scale = 0.35, colour = G.C.FILTER, shadow = true }
+                                    } }
+                                }
+                            }
+                        } or {
+                            n = G.UIT.R,
+                            config = { align = "cm", padding = 0.04 },
+                            nodes = { {
+                                n = G.UIT.R,
+                                config = { align = "cm", maxw = 3.4, padding = 0.1 },
+                                nodes = { { n = G.UIT.T, config = { text = _type == "achievement" and localize(_achievement, "achievement_names") or "ERROR", scale = 0.4, colour = G.C.UI.TEXT_LIGHT, shadow = true } } }
+                            }, {
+                                n = G.UIT.R,
+                                config = { align = "cm", maxw = 3.4 },
+                                nodes = { { n = G.UIT.T, config = { text = subtext, scale = 0.3, colour = G.C.FILTER, shadow = true } } }
+                            }, {
+                                n = G.UIT.R,
+                                config = { align = "cm", maxw = 3.4 },
+                                nodes = { {
+                                    n = G.UIT.T,
+                                    config = { text = localize("k_unlocked_ex"), scale = 0.35, colour = G.C.FILTER, shadow = true }
+                                } }
+                            } }
+                        }
+                    }
+                } }
+            } }
+        }
     end
     return uibox
 end
@@ -348,7 +405,7 @@ end
 local remove_from_deckref = Card.remove_from_deck
 function Card:remove_from_deck(from_debuff)
     if self.added_to_deck then
-        if self.ability.name == 'j_alchemy_catalyst_joker' then
+        if self.ability.name == "j_alchemy_catalyst_joker" then
             G.consumeables:change_size(-self.ability.extra.slots)
         end
     end
@@ -356,8 +413,8 @@ function Card:remove_from_deck(from_debuff)
 end
 
 -- alchemical undos and end round evals
-local update_round_evalref = Game.update_round_eval
-function Game:update_round_eval(dt)
+local evaluate_roundref = G.FUNCS.evaluate_round
+function G.FUNCS.evaluate_round()
     if G.deck.config.quicksilver then
         G.hand:change_size(-G.deck.config.quicksilver)
         G.deck.config.quicksilver = nil
@@ -373,7 +430,7 @@ function Game:update_round_eval(dt)
         G.deck.config.philosopher = false
     end
 
-    update_round_evalref(self, dt)
+    evaluate_roundref()
     -- runs through undo tables of cards
     if G.deck.config.alchemy_undo_table then
         for k, v in pairs(G.deck.config.alchemy_undo_table) do

@@ -20,7 +20,7 @@ SMODS.UndiscoveredSprite{
     pos = { x = 4, y = 4 }
 }
 
--- Until SMODS do 'LockedSprite' it will be like that
+-- Until SMODS do "LockedSprite" it will be like that
 G.c_alchemy_locked = {
     name = "Locked",
     pos = { x = 5, y = 4 },
@@ -29,37 +29,37 @@ G.c_alchemy_locked = {
     unlocked = false,
     max = 1,
     cost_mult = 1.0,
-    config = { }
+    config = {}
 }
 
-local function get_most_common_suit() 
-	local suit_to_card_couner = {}
-	for _, v in pairs(SMODS.Suits) do
-		if not v.disabled then
-			suit_to_card_couner[v.name] = 0
-		end
-	end
-	if G.playing_cards then
-		for _, v in pairs(G.playing_cards) do
+local function get_most_common_suit()
+    local suit_to_card_couner = {}
+    for _, v in pairs(SMODS.Suits) do
+        if not v.disabled then
+            suit_to_card_couner[v.name] = 0
+        end
+    end
+    if G.playing_cards then
+        for _, v in pairs(G.playing_cards) do
             if not (SMODS.has_no_suit(v) or SMODS.has_any_suit(v)) then -- stone cards should count as no suit, wildcards should count as any suit
                 suit_to_card_couner[v.base.suit] = suit_to_card_couner[v.base.suit] + 1
             end
-		end
-	end
-	local top_suit = "";
-	local top_count = -1;
-	for suit, count in pairs(suit_to_card_couner) do
-		if top_count < count then
-			top_suit = suit
-			top_count = count
-		end
-	end
+        end
+    end
+    local top_suit = "";
+    local top_count = -1;
+    for suit, count in pairs(suit_to_card_couner) do
+        if top_count < count then
+            top_suit = suit
+            top_count = count
+        end
+    end
 
-	return top_suit
+    return top_suit
 end
 
-local function max_selected_cards(card) 
-	return math.max(1, alchemy_ability_round(card.ability.select_cards))
+local function max_selected_cards(card)
+    return math.max(1, alchemy_ability_round(card.ability.select_cards))
 end
 
 local function get_progress_info(vars)
@@ -72,11 +72,11 @@ end
 local function new_alchemical(alchemical)
     -- can_use function builder
     -- preharps there is simpler way to do this and don't ctrl+c ctrl+v code
-    local can_use_builder = { alchemical.can_use or function(self, card) return G.STATE == G.STATES.SELECTING_HAND end }
+    local can_use_builder = { alchemical.can_use or function(self, card) return G.STATE == G.STATES.SELECTING_HAND and not card.debuff end }
     if not alchemical.can_use then
         if alchemical.config and alchemical.config.select_cards then
             local select_type = type(alchemical.config.select_cards)
-            if select_type == "number" then -- mutable select size (for cryptid enjoyers)
+            if select_type == "number" then     -- mutable select size (for cryptid enjoyers)
                 can_use_builder[#can_use_builder + 1] = function(self, card) return (#G.hand.highlighted <= max_selected_cards(card) and #G.hand.highlighted > 0) end
             elseif select_type == "string" then -- immutable select size (no cryptid joy)
                 local finalSize = tonumber(alchemical.config.select_cards)
@@ -88,7 +88,7 @@ local function new_alchemical(alchemical)
         end
     end
     -- create consumable
-    SMODS.Consumable{ 
+    SMODS.Consumable{
         key = alchemical.key or "stone", -- default is stone lol
         set = "Alchemical",
         atlas = alchemical.atlas or "alchemicals_atlas",
@@ -96,12 +96,12 @@ local function new_alchemical(alchemical)
         loc_vars = alchemical.loc_vars,
         unlocked = not (alchemical.check_for_unlock or alchemical.check_for_unlock),
         unlock_condition = alchemical.unlock_condition,
-        check_for_unlock  = alchemical.check_for_unlock,
+        check_for_unlock = alchemical.check_for_unlock,
         locked_loc_vars = alchemical.locked_loc_vars,
         discovered = false,
         config = alchemical.config or {},
         cost = alchemical.cost or 3,
-        can_use = function(self, card) 
+        can_use = function(self, card)
             for _, can_use_function in ipairs(can_use_builder) do
                 if not can_use_function(self, card) then
                     return false
@@ -110,7 +110,7 @@ local function new_alchemical(alchemical)
             return true
         end,
         use = function(self, card, area, copier)
-            if not copier then 
+            if not copier then
                 if G.GAME.consumeable_usage_total.alchemical then
                     G.GAME.consumeable_usage_total.alchemical = G.GAME.consumeable_usage_total.alchemical + 1
                 else
@@ -139,7 +139,7 @@ local function new_alchemical(alchemical)
             else -- or else just evaluate
                 alchemical.use(self, card, area, copier)
             end
-            check_for_unlock{type = "used_alchemical"}
+            check_for_unlock{ type = "used_alchemical" }
             return true
         end,
         undo = alchemical.undo
@@ -149,113 +149,113 @@ end
 new_alchemical{
     key = "ignis",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, alchemy_loc_plural("discard", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("discard", extra) } }
     end,
     config = { extra = 1 },
     pos = { x = 0, y = 0 },
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
                 ease_discard(alchemy_ability_round(card.ability.extra))
                 return true
             end
-        }))
+        })
     end
 }
 
 new_alchemical{
     key = "aqua",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, alchemy_loc_plural("hand", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("hand", extra) } }
     end,
     config = { extra = 1 },
     pos = { x = 1, y = 0 },
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
                 ease_hands_played(alchemy_ability_round(card.ability.extra))
                 return true
             end
-        }))
+        })
     end
 }
 
 new_alchemical{
     key = "terra",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
-        return { vars = { center.ability.extra * 100} } 
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
+        return { vars = { center.ability.extra * 100 } }
     end,
     config = { extra = 0.15 },
     pos = { x = 2, y = 0 },
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
                 G.GAME.blind.chips = math.floor(G.GAME.blind.chips * math.max(0, (1 - card.ability.extra)))
                 G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
                 G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
-                G.HUD_blind:recalculate() 
+                G.HUD_blind:recalculate()
                 G.hand_text_area.blind_chips:juice_up()
-                if not silent then 
-                    play_sound("chips2") 
+                if not silent then
+                    play_sound("chips2")
                 end
                 G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
                 return true
             end
-        }))
+        })
     end
 }
 
 new_alchemical{
     key = "aero",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, alchemy_loc_plural("card", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("card", extra) } }
     end,
     config = { extra = 4 },
     pos = { x = 3, y = 0 },
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
                 alchemy_draw_cards(alchemy_ability_round(card.ability.extra))
-                return true 
-            end 
-        }))
+                return true
+            end
+        })
     end
 }
 
 new_alchemical{
     key = "quicksilver",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         return { vars = { alchemy_ability_round(center.ability.extra) } }
     end,
     config = { extra = 2 },
     pos = { x = 4, y = 0 },
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
                 local extra = alchemy_ability_round(card.ability.extra)
                 G.hand:change_size(extra)
                 G.deck.config.quicksilver = (G.deck.config.quicksilver or 0) + extra
-                return true 
-            end 
-        }))
+                return true
+            end
+        })
     end
 }
 
@@ -263,19 +263,19 @@ new_alchemical{
     key = "salt",
     loc_vars = function(self, info_queue, center)
         local extra = math.max(1, alchemy_ability_round(center.ability.extra))
-        return { vars = { extra, alchemy_loc_plural("tag", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("tag", extra) } }
     end,
     config = { extra = 1 },
     pos = { x = 5, y = 0 },
     can_use = function() return G.STATE ~= G.STATES.HAND_PLAYED and G.STATE ~= G.STATES.DRAW_TO_HAND and G.STATE ~= G.STATES.PLAY_TAROT end,
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
                 for _ = 1, math.max(1, alchemy_ability_round(card.ability.extra)) do
                     local _tag_name
-                    if G.FORCE_TAG then 
+                    if G.FORCE_TAG then
                         _tag_name = G.FORCE_TAG
                     else
                         local _pool, _pool_key = get_current_pool("Tag", nil, nil, nil)
@@ -283,28 +283,28 @@ new_alchemical{
                         local it = 1
                         while _tag_name == "UNAVAILABLE" or _tag_name == "tag_double" or _tag_name == "tag_orbital" do
                             it = it + 1
-                            _tag_name = pseudorandom_element(_pool, pseudoseed(_pool_key.."_resample"..it))
+                            _tag_name = pseudorandom_element(_pool, pseudoseed(_pool_key .. "_resample" .. it))
                         end
                     end
                     G.GAME.round_resets.blind_tags = G.GAME.round_resets.blind_tags or {}
                     add_tag(Tag(_tag_name, nil, G.GAME.blind))
                 end
-                return true 
-            end 
-        }))
+                return true
+            end
+        })
     end
 }
 
 new_alchemical{
     key = "sulfur",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
-        return { vars = { center.ability.money } } 
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
+        return { vars = { center.ability.money } }
     end,
     config = { money = 4 },
     pos = { x = 0, y = 1 },
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -314,9 +314,9 @@ new_alchemical{
                     ease_hands_played(-hands)
                     ease_dollars(card.ability.money * hands, true)
                 end
-                return true 
-            end 
-        }))
+                return true
+            end
+        })
     end
 }
 
@@ -325,32 +325,32 @@ new_alchemical{
     config = { extra = 4 },
     pos = { x = 1, y = 1 },
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
     end,
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({ 
-            trigger = "after", 
+        G.E_MANAGER:add_event(Event{
+            trigger = "after",
             delay = 0.1,
             func = function()
                 take_cards_from_discard(#G.discard.cards)
                 return true
-            end 
-        }))
+            end
+        })
     end
 }
-  
+
 new_alchemical{
     key = "bismuth",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = G.P_CENTERS.e_polychrome
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = G.P_CENTERS.e_polychrome
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
         return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
     end,
     config = { select_cards = 2 },
     pos = { x = 2, y = 1 },
     use = function(self, card, area, copier, undo_table)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -358,9 +358,9 @@ new_alchemical{
                     card:set_edition({ polychrome = true }, true)
                     table.insert(undo_table, card.unique_val)
                 end
-                return true 
-            end 
-        }))
+                return true
+            end
+        })
     end,
     undo = function(self, undo_table)
         for _, poly_id in ipairs(undo_table) do
@@ -376,31 +376,31 @@ new_alchemical{
 new_alchemical{
     key = "cobalt",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, alchemy_loc_plural("level", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("level", extra) } }
     end,
     config = { extra = 2 },
     pos = { x = 3, y = 1 },
     default_can_use = function(self, card) return #G.hand.highlighted > 0 end,
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
                 local text, disp_text = G.FUNCS.get_poker_hand_info(G.hand.highlighted)
                 update_hand_text(
-                    { sound = "button", volume = 0.7, pitch = 0.8, delay = 0.3 }, 
+                    { sound = "button", volume = 0.7, pitch = 0.8, delay = 0.3 },
                     { handname = localize(text, "poker_hands"), chips = G.GAME.hands[text].chips, mult = G.GAME.hands[text].mult, level = G.GAME.hands[text].level }
                 )
                 level_up_hand(card, text, nil, alchemy_ability_round(card.ability.extra))
-                update_hand_text( 
+                update_hand_text(
                     { sound = "button", volume = 0.7, pitch = 1.1, delay = 0 },
                     { mult = 0, chips = 0, handname = "", level = "" }
                 )
-                return true 
-            end 
-        }))
+                return true
+            end
+        })
     end
 }
 
@@ -408,10 +408,10 @@ new_alchemical{
     key = "arsenic",
     pos = { x = 4, y = 1 },
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
     end,
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -422,56 +422,56 @@ new_alchemical{
                 ease_hands_played(temp_discards)
                 ease_discard(temp_hands)
                 -- why stop player from being stupid? Let bro cook!
-                if temp_discards <= 0 and G.STAGE == G.STAGES.RUN then 
-                    G.STATE = G.STATES.GAME_OVER; 
+                if temp_discards <= 0 and G.STAGE == G.STAGES.RUN then
+                    G.STATE = G.STATES.GAME_OVER;
                     G.STATE_COMPLETE = false
                 end
                 Game:update_hand_played(nil)
                 return true
             end
-        }))
+        })
     end
 }
 
 new_alchemical{
     key = "antimony",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = G.P_CENTERS.e_negative
-        info_queue[#info_queue+1] = {key = "eternal", set = "Other"}
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
+        info_queue[#info_queue + 1] = { key = "eternal", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, alchemy_loc_plural("copy", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("copy", extra) } }
     end,
     config = { extra = 1 },
     pos = { x = 5, y = 1 },
     default_can_use = function(self, card) return #G.jokers.cards > 0 end,
     use = function(self, card, area, copier)
         G.jokers.config.antimony = G.jokers.config.antimony or {}
-        if #G.jokers.cards > 0 then 
-            G.E_MANAGER:add_event(Event({
+        if #G.jokers.cards > 0 then
+            G.E_MANAGER:add_event(Event{
                 trigger = "after",
                 delay = 0.1,
                 func = function()
                     for _ = 1, alchemy_ability_round(card.ability.extra) or 1 do
                         local chosen_joker = pseudorandom_element(G.jokers.cards, pseudoseed("invisible"))
                         local card = copy_card(chosen_joker, nil, nil, nil, chosen_joker.edition and chosen_joker.edition.negative)
-                        card:set_edition({negative = true}, true)
+                        card:set_edition({ negative = true }, true)
                         card:set_eternal(true)
                         card:add_to_deck()
                         G.jokers:emplace(card)
                         table.insert(G.jokers.config.antimony, card.unique_val)
                     end
                     return true
-                end 
-            }))
+                end
+            })
         end
     end,
-    undo = function(self, undo_table) 
+    undo = function(self, undo_table)
         if G.jokers.config.antimony then
             for _, poly_id in ipairs(G.jokers.config.antimony) do
                 for k, joker in ipairs(G.jokers.cards) do
                     if joker.unique_val == poly_id then
-                        G.E_MANAGER:add_event(Event({
+                        G.E_MANAGER:add_event(Event{
                             trigger = "after",
                             delay = 0.3,
                             blockable = false,
@@ -481,7 +481,7 @@ new_alchemical{
                                 joker = nil
                                 return true;
                             end
-                        }))
+                        })
                     end
                 end
             end
@@ -493,44 +493,43 @@ new_alchemical{
 new_alchemical{
     key = "soap",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
     end,
     config = { select_cards = 3 },
     pos = { x = 0, y = 2 },
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
-                local extra = alchemy_ability_round(card.ability.select_cards)
-                for k, _card in ipairs(G.hand.highlighted) do
-                    return_to_deck(extra, _card)
+                for _, _card in ipairs(G.hand.highlighted) do
+                    return_to_deck(_card)
                 end
-                alchemy_draw_cards(extra)
+                alchemy_draw_cards(#G.hand.highlighted)
                 return true
             end
-        }))
+        })
     end
 }
 
 new_alchemical{
     key = "manganese",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = G.P_CENTERS.m_steel
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_steel
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
     end,
     config = { select_cards = 4 },
     pos = { x = 1, y = 2 },
     use = function(self, card, area, copier, undo_table)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
-                for k, _card in ipairs(G.hand.highlighted) do
+                for _, _card in ipairs(G.hand.highlighted) do
                     delay(0.05)
                     _card:juice_up(1, 0.5)
                     _card:set_ability(G.P_CENTERS.m_steel)
@@ -538,7 +537,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))
+        })
     end,
     undo = function(self, undo_table)
         for _, manganese_id in ipairs(undo_table) do
@@ -554,14 +553,14 @@ new_alchemical{
 new_alchemical{
     key = "wax",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, alchemy_loc_plural("copy", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("copy", extra) } }
     end,
     config = { select_cards = "1", extra = 2 },
     pos = { x = 2, y = 2 },
     use = function(self, card, area, copier, undo_table)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -579,7 +578,7 @@ new_alchemical{
                 playing_card_joker_effects(new_table)
                 return true
             end
-        }))
+        })
     end,
     undo = function(self, undo_table)
         local _first_dissolve = false
@@ -597,15 +596,15 @@ new_alchemical{
 new_alchemical{
     key = "borax",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local top_suit = get_most_common_suit()
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards), top_suit, colours = { G.C.SUITS[top_suit] } } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards), top_suit, colours = { G.C.SUITS[top_suit] } } }
     end,
     config = { select_cards = 4 },
     pos = { x = 3, y = 2 },
     use = function(self, card, area, copier, undo_table)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -620,7 +619,7 @@ new_alchemical{
                 G.hand:parse_highlighted()
                 return true
             end
-        }))
+        })
     end,
     undo = function(self, undo_table)
         for _, borax_table in ipairs(undo_table) do
@@ -636,15 +635,15 @@ new_alchemical{
 new_alchemical{
     key = "glass",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = G.P_CENTERS.m_glass
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_glass
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
     end,
     config = { select_cards = 4 },
     pos = { x = 4, y = 2 },
     use = function(self, card, area, copier, undo_table)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -656,7 +655,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))
+        })
     end,
     undo = function(self, undo_table)
         for _, glass_id in ipairs(undo_table) do
@@ -672,14 +671,14 @@ new_alchemical{
 new_alchemical{
     key = "magnet",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local extra = alchemy_ability_round(center.ability.extra)
-        return { vars = { extra, alchemy_loc_plural("card", extra) } } 
+        return { vars = { extra, alchemy_loc_plural("card", extra) } }
     end,
     config = { select_cards = "1", extra = 2 },
     pos = { x = 5, y = 2 },
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -699,22 +698,22 @@ new_alchemical{
                 end
                 return true
             end
-        }))
+        })
     end
 }
 
 new_alchemical{
     key = "gold",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = G.P_CENTERS.m_gold
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_gold
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
     end,
     config = { select_cards = 4 },
     pos = { x = 0, y = 3 },
     use = function(self, card, area, copier, undo_table)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -726,7 +725,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))
+        })
     end,
     undo = function(self, undo_table)
         for _, gold_id in ipairs(undo_table) do
@@ -742,15 +741,15 @@ new_alchemical{
 new_alchemical{
     key = "silver",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = G.P_CENTERS.m_lucky
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_lucky
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } } 
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
     end,
     config = { select_cards = 4 },
     pos = { x = 1, y = 3 },
     use = function(self, card, area, copier, undo_table)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -762,7 +761,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))
+        })
     end,
     undo = function(self, undo_table)
         for _, silver_id in ipairs(undo_table) do
@@ -779,10 +778,10 @@ new_alchemical{
     key = "oil",
     pos = { x = 2, y = 3 },
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
     end,
     use = function(self, card, area, copier, undo_table)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -799,7 +798,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))
+        })
     end,
     undo = function(self, undo_table)
         for k, card in ipairs(undo_table) do
@@ -814,13 +813,13 @@ new_alchemical{
     key = "acid",
     pos = { x = 3, y = 3 },
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local select_cards = max_selected_cards(center)
-        return { vars = {  select_cards > 1 and " "..tostring(select_cards) or "", alchemy_loc_plural("card", select_cards) } } 
+        return { vars = { select_cards > 1 and " " .. tostring(select_cards) or "", alchemy_loc_plural("card", select_cards) } }
     end,
     config = { select_cards = 1 },
     use = function(self, card, area, copier, undo_table)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -831,13 +830,13 @@ new_alchemical{
                             table.insert(undo_table, v)
                             table.insert(removed_table, v)
                             v:start_dissolve({ HEX("E3FF37") }, nil, 1.6)
-                        end 
+                        end
                     end
                 end
                 SMODS.calculate_context{ remove_playing_cards = true, removed = removed_table }
                 return true
             end
-        }))
+        })
     end,
     undo = function(self, undo_table)
         for _, acid in ipairs(undo_table) do
@@ -853,14 +852,14 @@ new_alchemical{
 new_alchemical{
     key = "brimstone",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local hands, discards = alchemy_ability_round(center.ability.extra.hands), alchemy_ability_round(center.ability.extra.discards)
-        return { vars =  { hands, alchemy_loc_plural("hand", hands), discards, alchemy_loc_plural("discard", discards) } } 
+        return { vars = { hands, alchemy_loc_plural("hand", hands), discards, alchemy_loc_plural("discard", discards) } }
     end,
-    config = { extra = { hands = 2, discards = 2} },
+    config = { extra = { hands = 2, discards = 2 } },
     pos = { x = 4, y = 3 },
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -875,14 +874,14 @@ new_alchemical{
                 end
                 return true
             end
-        }))
+        })
     end
 }
 
 new_alchemical{
     key = "uranium",
     loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue+1] = { key = "alchemical_card", set = "Other" }
+        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local extra = math.max(1, alchemy_ability_round(center.ability.extra))
         return { vars = { extra, alchemy_loc_plural("card", extra) } }
     end,
@@ -901,7 +900,7 @@ new_alchemical{
         return args.type == self.unlock_condition.type and G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra
     end,
     use = function(self, card, area, copier, undo_table)
-        G.E_MANAGER:add_event(Event({
+        G.E_MANAGER:add_event(Event{
             trigger = "after",
             delay = 0.1,
             func = function()
@@ -915,8 +914,8 @@ new_alchemical{
                     if #eligible_cards > 0 then
                         local conv_card = pseudorandom_element(eligible_cards, pseudoseed(card.ability.name))
                         delay(0.05)
-                        if not (G.hand.highlighted[1].edition) then 
-                            conv_card:juice_up(1, 0.5) 
+                        if not (G.hand.highlighted[1].edition) then
+                            conv_card:juice_up(1, 0.5)
                         end
                         conv_card:set_ability(G.hand.highlighted[1].config.center)
                         conv_card:set_seal(G.hand.highlighted[1]:get_seal(true))
@@ -926,7 +925,7 @@ new_alchemical{
                 end
                 return true
             end
-        }))
+        })
     end,
     undo = function(self, undo_table)
         for _, uranium_id in ipairs(undo_table) do
