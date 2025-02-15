@@ -1,27 +1,27 @@
 SMODS.Atlas{
-    key = 'booster_atlas',
-    path = 'ca_booster_atlas.png',
-    px = '71',
-    py = '95'
+    key = "booster_atlas",
+    path = "ca_booster_atlas.png",
+    px = "71",
+    py = "95"
 }
 
 -- kinda default constructor
-local function new_booster(booster) 
-        -- create booster pack
+local function new_booster(booster)
+    -- create booster pack
     SMODS.Booster{
-        key = booster.type.."_"..tostring(booster.index),
+        key = booster.type .. "_" .. tostring(booster.index),
         kind = "Alchemical",
         group_key = "k_alchemy_pack",
         loc_vars = function(self, info_queue, card)
-            return { vars = { card.ability.choose, card.ability.extra }, key = "p_"..booster.type }
+            return { vars = { card.ability.choose, card.ability.extra }, key = "p_" .. booster.type }
         end,
         config = { extra = booster.extra, choose = booster.choose, name = "Alchemical" },
         pos = booster.pos,
-        atlas = 'booster_atlas',
+        atlas = "booster_atlas",
         weight = booster.weight or 1,
         cost = booster.cost or 4,
-        in_pool = function() 
-            return true 
+        in_pool = function()
+            return true
         end,
         create_card = function(self, card)
             return create_alchemical()

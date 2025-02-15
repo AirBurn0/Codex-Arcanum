@@ -1,15 +1,15 @@
 SMODS.Atlas{
-    key = 'others_atlas',
-    path = 'ca_others_atlas.png',
+    key = "others_atlas",
+    path = "ca_others_atlas.png",
     px = 71,
     py = 95
 }
 
 local function ability_round(ability) -- for cryptid enjoyers
-	if not ability or type(ability) ~= "number" then
-		return 0
-	end
-	return math.floor(ability + 0.5)
+    if not ability or type(ability) ~= "number" then
+        return 0
+    end
+    return math.floor(ability + 0.5)
 end
 
 SMODS.Tarot{
@@ -31,20 +31,20 @@ SMODS.Tarot{
         end
         local used_tarot = (copier or card)
         for i = 1, cards do
-            G.E_MANAGER:add_event(Event({ 
-                trigger = 'after', 
-                delay = 0.4, 
+            G.E_MANAGER:add_event(Event{
+                trigger = "after",
+                delay = 0.4,
                 func = function()
                     if G.consumeables.config.card_limit > #G.consumeables.cards then
-                        play_sound('timpani')
-                        local card = create_card('Alchemical', G.consumeables, nil, nil, nil, nil, nil, 'see')
+                        play_sound("timpani")
+                        local card = create_card("Alchemical", G.consumeables, nil, nil, nil, nil, nil, "see")
                         card:add_to_deck()
                         G.consumeables:emplace(card)
                         used_tarot:juice_up(0.3, 0.5)
                     end
                     return true
-                end 
-            }))
+                end
+            })
         end
         delay(0.6)
     end
@@ -84,7 +84,7 @@ SMODS.Tag{
         end
         local lock = tag.ID
         G.CONTROLLER.locks[lock] = true
-        tag:yep('+', G.C.PURPLE, 
+        tag:yep("+", G.C.PURPLE,
             function()
                 local key = "p_alchemy_mega_1"
                 local card = Card(G.play.T.x + G.play.T.w / 2 - G.CARD_W * 1.27 / 2, G.play.T.y + G.play.T.h / 2 - G.CARD_H * 1.27 / 2, G.CARD_W * 1.27, G.CARD_H * 1.27, G.P_CARDS.empty, G.P_CENTERS[key], { bypass_discovery_center = true, bypass_discovery_ui = true })
@@ -129,7 +129,6 @@ SMODS.Sticker{
             card.ability[self.key] = array
         end
         table.insert(array, val)
-
     end,
     calculate = function(self, card, context)
         if context.update_round then
@@ -141,7 +140,7 @@ SMODS.Sticker{
             for _, entry in ipairs(array) do
                 local center = G.P_CENTERS[entry.key]
                 if center.undo then
-                   center.undo(center, card, entry.data)
+                    center.undo(center, card, entry.data)
                 end
             end
             -- reset

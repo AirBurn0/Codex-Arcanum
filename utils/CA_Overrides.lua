@@ -2,9 +2,9 @@
 local create_cardref = create_card
 function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
     if not forced_key
-    and soulable 
+    and soulable
     and not G.GAME.banned_keys["c_soul"] -- game checks for G.GAME.banned_keys["c_soul"] even for black hole spectral
-    and (_type == "Alchemical" or _type == "Spectral") 
+    and (_type == "Alchemical" or _type == "Spectral")
     and (not G.GAME.used_jokers["c_alchemy_philosopher_stone"] or next(find_joker("Showman"))) then
         local chance = 0.003
         local philosopher = G.GAME.selected_back.name == "b_alchemy_philosopher"
@@ -145,14 +145,14 @@ G.FUNCS.use_card = function(e, mute, nosave)
     local prev_state = G.STATE
     local dont_dissolve = nil
     local delay_fac = 1
-    if card:check_use() then 
-        G.E_MANAGER:add_event(Event({
+    if card:check_use() then
+        G.E_MANAGER:add_event(Event{
             func = function()
                 e.disable_button = nil
                 e.config.button = "use_card"
-                return true 
-            end 
-        }))
+                return true
+            end
+        })
         return
     end
     if card.ability.set == "Booster" and not nosave and G.STATE == G.STATES.SHOP then
@@ -224,7 +224,7 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
     if card.ability.set == "Alchemical" then
         local stat = "c_alchemy_alchemicals_selected"
         inc_career_stat(stat, 1)
-    end 
+    end
     if card.ability.set == "Alchemical" or card.ability.name == "c_alchemy_philosopher_stone" then
         card:add_to_deck()
         G.consumeables:emplace(card)
@@ -233,14 +233,14 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
         dont_dissolve = true
         delay_fac = 0.2
     end
-    G.E_MANAGER:add_event(Event({
+    G.E_MANAGER:add_event(Event{
         trigger = "after",
         delay = 0.2,
         func = function()
             if not dont_dissolve then
                 card:start_dissolve()
             end
-            G.E_MANAGER:add_event(Event({
+            G.E_MANAGER:add_event(Event{
                 trigger = "after",
                 delay = 0.1,
                 func = function()
@@ -275,9 +275,9 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
                             G.round_eval.alignment.offset.py = nil
                         end
                         if area and area.cards[1] then
-                            G.E_MANAGER:add_event(Event({
+                            G.E_MANAGER:add_event(Event{
                                 func = function()
-                                    G.E_MANAGER:add_event(Event({
+                                    G.E_MANAGER:add_event(Event{
                                         func = function()
                                             G.CONTROLLER.interrupt.focus = nil
                                             if card.ability.set == "Voucher" then
@@ -287,18 +287,18 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
                                             end
                                             return true
                                         end
-                                    }))
+                                    })
                                     return true
                                 end
-                            }))
+                            })
                         end
                     end
                     return true
-                end 
-            }))
+                end
+            })
             return true
         end
-    }))
+    })
 end
 
 -- unlocks achievement popup
@@ -316,7 +316,7 @@ function create_UIBox_notify_alert(_achievement, _type)
 
         local subtext = localize("k_alchemical")
         -- hell nah I'm not gonna format this
-        return {n=G.UIT.ROOT,config={align="cl",r=0.1,padding=0.06,colour=G.C.UI.TRANSPARENT_DARK},nodes={{n=G.UIT.R,config={align="cl",padding=0.2,minw=20,r=0.1,colour=G.C.BLACK,outline=1.5,outline_colour=G.C.GREY},nodes={{n=G.UIT.R,config={align="cm",r=0.1},nodes={{n=G.UIT.R,config={align="cm",r=0.1},nodes={{n=G.UIT.O,config={object=t_s}}}},_type~="achievement"and{n=G.UIT.R,config={align="cm",padding=0.04},nodes={{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=subtext,scale=0.5,colour=G.C.FILTER,shadow=true}}}},{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=localize("k_unlocked_ex"),scale=0.35,colour=G.C.FILTER,shadow=true}}}}}}or{n=G.UIT.R,config={align="cm",padding=0.04},nodes={{n=G.UIT.R,config={align="cm",maxw=3.4,padding=0.1},nodes={{n=G.UIT.T,config={text=name,scale=0.4,colour=G.C.UI.TEXT_LIGHT,shadow=true}}}},{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=subtext,scale=0.3,colour=G.C.FILTER,shadow=true}}}},{n=G.UIT.R,config={align="cm",maxw=3.4},nodes={{n=G.UIT.T,config={text=localize("k_unlocked_ex"),scale=0.35,colour=G.C.FILTER,shadow=true}}}}}}}}}}}}
+        return { n = G.UIT.ROOT, config = { align = "cl", r = 0.1, padding = 0.06, colour = G.C.UI.TRANSPARENT_DARK }, nodes = { { n = G.UIT.R, config = { align = "cl", padding = 0.2, minw = 20, r = 0.1, colour = G.C.BLACK, outline = 1.5, outline_colour = G.C.GREY }, nodes = { { n = G.UIT.R, config = { align = "cm", r = 0.1 }, nodes = { { n = G.UIT.R, config = { align = "cm", r = 0.1 }, nodes = { { n = G.UIT.O, config = { object = t_s } } } }, _type ~= "achievement" and { n = G.UIT.R, config = { align = "cm", padding = 0.04 }, nodes = { { n = G.UIT.R, config = { align = "cm", maxw = 3.4 }, nodes = { { n = G.UIT.T, config = { text = subtext, scale = 0.5, colour = G.C.FILTER, shadow = true } } } }, { n = G.UIT.R, config = { align = "cm", maxw = 3.4 }, nodes = { { n = G.UIT.T, config = { text = localize("k_unlocked_ex"), scale = 0.35, colour = G.C.FILTER, shadow = true } } } } } } or { n = G.UIT.R, config = { align = "cm", padding = 0.04 }, nodes = { { n = G.UIT.R, config = { align = "cm", maxw = 3.4, padding = 0.1 }, nodes = { { n = G.UIT.T, config = { text = name, scale = 0.4, colour = G.C.UI.TEXT_LIGHT, shadow = true } } } }, { n = G.UIT.R, config = { align = "cm", maxw = 3.4 }, nodes = { { n = G.UIT.T, config = { text = subtext, scale = 0.3, colour = G.C.FILTER, shadow = true } } } }, { n = G.UIT.R, config = { align = "cm", maxw = 3.4 }, nodes = { { n = G.UIT.T, config = { text = localize("k_unlocked_ex"), scale = 0.35, colour = G.C.FILTER, shadow = true } } } } } } } } } } } }
     end
     return uibox
 end
@@ -365,7 +365,7 @@ end
 local remove_from_deckref = Card.remove_from_deck
 function Card:remove_from_deck(from_debuff)
     if self.added_to_deck then
-        if self.ability.name == 'j_alchemy_catalyst_joker' then
+        if self.ability.name == "j_alchemy_catalyst_joker" then
             G.consumeables:change_size(-self.ability.extra.slots)
         end
     end
@@ -401,7 +401,7 @@ function Game:update_round_eval(dt)
     if G.deck.config.philosopher then
         G.deck.config.philosopher = false
     end
-    
+
     update_round_evalref(self, dt)
     if G.jokers.config.acid then
         for _, acid in ipairs(G.jokers.config.acid) do
@@ -416,6 +416,6 @@ function Game:update_round_eval(dt)
     end
     local option = SMODS.optional_features.cardareas.deck
     SMODS.optional_features.cardareas.deck = true
-    SMODS.calculate_context({ update_round = true })
+    SMODS.calculate_context{ update_round = true }
     SMODS.optional_features.cardareas.deck = option
 end

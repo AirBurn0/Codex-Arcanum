@@ -289,10 +289,10 @@ return {
             b_alchemy_herbalist = {
                 name = "Herbalist's Deck",
                 text = {
-                    "Start run with the", 
-                    "{C:tarot,T:v_alchemy_mortar_and_pestle}Mortar and Pestle{} voucher", 
-                    "Gain an {C:alchemical}Alchemical{} card", 
-                    "before each {C:attention}Boss Blind" 
+                    "Start run with the",
+                    "{C:tarot,T:v_alchemy_mortar_and_pestle}Mortar and Pestle{} voucher",
+                    "Gain an {C:alchemical}Alchemical{} card",
+                    "before each {C:attention}Boss Blind"
                 },
                 unlock = {
                     "Discover",
@@ -319,51 +319,51 @@ return {
             j_alchemy_studious_joker = {
                 name = "Studious Joker",
                 text = {
-                    "{C:mult}+#1#{} Mult. Sell this", 
-                    "joker to get one", 
-                    "{C:alchemical} Alchemical{} card" 
-                } 
+                    "{C:mult}+#1#{} Mult. Sell this",
+                    "joker to get one",
+                    "{C:alchemical} Alchemical{} card"
+                }
             },
             j_alchemy_bottled_buffoon = {
-                name = "Bottled Buffoon", 
+                name = "Bottled Buffoon",
                 text = {
-                    "Create an {C:alchemical}Alchemical{} card", 
+                    "Create an {C:alchemical}Alchemical{} card",
                     "every {C:attention}#1#{} hands played",
-                    "{C:inactive}(#2#)" 
-                } 
+                    "{C:inactive}(#2#)"
+                }
             },
             j_alchemy_mutated_joker = {
-                name = "Mutated Joker", 
+                name = "Mutated Joker",
                 text = {
-                    "{C:chips}+#1#{} Chips for each", 
-                    "unique {C:alchemical}Alchemical{} card", 
-                    "used this run", 
-                    "{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)" 
-                } 
+                    "{C:chips}+#1#{} Chips for each",
+                    "unique {C:alchemical}Alchemical{} card",
+                    "used this run",
+                    "{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)"
+                }
             },
             j_alchemy_essence_of_comedy = {
-                name = "Essence of Comedy", 
+                name = "Essence of Comedy",
                 text = {
-                    "This Joker gains", 
+                    "This Joker gains",
                     "{X:mult,C:white}X#1#{} Mult every time an",
                     "{C:alchemical}Alchemical{} card is used",
-                    "{C:inactive}(Currently {X:mult,C:white}X#2#{C:inactive} Mult)" 
-                } 
+                    "{C:inactive}(Currently {X:mult,C:white}X#2#{C:inactive} Mult)"
+                }
             },
             j_alchemy_shock_humor = {
-                name = "Shock Humor", 
+                name = "Shock Humor",
                 text = {
-                    "{C:green}#1# in #2#{} chance to", 
-                    "create an {C:alchemical}Alchemical{} card", 
-                    "when you discard a {C:attention}Gold{},", 
-                    "{C:attention}Steel{} or {C:attention}Stone{} card" 
-                } 
+                    "{C:green}#1# in #2#{} chance to",
+                    "create an {C:alchemical}Alchemical{} card",
+                    "when you discard a {C:attention}Gold{},",
+                    "{C:attention}Steel{} or {C:attention}Stone{} card"
+                }
             },
             j_alchemy_chain_reaction = {
-                name = "Chain Reaction", 
+                name = "Chain Reaction",
                 text = {
-                    "Create a {C:attention}copy{} of", 
-                    "the first {C:alchemical}Alchemical", 
+                    "Create a {C:attention}copy{} of",
+                    "the first {C:alchemical}Alchemical",
                     "card used each {C:attention}Blind",
                     "{C:inactive}(Must have room)"
                 },
@@ -374,13 +374,13 @@ return {
                 }
             },
             j_alchemy_breaking_bozo = {
-                name = "Breaking Bozo", 
+                name = "Breaking Bozo",
                 text = {
                     "After you use an {C:alchemical}Alchemical",
                     "card, does one the following: ",
                     "Reduce {C:attention}Blind score{} by {C:attention}#1#%",
-                    "Draw {C:attention}#2#{} cards", 
-                    "Earn {C:money}$#3#" 
+                    "Draw {C:attention}#2#{} cards",
+                    "Earn {C:money}$#3#"
                 },
                 unlock = {
                     "Use {C:attention}#1# {E:1,C:alchemical}Alchemical{} #2#",
@@ -389,13 +389,13 @@ return {
                 }
             },
             j_alchemy_catalyst_joker = {
-                name = "Catalyst Joker", 
+                name = "Catalyst Joker",
                 text = {
-                    "{C:attention}+#1#{} consumable slots.", 
-                    "Gains {X:mult,C:white}X#2#{} Mult for", 
-                    "every {C:attention}Consumable Card{} held", 
+                    "{C:attention}+#1#{} consumable slots.",
+                    "Gains {X:mult,C:white}X#2#{} Mult for",
+                    "every {C:attention}Consumable Card{} held",
                     "{C:inactive}(Currently {X:mult,C:white}X#3#{C:inactive} Mult)"
-                } ,
+                },
                 unlock = {
                     "Use at least {C:attention}#1#",
                     "{C:attention}consumable{} #2#",

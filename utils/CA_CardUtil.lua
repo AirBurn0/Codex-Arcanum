@@ -1,17 +1,17 @@
 function create_alchemical()
-	return create_card("Alchemical", G.pack_cards, nil, nil, true, true, nil, 'alc')
+	return create_card("Alchemical", G.pack_cards, nil, nil, true, true, nil, "alc")
 end
 
 function take_cards_from_discard(count)
-	G.E_MANAGER:add_event(Event({
-		trigger = 'immediate',
+	G.E_MANAGER:add_event(Event{
+		trigger = "immediate",
 		func = function()
 			for i = 1, count do --draw cards from deck
-				draw_card(G.discard, G.deck, i * 100 / count, 'up', nil, nil, 0.005, i % 2 == 0, nil, math.max((21 - i) / 20, 0.7))
+				draw_card(G.discard, G.deck, i * 100 / count, "up", nil, nil, 0.005, i % 2 == 0, nil, math.max((21 - i) / 20, 0.7))
 			end
 			return true
 		end
-	}))
+	})
 end
 
 function return_to_deck(count, card)
@@ -20,7 +20,7 @@ function return_to_deck(count, card)
 		return true
 	end
 	delay(0.05)
-	draw_card(G.hand, G.deck, 100, 'up', false, card)
+	draw_card(G.hand, G.deck, 100, "up", false, card)
 end
 
 function alchemical_can_use(self, card)
@@ -59,7 +59,7 @@ function alchemy_card_eval_text(card, text, sound, color, text_scale, hold, dela
 		card_aligned = "tm"
 	end
 	local text_func = function()
-		attention_text {
+		attention_text{
 			text = text,
 			scale = text_scale or 1,
 			hold = hold or 0.6,
@@ -75,11 +75,11 @@ function alchemy_card_eval_text(card, text, sound, color, text_scale, hold, dela
 		return true
 	end
 	if delayed then
-		G.E_MANAGER:add_event(Event({
+		G.E_MANAGER:add_event(Event{
 			trigger = "before",
 			delay = 0.75 * 1.25,
 			func = text_func
-		}))
+		})
 	else
 		text_func()
 	end
@@ -111,10 +111,10 @@ end
 
 function alchemy_get_progress_info(vars)
 	local main_end = {}
-	localize { type = "descriptions", set = "Other", key = "a_alchemy_unlock_counter", nodes = main_end, vars = vars }
+	localize{ type = "descriptions", set = "Other", key = "a_alchemy_unlock_counter", nodes = main_end, vars = vars }
 	return main_end[1]
 end
 
 function Card:set_synthesized(data)
-	SMODS.Stickers['alchemy_synthesized']:apply(self, data)
+	SMODS.Stickers["alchemy_synthesized"]:apply(self, data)
 end
