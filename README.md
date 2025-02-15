@@ -25,9 +25,9 @@ And also - it says `after 1 round`, right? Well, we all knows what can happen wi
 Unlocks by beating Crimson Heart or Verdant Leaf
 * New Alchemical - Honey: Disables Boss Blind effect (similar to Chicot / selling Luchador), but sets Blind reward to $0.
 Unlocks by beating The Wall or Violet Vessel
-* New Alchemical - Chlorine: Enhances up to 3 cards to Wild card
+* New Alchemical - Chlorine: Enhances up to 3 cards to Wild card.
 Unlocks by having at least 6 Wild cards in full deck
-* New Alchemical - Stone: Enhances up to 3 cards to Stone card
+* New Alchemical - Stone: Enhances up to 3 cards to Stone card.
 Unlocks by having at least 8 Stone cards in full deck
 
 Add new unlock conditions:
