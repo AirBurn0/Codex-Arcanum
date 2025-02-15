@@ -128,7 +128,7 @@ SMODS.Sticker{
             array = {}
             card.ability[self.key] = array
         end
-        table.insert(array, val)
+        table.insert(array, 1, val)
     end,
     calculate = function(self, card, context)
         if context.update_round then
