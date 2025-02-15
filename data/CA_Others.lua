@@ -118,7 +118,8 @@ SMODS.Sticker{
     atlas = "sticker_atlas",
     loc_vars = function(self, info_queue, center)
         local default = get_rounds_left()
-        return { vars = { default, alchemy_loc_plural("round", default), center.ability[self.key].rounds or default } }
+        local extra = center.ability[self.key]
+        return { vars = { default, alchemy_loc_plural("round", default), (extra and type(extra) == "table" and extra.rounds) or default } }
     end,
     apply = function(self, card, val)
         if not val or type(val) ~= "table" then
@@ -158,5 +159,5 @@ SMODS.Sticker{
 }
 
 function Card:set_synthesized(data)
-	SMODS.Stickers["alchemy_synthesized"]:apply(self, data)
+    SMODS.Stickers["alchemy_synthesized"]:apply(self, data)
 end
