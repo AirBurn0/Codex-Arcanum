@@ -111,7 +111,3 @@ function alchemy_get_progress_info(vars)
 	localize{ type = "descriptions", set = "Other", key = "a_alchemy_unlock_counter", nodes = main_end, vars = vars }
 	return main_end[1]
 end
-
-function Card:set_synthesized(data)
-	SMODS.Stickers["alchemy_synthesized"]:apply(self, data)
-end

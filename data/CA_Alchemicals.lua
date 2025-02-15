@@ -960,10 +960,6 @@ new_alchemical{
 
 new_alchemical{
     key = "lithium",
-    loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        return { vars = {} }
-    end,
     pos = { x = 0, y = 4 },
     can_use = function() return #G.jokers.highlighted > 0 and G.STATE ~= G.STATES.HAND_PLAYED and G.STATE ~= G.STATES.DRAW_TO_HAND and G.STATE ~= G.STATES.PLAY_TAROT end,
     unlock_condition = { type = "c_alchemy_unlock_lithium" },

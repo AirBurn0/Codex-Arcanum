@@ -5,19 +5,12 @@ SMODS.Atlas{
     py = 95
 }
 
-local function ability_round(ability) -- for cryptid enjoyers
-    if not ability or type(ability) ~= "number" then
-        return 0
-    end
-    return math.floor(ability + 0.5)
-end
-
 SMODS.Tarot{
     key = "seeker",
     pos = { x = 0, y = 0 },
     atlas = "others_atlas",
     loc_vars = function(self, info_queue, center)
-        return { vars = { math.max(1, ability_round(center.ability.extra.alchemicals)) } }
+        return { vars = { math.max(1, alchemy_ability_round(center.ability.extra.alchemicals)) } }
     end,
     config = { extra = { alchemicals = 2 } },
     cost = 3,
@@ -25,7 +18,7 @@ SMODS.Tarot{
     discovered = false,
     can_use = function(card) return true end,
     use = function(self, card, area, copier)
-        local cards = math.min(math.max(1, ability_round(card.ability.extra.alchemicals)), G.consumeables.config.card_limit - #G.consumeables.cards)
+        local cards = math.min(math.max(1, alchemy_ability_round(card.ability.extra.alchemicals)), G.consumeables.config.card_limit - #G.consumeables.cards)
         if cards < 1 then
             return
         end
@@ -55,7 +48,7 @@ SMODS.Spectral{
     pos = { x = 0, y = 1 },
     atlas = "others_atlas",
     loc_vars = function(self, info_queue, center)
-        return { vars = { math.max(1, ability_round(center.ability.extra.alchemicals)) } }
+        return { vars = { math.max(1, alchemy_ability_round(center.ability.extra.alchemicals)) } }
     end,
     config = { extra = { alchemicals = 2 } },
     cost = 4,
@@ -110,6 +103,10 @@ SMODS.Atlas{
     py = 95
 }
 
+local function get_rounds_left()
+    return 1
+end
+
 -- Synthesized
 SMODS.Sticker{
     key = "synthesized",
@@ -119,32 +116,47 @@ SMODS.Sticker{
     order = 17,
     pos = { x = 0, y = 0 },
     atlas = "sticker_atlas",
+    loc_vars = function(self, info_queue, center)
+        local default = get_rounds_left()
+        return { vars = { default, alchemy_loc_plural("round", default), center.ability[self.key].rounds or default } }
+    end,
     apply = function(self, card, val)
-        if not val then
+        if not val or type(val) ~= "table" then
+            card.ability[self.key] = val
             return
         end
-        local array = card.ability[self.key]
-        if not array then
+        local extra = card.ability[self.key]
+        if not extra or type(extra) ~= "table" then
             array = {}
-            card.ability[self.key] = array
+            extra = { array = array }
+            card.ability[self.key] = extra
         end
-        table.insert(array, 1, val)
+        table.insert(extra.array, 1, val)
+        rounds = get_rounds_left()
     end,
     calculate = function(self, card, context)
         if context.update_round then
-            local array = card.ability[self.key]
-            if not array then
+            local extra = card.ability[self.key]
+            if not extra then
+                return
+            end
+            extra.rounds = (extra.rounds or 0) - 1
+            if extra.rounds > 0 then
                 return
             end
             -- eval all
-            for _, entry in ipairs(array) do
+            for _, entry in ipairs(extra.array) do
                 local center = G.P_CENTERS[entry.key]
                 if center.undo then
                     center.undo(center, card, entry.data)
                 end
             end
             -- reset
-            card.ability[self.key] = nil
+            card:set_synthesized(nil)
         end
     end
 }
+
+function Card:set_synthesized(data)
+	SMODS.Stickers["alchemy_synthesized"]:apply(self, data)
+end

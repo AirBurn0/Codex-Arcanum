@@ -479,9 +479,9 @@ return {
             alchemy_synthesized = {
                 name = "Synthesized",
                 text = {
-                    "Will be returned to",
-                    "origin after {C:attention}1{} rounds",
-                    "{C:inactive}(0 remaining)"
+                    "Will return to its",
+                    "original after {C:attention}#1#{} #2#",
+                    "{C:inactive}(#3# remaining)"
                 }
             },
             p_alchemy_normal = {
@@ -563,6 +563,9 @@ return {
             end,
             tag = function(count)
                 return count > 1 and "tags" or "tag"
+            end,
+            round = function(count)
+                return count > 1 and "rounds" or "round"
             end,
         }
     }
