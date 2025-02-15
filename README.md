@@ -12,6 +12,9 @@ Also check out [**Redux Arcanum**](https://github.com/jumbocarrot0/Redux-Arcanum
 ## Branch changes
 
 Except for Fork changes, this branch also introduces:
+* New Sticker - Synthesized: Card will return to its original state after 1 round. Basically that IS original mod's mechanic, but now you got marker that will help you distinguish enhanced cards and alchemically enhanced cards.
+Also, it says `to its original`, meaning that if it was, for example, Wild card and you used Silver to make it Lucky card, it will become back Wild card when Blind is completed, unlike original mod where it will become Base card. Note, that if you use Silver and then Chariot, it will ignore Chariot effect and card still will be returned to what it was before Silver.
+And also - it says `after 1 round`, right? Well, we all knows what can happen with numbers in effects description...
 * Changed Mutated Joker Chips per unique Alchemical from +10 to +15 (just remember about the fact that Runner is a Common Joker too)
 * Blueprint that copies Studious Joker now can be sold for Alchemical! (I'm sure everyone wanted this)
 * Chain Reaction now **CAN** be copied by Blueprint, but will not give Negative edition to copies
