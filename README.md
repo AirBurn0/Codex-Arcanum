@@ -18,7 +18,7 @@ And also - it says `after 1 round`, right? Well, we all knows what can happen wi
 * Changed Mutated Joker Chips per unique Alchemical from +10 to +15 (just remember about the fact that Runner is a Common Joker too)
 * Blueprint that copies Studious Joker now can be sold for Alchemical! (I'm sure everyone wanted this)
 * Chain Reaction will not give Negative edition to copies, but will copy card edition properly
-* Antimony makes copied Jokers cost $0 instead of being Eternal (now you can freely sell it to win Boss Blind)
+* Antimony makes copied Jokers cost $0 instead of being Eternal (now you can freely sell it to win Boss Blind), but if you build contains Swashbuckler and you copy... like... Egg... Well, nuh uh!
 * Cauldron voucher require 40 Alchemical cards to be selected from any Alchemy Pack to be unlocked
 * Alchemical Tycoon voucher require 10 Alchemical cards to be bought from shop to be unlocked
 * New Alchemical - Lithium: Removes Eternal, Perishable, Rental and Debuff from selected Joker. 
