@@ -20,7 +20,7 @@ SMODS.UndiscoveredSprite{
     pos = { x = 4, y = 4 }
 }
 
--- Until SMODS do 'LockedSprite' it will be like that
+-- Until SMODS do "LockedSprite" it will be like that
 G.c_alchemy_locked = {
     name = "Locked",
     pos = { x = 5, y = 4 },
@@ -88,7 +88,7 @@ end
 local function new_alchemical(alchemical)
     -- can_use function builder
     -- preharps there is simpler way to do this and don't ctrl+c ctrl+v code
-    local can_use_builder = { alchemical.can_use or function(self, card) return G.STATE == G.STATES.SELECTING_HAND end }
+    local can_use_builder = { alchemical.can_use or function(self, card) return G.STATE == G.STATES.SELECTING_HAND and not card.debuff end }
     if not alchemical.can_use then
         if alchemical.config and alchemical.config.select_cards then
             local select_type = type(alchemical.config.select_cards)
@@ -354,10 +354,7 @@ new_alchemical{
             delay = 0.1,
             func = function()
                 for _, _card in ipairs(G.hand.highlighted) do
-                    _card:set_synthesized{
-                        key = self.key,
-                        data = _card.edition and _card.edition.type or nil
-                    }
+                    _card:set_synthesized{ key = self.key, data = _card.edition and _card.edition.type or nil }
                     _card:set_edition({ polychrome = true }, true)
                 end
                 return true
@@ -444,6 +441,7 @@ new_alchemical{
     pos = { x = 5, y = 1 },
     default_can_use = function(self, card) return #G.jokers.cards > 0 end,
     use = function(self, card, area, copier)
+        G.jokers.config.antimony = G.jokers.config.antimony or {}
         if #G.jokers.cards > 0 then
             G.E_MANAGER:add_event(Event{
                 trigger = "after",
@@ -455,9 +453,7 @@ new_alchemical{
                         _card:set_edition({ negative = true }, true)
                         _card.cost = 0
                         _card.sell_cost = 0
-                        _card:set_synthesized{
-                            key = self.key
-                        }
+                        _card:set_synthesized{ key = self.key }
                         _card:add_to_deck()
                         G.jokers:emplace(_card)
                     end
@@ -494,11 +490,10 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                local extra = alchemy_ability_round(card.ability.select_cards)
-                for k, _card in ipairs(G.hand.highlighted) do
-                    return_to_deck(extra, _card)
+                for _, _card in ipairs(G.hand.highlighted) do
+                    return_to_deck(_card)
                 end
-                alchemy_draw_cards(extra)
+                alchemy_draw_cards(#G.hand.highlighted)
                 return true
             end
         })
@@ -519,14 +514,13 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                local _selected = G.hand.highlighted[1]
-                local cur_rank = SMODS.has_no_rank(_selected) and "no_rank" or _selected.base.id
+                local target = G.hand.highlighted[1]
+                local t_rank = SMODS.has_no_rank(target) and "no_rank" or target.base.id
                 local count = alchemy_ability_round(card.ability.extra)
-                for _, v in pairs(G.deck.cards) do
-                    local no_rank = (cur_rank == "no_rank" and SMODS.has_no_rank(v))
-                    if (cur_rank == "no_rank" and SMODS.has_no_rank(v)) or (cur_rank ~= "no_rank" and not SMODS.has_no_rank(v) and v.base.id == cur_rank) then
+                for _, _card in pairs(G.deck.cards) do
+                    if (t_rank == "no_rank" and SMODS.has_no_rank(_card)) or (t_rank ~= "no_rank" and not SMODS.has_no_rank(_card) and _card.base.id == t_rank) then
                         delay(0.05)
-                        draw_card(G.deck, G.hand, 100, "up", true, v)
+                        draw_card(G.deck, G.hand, 100, "up", true, _card)
                         count = count - 1
                     end
                     if count < 1 then
@@ -559,9 +553,7 @@ new_alchemical{
                     local _card = copy_card(G.hand.highlighted[1], nil, nil, G.playing_card)
                     _card:add_to_deck()
                     G.deck.config.card_limit = G.deck.config.card_limit + 1
-                    _card:set_synthesized{
-                        key = self.key
-                    }
+                    _card:set_synthesized{ key = self.key }
                     table.insert(G.playing_cards, _card)
                     G.hand:emplace(_card)
                     table.insert(new_table, _card.unique_val)
@@ -594,10 +586,7 @@ new_alchemical{
                 local top_suit = get_most_common_suit()
                 for k, _card in ipairs(G.hand.highlighted) do
                     delay(0.05)
-                    _card:set_synthesized{
-                        key = self.key,
-                        data = { prev_suit = _card.base.suit, suit = top_suit }
-                    }
+                    _card:set_synthesized{ key = self.key, data = { prev_suit = _card.base.suit, suit = top_suit } }
                     _card:juice_up(1, 0.5)
                     _card:change_suit(top_suit)
                 end
@@ -608,7 +597,7 @@ new_alchemical{
     end,
     undo = function(self, card, data)
         if card.base.suit == data.suit then
-            card:change_suit(data.prev_suit) -- TODO
+            card:change_suit(data.prev_suit)
         end
     end
 }
@@ -719,7 +708,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                for k, _card in ipairs(G.hand.highlighted) do
+                for _, _card in ipairs(G.hand.highlighted) do
                     delay(0.05)
                     _card:set_synthesized{ key = self.key, data = _card.config.center.key }
                     _card:juice_up(1, 0.5)
@@ -760,7 +749,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                for k, _card in ipairs(G.hand.highlighted) do
+                for _, _card in ipairs(G.hand.highlighted) do
                     delay(0.05)
                     _card:set_synthesized{ key = self.key, data = _card.config.center.key }
                     _card:juice_up(1, 0.5)
@@ -794,9 +783,7 @@ new_alchemical{
             func = function()
                 for _, _card in ipairs(G.hand.cards) do
                     delay(0.05)
-                    _card:set_synthesized{
-                        key = self.key
-                    }
+                    _card:set_synthesized{ key = self.key }
                     _card:juice_up(1, 0.5)
                     _card:set_debuff(false)
                     _card.ability = _card.ability or {}
@@ -842,9 +829,10 @@ new_alchemical{
             func = function()
                 G.jokers.config.acid = G.jokers.config.acid or {} -- TODO remove
                 local removed_table = {}
-                for k, _card in ipairs(G.hand.highlighted) do
-                    for k, v in ipairs(G.playing_cards) do
-                        if v:get_id() == _card:get_id() then
+                for _, _card in ipairs(G.hand.highlighted) do
+                    local t_rank = SMODS.has_no_rank(_card) and "no_rank" or _card.base.id
+                    for _, v in ipairs(G.playing_cards) do
+                        if (t_rank == "no_rank" and SMODS.has_no_rank(v)) or (t_rank ~= "no_rank" and not SMODS.has_no_rank(v) and v.base.id == t_rank) then
                             table.insert(G.jokers.config.acid, v)
                             table.insert(removed_table, v)
                             v:start_dissolve({ HEX("E3FF37") }, nil, 1.6)
@@ -925,33 +913,37 @@ new_alchemical{
         return args.type == self.unlock_condition.type and G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra
     end,
     use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event{
-            trigger = "after",
-            delay = 0.1,
-            func = function()
-                local target = G.hand.highlighted[1]
-                for i = 1, math.max(1, alchemy_ability_round(card.ability.extra)) do
-                    local eligible_cards = {}
-                    for k, v in ipairs(G.hand.cards) do
-                        if v.config.center == G.P_CENTERS.c_base and not (v.edition) and not (v.seal) then
-                            table.insert(eligible_cards, v)
-                        end
-                    end
-                    if #eligible_cards > 0 then
-                        local _card = pseudorandom_element(eligible_cards, pseudoseed(card.ability.name))
-                        delay(0.05)
-                        _card:set_synthesized{ key = self.key, data = { center = target.config.center.key, edition = target.edition and target.edition.type or nil, seal = target:get_seal(true) } }
-                        if not (target.edition) then
-                            _card:juice_up(1, 0.5)
-                        end
-                        _card:set_ability(target.config.center)
-                        _card:set_edition(target.edition)
-                        _card:set_seal(target:get_seal(true))
-                    end
-                end
-                return true
+        -- search for suitable cards
+        local eligible_cards = {}
+        for _, v in ipairs(G.hand.cards) do
+            if v.config.center == G.P_CENTERS.c_base and not (v.edition) and not (v.seal) then
+                table.insert(eligible_cards, v)
             end
-        })
+        end
+        -- randomsort array
+        for i = #eligible_cards, 2, -1 do
+            local j = pseudorandom(pseudoseed(card.ability.name), 1, i)
+            eligible_cards[i], eligible_cards[j] = eligible_cards[j], eligible_cards[i]
+        end
+        -- call it a day
+        local target = G.hand.highlighted[1]
+        for i = 1, math.max(1, alchemy_ability_round(card.ability.extra)) do
+            if #eligible_cards < 1 then
+                break
+            end
+            local _card = eligible_cards[i]
+            G.E_MANAGER:add_event(Event{
+                trigger = "after",
+                delay = 0.1,
+                func = function()
+                    _card:set_synthesized{ key = self.key, data = { center = target.config.center.key, edition = target.edition and target.edition.type or nil, seal = target:get_seal(true) } }
+                    _card:set_ability(target.config.center)
+                    _card:set_edition(target.edition, true)
+                    _card:set_seal(target:get_seal(true), false, true)
+                    return true
+                end
+            })
+        end
     end,
     undo = function(self, card, data)
         if card.config.center.key == data.center then

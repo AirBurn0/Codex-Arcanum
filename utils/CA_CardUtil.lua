@@ -14,17 +14,14 @@ function take_cards_from_discard(count)
 	})
 end
 
-function return_to_deck(count, card)
+function return_to_deck(card)
 	if not (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK) and G.hand.config.card_limit <= 0 and #G.hand.cards == 0 then
-		G.STATE = G.STATES.GAME_OVER; G.STATE_COMPLETE = false
+		G.STATE = G.STATES.GAME_OVER
+		G.STATE_COMPLETE = false
 		return true
 	end
 	delay(0.05)
 	draw_card(G.hand, G.deck, 100, "up", false, card)
-end
-
-function alchemical_can_use(self, card)
-	return G.STATE == G.STATES.SELECTING_HAND and not card.debuff
 end
 
 function is_in_booster_pack(state)

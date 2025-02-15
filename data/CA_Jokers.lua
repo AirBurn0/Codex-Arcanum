@@ -6,7 +6,7 @@ SMODS.Atlas{
 }
 
 local function add_card_event(self, card_func) -- card creation delayed
-    G.E_MANAGER:add_event(Event({
+    G.E_MANAGER:add_event(Event{
         trigger = "before",
         func = function()
             local card = card_func()
@@ -15,27 +15,27 @@ local function add_card_event(self, card_func) -- card creation delayed
             G.GAME.consumeable_buffer = 0 -- event can be interrupted
             return true
         end
-    }))
+    })
 end
 
 -- kinda default constructor
 local function new_joker(joker)
     -- create joker
-    SMODS.Joker{ 
-        key = joker.key, 
-        pos = joker.pos or { x = 0, y = 0},
+    SMODS.Joker{
+        key = joker.key,
+        pos = joker.pos or { x = 0, y = 0 },
         atlas = joker.atlas or "joker_atlas",
-        loc_vars = joker.loc_vars, 
+        loc_vars = joker.loc_vars,
         config = joker.config or {},
-        rarity = joker.rarity or 1, 
-        cost = joker.cost or 5, 
+        rarity = joker.rarity or 1,
+        cost = joker.cost or 5,
         unlocked = not (joker.check_for_unlock or joker.check_for_unlock),
         unlock_condition = joker.unlock_condition,
-        check_for_unlock  = joker.check_for_unlock,
+        check_for_unlock = joker.check_for_unlock,
         locked_loc_vars = joker.locked_loc_vars,
-        discovered = joker.discovered or false, 
-        blueprint_compat = not joker.no_blueprint, 
-        perishable_compat = true, 
+        discovered = joker.discovered or false,
+        blueprint_compat = not joker.no_blueprint,
+        perishable_compat = true,
         eternal_compat = true,
         calculate = joker.calculate or function(self, card, context) end
     }
@@ -141,9 +141,9 @@ new_joker{
     key = "shock_humor",
     pos = { x = 1, y = 1 },
     loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue+1] = G.P_CENTERS.m_gold
-        info_queue[#info_queue+1] = G.P_CENTERS.m_steel
-        info_queue[#info_queue+1] = G.P_CENTERS.m_stone
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_gold
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_steel
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
         return { vars = { "" .. (G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.odds } }
     end,
     config = { extra = { odds = 5 } },
@@ -151,11 +151,11 @@ new_joker{
     cost = 5,
     calculate = function(self, card, context)
         local discarded = context.other_card
-        if context.discard 
+        if context.discard
         and G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0
-        and not discarded.debuff 
-        and (discarded.config.center == G.P_CENTERS.m_steel or discarded.config.center == G.P_CENTERS.m_gold or discarded.config.center == G.P_CENTERS.m_stone) 
-        and pseudorandom("shock_humor") < G.GAME.probabilities.normal / card.ability.extra.odds 
+        and not discarded.debuff
+        and (discarded.config.center == G.P_CENTERS.m_steel or discarded.config.center == G.P_CENTERS.m_gold or discarded.config.center == G.P_CENTERS.m_stone)
+        and pseudorandom("shock_humor") < G.GAME.probabilities.normal / card.ability.extra.odds
         then
             local _card = context.blueprint_card or card
             G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
@@ -176,8 +176,8 @@ new_joker{
         return { vars = { condition, alchemy_loc_plural("card", condition), (self.unlock_condition.tally and G.DISCOVER_TALLIES) and G.DISCOVER_TALLIES[self.unlock_condition.tally].tally or 0 } }
     end,
     unlock_condition = { type = "discover_amount", tally = "alchemicals", count = 24 },
-    check_for_unlock = function(self, args) 
-        if args.type == self.unlock_condition.type and self.unlock_condition.tally and G.DISCOVER_TALLIES and G.DISCOVER_TALLIES[self.unlock_condition.tally] then 
+    check_for_unlock = function(self, args)
+        if args.type == self.unlock_condition.type and self.unlock_condition.tally and G.DISCOVER_TALLIES and G.DISCOVER_TALLIES[self.unlock_condition.tally] then
             local tally = G.DISCOVER_TALLIES[self.unlock_condition.tally]
             return self.unlock_condition.count <= tally.tally
         end
@@ -226,7 +226,7 @@ new_joker{
         return args.type == self.unlock_condition.type and G.GAME.round_resets.ante < self.unlock_condition.ante and G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical >= self.unlock_condition.extra
     end,
     calculate = function(self, card, context)
-        if not context.using_consumeable or context.consumeable.config.in_booster or context.consumeable.ability.set ~= "Alchemical" then            
+        if not context.using_consumeable or context.consumeable.config.in_booster or context.consumeable.ability.set ~= "Alchemical" then
             return
         end
         local choice = pseudorandom(pseudoseed("breaking_bozo"))
@@ -236,7 +236,7 @@ new_joker{
             alchemy_draw_cards(alchemy_ability_round(card.ability.extra.cards))
             return { message = localize("p_alchemy_plus_card"), colour = G.C.SECONDARY_SET.Alchemy }
         else
-            G.E_MANAGER:add_event(Event({
+            G.E_MANAGER:add_event(Event{
                 trigger = "before",
                 func = function()
                     local newScore = math.floor(G.GAME.blind.chips * (1 - card.ability.extra.blind_reduce))
@@ -249,7 +249,7 @@ new_joker{
                     G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
                     return true
                 end
-            }))
+            })
             return { message = localize("a_alchemy_reduce_blind"), colour = G.C.SECONDARY_SET.Alchemy }
         end
     end
@@ -278,7 +278,7 @@ new_joker{
     end,
     calculate = function(self, card, context)
         if context.joker_main then
-            return { message = localize { type = "variable", key = "a_xmult", vars = { 1 + card.ability.extra.bonus * #G.consumeables.cards } }, Xmult_mod = 1 + card.ability.extra.bonus * #G.consumeables.cards, colour = G.C.MULT }
+            return { message = localize{ type = "variable", key = "a_xmult", vars = { 1 + card.ability.extra.bonus * #G.consumeables.cards } }, Xmult_mod = 1 + card.ability.extra.bonus * #G.consumeables.cards, colour = G.C.MULT }
         end
     end
 }
