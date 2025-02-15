@@ -34,9 +34,9 @@ local function new_joker(joker)
         check_for_unlock = joker.check_for_unlock,
         locked_loc_vars = joker.locked_loc_vars,
         discovered = joker.discovered or false,
-        blueprint_compat = not joker.no_blueprint,
-        perishable_compat = true,
-        eternal_compat = true,
+        blueprint_compat = joker.blueprint_compat == nil or joker.blueprint_compat,
+        perishable_compat = joker.perishable_compat == nil or joker.perishable_compat,
+        eternal_compat = joker.eternal_compat == nil or joker.eternal_compat,
         calculate = joker.calculate or function(self, card, context) end
     }
 end
@@ -130,23 +130,24 @@ new_joker{
     config = { extra = { used = false } },
     rarity = 2,
     cost = 5,
-    no_blueprint = true, -- sadly but that's how canon works
     calculate = function(self, card, context)
-        if context.blueprint then
-            return
-        end
-        if context.first_hand_drawn then
+        if context.first_hand_drawn and not context.blueprint then
             juice_card_until(card, function(_card) return not _card.ability.extra.used end, true)
         end
-        if G.GAME.blind.in_blind and context.using_consumeable and not context.consumeable.config.in_booster and context.consumeable.ability.set == "Alchemical" and not card.ability.extra.used then
-            card.ability.extra.used = true
-            add_card_event(card, function()
-                local _card = copy_card(context.consumeable, nil, nil, nil)
-                _card:set_edition({ negative = true }, true)
-                return _card
-            end)
-            return { message = localize("k_copied_ex"), colour = G.C.SECONDARY_SET.Alchemy }
+        local used = context.consumeable
+        if not G.GAME.blind.in_blind or not context.using_consumeable or used.config.in_booster or used.ability.set ~= "Alchemical" or card.ability.extra.used then
+            return
         end
+        if not context.blueprint then
+            card.ability.extra.used = true
+        end
+        card.ability.extra.used = true
+        add_card_event(card, function()
+            local _card = copy_card(context.consumeable, nil, nil, nil)
+            _card:set_edition({ negative = true }, true)
+            return _card
+        end)
+        return { message = localize("k_copied_ex"), colour = G.C.SECONDARY_SET.Alchemy }
     end
 }
 
