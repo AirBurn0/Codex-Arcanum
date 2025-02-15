@@ -372,7 +372,6 @@ function Card:remove_from_deck(from_debuff)
     remove_from_deckref(self, from_debuff)
 end
 
-
 local update_round_evalref = Game.update_round_eval
 function Game:update_round_eval(dt)
     if G.GAME.consumeable_usage_blind then
@@ -402,15 +401,21 @@ function Game:update_round_eval(dt)
     if G.deck.config.philosopher then
         G.deck.config.philosopher = false
     end
-
+    
     update_round_evalref(self, dt)
-    -- runs through undo tables of cards
-    if G.deck.config.alchemy_undo_table then
-        for k, v in pairs(G.deck.config.alchemy_undo_table) do
-            if v then -- empty is also allowed in case that no table is needed actually
-                G.P_CENTERS[k]:undo(v)
-            end
-            G.deck.config.alchemy_undo_table[k] = nil
+    if G.jokers.config.acid then
+        for _, acid in ipairs(G.jokers.config.acid) do
+            G.playing_card = (G.playing_card or 0) + 1
+            local _card = copy_card(acid, nil, nil, G.playing_card)
+            -- not really adding card cuz some jokers can go nuts
+            G.deck:emplace(_card)
+            G.deck.config.card_limit = G.deck.config.card_limit + 1
+            table.insert(G.playing_cards, _card)
         end
+        G.jokers.config.acid = nil
     end
+    local option = SMODS.optional_features.cardareas.deck
+    SMODS.optional_features.cardareas.deck = true
+    SMODS.calculate_context({ update_round = true })
+    SMODS.optional_features.cardareas.deck = option
 end

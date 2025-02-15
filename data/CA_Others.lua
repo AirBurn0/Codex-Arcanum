@@ -102,3 +102,50 @@ SMODS.Tag{
     pos = { x = 0, y = 0 },
     atlas = "tag_atlas"
 }
+
+SMODS.Atlas{
+    key = "sticker_atlas",
+    path = "ca_sticker_atlas.png",
+    px = 71,
+    py = 95
+}
+
+-- Synthesized
+SMODS.Sticker{
+    key = "synthesized",
+    default_compat = false,
+    sets = { Joker = true, Default = true, Enhanced = true },
+    badge_colour = HEX("C09D75"),
+    order = 17,
+    pos = { x = 0, y = 0 },
+    atlas = "sticker_atlas",
+    apply = function(self, card, val)
+        if not val then
+            return
+        end
+        local array = card.ability[self.key]
+        if not array then
+            array = {}
+            card.ability[self.key] = array
+        end
+        table.insert(array, val)
+
+    end,
+    calculate = function(self, card, context)
+        if context.update_round then
+            local array = card.ability[self.key]
+            if not array then
+                return
+            end
+            -- eval all
+            for _, entry in ipairs(array) do
+                local center = G.P_CENTERS[entry.key]
+                if center.undo then
+                   center.undo(center, card, entry.data)
+                end
+            end
+            -- reset
+            card.ability[self.key] = nil
+        end
+    end
+}

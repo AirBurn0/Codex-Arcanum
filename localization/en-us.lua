@@ -476,6 +476,14 @@ return {
             },
         },
         Other = {
+            alchemy_synthesized = {
+                name = "Synthesized",
+                text = {
+                    "Will be returned to",
+                    "origin after {C:attention}1{} rounds",
+                    "{C:inactive}(0 remaining)"
+                }
+            },
             p_alchemy_normal = {
                 name = "Alchemy Pack",
                 text = {
@@ -524,6 +532,9 @@ return {
         }
     },
     misc = {
+        labels = {
+            alchemy_synthesized = "Synthesized"
+        },
         dictionary = {
             k_alchemical = "Alchemical",
             k_alchemy_pack = "Alchemy Pack",
