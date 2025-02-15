@@ -62,18 +62,6 @@ local function max_selected_cards(card)
     return math.max(1, alchemy_ability_round(card.ability.select_cards))
 end
 
-local function mult_blind_score(by_percent)
-    G.GAME.blind.chips = math.floor(G.GAME.blind.chips * math.max(0, by_percent))
-    G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-    G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
-    G.HUD_blind:recalculate()
-    G.hand_text_area.blind_chips:juice_up()
-    if not silent then
-        play_sound("chips2")
-    end
-    G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
-end
-
 local function count_enhanced_cards(enhance)
     local count = 0
     for _, v in pairs(G.playing_cards) do
@@ -153,6 +141,40 @@ local function new_alchemical(alchemical)
     }
 end
 
+local function new_alchemical_enhance(key, pos, enhance, select_cards)
+    new_alchemical{
+        key = key,
+        loc_vars = function(self, info_queue, center)
+            info_queue[#info_queue + 1] = G.P_CENTERS[enhance]
+            info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
+            local select_cards = max_selected_cards(center)
+            return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
+        end,
+        config = { select_cards = select_cards or 4 },
+        pos = pos,
+        use = function(self, card, area, copier)
+            G.E_MANAGER:add_event(Event{
+                trigger = "after",
+                delay = 0.1,
+                func = function()
+                    for _, _card in ipairs(G.hand.highlighted) do
+                        delay(0.05)
+                        _card:set_synthesized{ key = self.key, data = _card.config.center.key }
+                        _card:juice_up(1, 0.5)
+                        _card:set_ability(G.P_CENTERS[enhance])
+                    end
+                    return true
+                end
+            })
+        end,
+        undo = function(self, card, data)
+            if card.config.center.key == G.P_CENTERS[enhance].key then
+                card:set_ability(G.P_CENTERS[data], nil, true)
+            end
+        end
+    }
+end
+
 new_alchemical{
     key = "ignis",
     loc_vars = function(self, info_queue, center)
@@ -208,7 +230,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                mult_blind_score(1 - card.ability.extra)
+                alchemy_mult_blind_score(1 - card.ability.extra)
                 return true
             end
         })
@@ -331,7 +353,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                take_cards_from_discard(#G.discard.cards)
+                take_cards_from_discard()
                 return true
             end
         })
@@ -602,169 +624,13 @@ new_alchemical{
     end
 }
 
-new_alchemical{
-    key = "glass",
-    loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue + 1] = G.P_CENTERS.m_glass
-        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
-    end,
-    config = { select_cards = 4 },
-    pos = { x = 4, y = 2 },
-    locked_loc_vars = function(self, info_queue, center)
-        local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
-        if G.STAGE == G.STAGES.RUN then
-            loc.main_end = alchemy_get_progress_info{ count_enhanced_cards("Glass Card") }
-        end
-        return loc
-    end,
-    unlock_condition = { type = "modify_deck", extra = { enhancement = "Glass Card", count = 8 } },
-    use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event{
-            trigger = "after",
-            delay = 0.1,
-            func = function()
-                for _, _card in ipairs(G.hand.highlighted) do
-                    delay(0.05)
-                    _card:set_synthesized{ key = self.key, data = _card.config.center.key }
-                    _card:juice_up(1, 0.5)
-                    _card:set_ability(G.P_CENTERS.m_glass)
-                end
-                return true
-            end
-        })
-    end,
-    undo = function(self, card, data)
-        if card.config.center.key == G.P_CENTERS.m_glass.key then
-            card:set_ability(G.P_CENTERS[data], nil, true)
-        end
-    end
-}
+new_alchemical_enhance("glass", { x = 4, y = 2 }, "m_glass", 4)
 
-new_alchemical{
-    key = "manganese",
-    loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue + 1] = G.P_CENTERS.m_steel
-        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
-    end,
-    config = { select_cards = 4 },
-    pos = { x = 1, y = 2 },
-    locked_loc_vars = function(self, info_queue, center)
-        local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
-        if G.STAGE == G.STAGES.RUN then
-            loc.main_end = alchemy_get_progress_info{ count_enhanced_cards("Steel Card") }
-        end
-        return loc
-    end,
-    unlock_condition = { type = "modify_deck", extra = { enhancement = "Steel Card", count = 8 } },
-    use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event{
-            trigger = "after",
-            delay = 0.1,
-            func = function()
-                for _, _card in ipairs(G.hand.highlighted) do
-                    delay(0.05)
-                    _card:set_synthesized{ key = self.key, data = _card.config.center.key }
-                    _card:juice_up(1, 0.5)
-                    _card:set_ability(G.P_CENTERS.m_steel)
-                end
-                return true
-            end
-        })
-    end,
-    undo = function(self, card, data)
-        if card.config.center.key == G.P_CENTERS.m_steel.key then
-            card:set_ability(G.P_CENTERS[data], nil, true)
-        end
-    end
-}
+new_alchemical_enhance("manganese", { x = 1, y = 2 }, "m_steel", 4)
 
-new_alchemical{
-    key = "gold",
-    loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue + 1] = G.P_CENTERS.m_gold
-        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
-    end,
-    config = { select_cards = 4 },
-    pos = { x = 0, y = 3 },
-    locked_loc_vars = function(self, info_queue, center)
-        local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
-        if G.STAGE == G.STAGES.RUN then
-            loc.main_end = alchemy_get_progress_info{ count_enhanced_cards("Gold Card") }
-        end
-        return loc
-    end,
-    unlock_condition = { type = "modify_deck", extra = { enhancement = "Gold Card", count = 8 } },
-    use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event{
-            trigger = "after",
-            delay = 0.1,
-            func = function()
-                for _, _card in ipairs(G.hand.highlighted) do
-                    delay(0.05)
-                    _card:set_synthesized{ key = self.key, data = _card.config.center.key }
-                    _card:juice_up(1, 0.5)
-                    _card:set_ability(G.P_CENTERS.m_gold)
-                end
-                return true
-            end
-        })
-    end,
-    undo = function(self, card, data)
-        if card.config.center.key == G.P_CENTERS.m_gold.key then
-            card:set_ability(G.P_CENTERS[data], nil, true)
-        end
-    end
-}
+new_alchemical_enhance("gold", { x = 0, y = 3 }, "m_gold", 4)
 
-new_alchemical{
-    key = "silver",
-    loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue + 1] = G.P_CENTERS.m_lucky
-        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
-    end,
-    config = { select_cards = 4 },
-    pos = { x = 1, y = 3 },
-    locked_loc_vars = function(self, info_queue, center)
-        local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
-        if G.STAGE == G.STAGES.RUN then
-            loc.main_end = alchemy_get_progress_info{ count_enhanced_cards("Lucky Card") }
-        end
-        return loc
-    end,
-    unlock_condition = { type = "modify_deck", extra = { enhancement = "Lucky Card", count = 8 } },
-    use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event{
-            trigger = "after",
-            delay = 0.1,
-            func = function()
-                for _, _card in ipairs(G.hand.highlighted) do
-                    delay(0.05)
-                    _card:set_synthesized{ key = self.key, data = _card.config.center.key }
-                    _card:juice_up(1, 0.5)
-                    _card:set_ability(G.P_CENTERS.m_lucky)
-                end
-                return true
-            end
-        })
-    end,
-    undo = function(self, card, data)
-        if card.config.center.key == G.P_CENTERS.m_lucky.key then
-            card:set_ability(G.P_CENTERS[data], nil, true)
-        end
-    end
-}
+new_alchemical_enhance("silver", { x = 1, y = 3 }, "m_lucky", 4)
 
 new_alchemical{
     key = "oil",
@@ -1010,84 +876,6 @@ new_alchemical{
     end
 }
 
-new_alchemical{
-    key = "chlorine",
-    loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue + 1] = G.P_CENTERS.m_wild
-        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
-    end,
-    config = { select_cards = 3 },
-    pos = { x = 2, y = 4 },
-    locked_loc_vars = function(self, info_queue, center)
-        local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
-        if G.STAGE == G.STAGES.RUN then
-            loc.main_end = alchemy_get_progress_info{ count_enhanced_cards("Wild Card") }
-        end
-        return loc
-    end,
-    unlock_condition = { type = "modify_deck", extra = { enhancement = "Wild Card", count = 6 } },
-    use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event{
-            trigger = "after",
-            delay = 0.1,
-            func = function()
-                for _, _card in ipairs(G.hand.highlighted) do
-                    delay(0.05)
-                    _card:set_synthesized{ key = self.key, data = _card.config.center.key }
-                    _card:juice_up(1, 0.5)
-                    _card:set_ability(G.P_CENTERS.m_wild)
-                end
-                return true
-            end
-        })
-    end,
-    undo = function(self, card, data)
-        if card.config.center.key == G.P_CENTERS.m_wild.key then
-            card:set_ability(G.P_CENTERS[data], nil, true)
-        end
-    end
-}
+new_alchemical_enhance("chlorine", { x = 2, y = 4 }, "m_wild", 3)
 
-new_alchemical{
-    key = "stone",
-    loc_vars = function(self, info_queue, center)
-        info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
-        info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
-    end,
-    config = { select_cards = 4 },
-    pos = { x = 3, y = 4 },
-    locked_loc_vars = function(self, info_queue, center)
-        local condition = self.unlock_condition.extra.count
-        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
-        if G.STAGE == G.STAGES.RUN then
-            loc.main_end = alchemy_get_progress_info{ count_enhanced_cards("Stone Card") }
-        end
-        return loc
-    end,
-    unlock_condition = { type = "modify_deck", extra = { enhancement = "Stone Card", count = 8 } },
-    use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event{
-            trigger = "after",
-            delay = 0.1,
-            func = function()
-                for k, _card in ipairs(G.hand.highlighted) do
-                    delay(0.05)
-                    _card:set_synthesized{ key = self.key, data = _card.config.center.key }
-                    _card:juice_up(1, 0.5)
-                    _card:set_ability(G.P_CENTERS.m_stone)
-                end
-                return true
-            end
-        })
-    end,
-    undo = function(self, card, data)
-        if card.config.center.key == G.P_CENTERS.m_stone.key then
-            card:set_ability(G.P_CENTERS[data], nil, true)
-        end
-    end
-}
+new_alchemical_enhance("stone", { x = 3, y = 4 }, "m_stone", 4)
