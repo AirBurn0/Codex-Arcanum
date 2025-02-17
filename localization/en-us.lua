@@ -417,8 +417,9 @@ return {
             c_alchemy_philosopher_stone = {
                 name = "Philosopher's Stone",
                 text = {
-                    "{C:attention}Retrigger{} all played cards",
-                    "for current {C:attention}Blind"
+                    "Add an {C:alchemical}Alchemical Seal{}",
+                    "to {C:attention}#1#{} selected",
+                    "#2# in your hand",
                 }
             }
         },
@@ -476,6 +477,13 @@ return {
             },
         },
         Other = {
+            alchemy_alchemical_seal = {
+                name = "Alchemical Seal",
+                text = {
+                    "Creates an {C:alchemical}Alchemical",
+                    "card when {C:attention}drawn"
+                }
+            },
             alchemy_synthesized = {
                 name = "Synthesized",
                 text = {
@@ -533,7 +541,8 @@ return {
     },
     misc = {
         labels = {
-            alchemy_synthesized = "Synthesized"
+            alchemy_synthesized = "Synthesized",
+            alchemy_alchemical_seal = "Alchemical Seal"
         },
         dictionary = {
             k_alchemical = "Alchemical",

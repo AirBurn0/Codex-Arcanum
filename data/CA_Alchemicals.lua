@@ -58,20 +58,6 @@ local function get_most_common_suit()
     return top_suit
 end
 
-local function max_selected_cards(card)
-    return math.max(1, alchemy_ability_round(card.ability.select_cards))
-end
-
-local function count_enhanced_cards(enhance)
-    local count = 0
-    for _, v in pairs(G.playing_cards) do
-        if v.ability.name == enhance then
-            count = count + 1
-        end
-    end
-    return count
-end
-
 -- kinda default constructor
 local function new_alchemical(alchemical)
     -- can_use function builder
@@ -81,7 +67,7 @@ local function new_alchemical(alchemical)
         if alchemical.config and alchemical.config.select_cards then
             local select_type = type(alchemical.config.select_cards)
             if select_type == "number" then     -- mutable select size (for cryptid enjoyers)
-                can_use_builder[#can_use_builder + 1] = function(self, card) return (#G.hand.highlighted <= max_selected_cards(card) and #G.hand.highlighted > 0) end
+                can_use_builder[#can_use_builder + 1] = function(self, card) return (#G.hand.highlighted <= alchemy_max_selected_cards(card) and #G.hand.highlighted > 0) end
             elseif select_type == "string" then -- immutable select size (no cryptid joy)
                 local finalSize = tonumber(alchemical.config.select_cards)
                 can_use_builder[#can_use_builder + 1] = function(self, card) return (#G.hand.highlighted <= finalSize and #G.hand.highlighted > 0) end
@@ -147,7 +133,7 @@ local function new_alchemical_enhance(key, pos, enhance, select_cards)
         loc_vars = function(self, info_queue, center)
             info_queue[#info_queue + 1] = G.P_CENTERS[enhance]
             info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-            local select_cards = max_selected_cards(center)
+            local select_cards = alchemy_max_selected_cards(center)
             return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
         end,
         config = { select_cards = select_cards or 4 },
@@ -365,7 +351,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = G.P_CENTERS.e_polychrome
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = max_selected_cards(center)
+        local select_cards = alchemy_max_selected_cards(center)
         return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
     end,
     config = { select_cards = 2 },
@@ -502,7 +488,7 @@ new_alchemical{
     key = "soap",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = max_selected_cards(center)
+        local select_cards = alchemy_max_selected_cards(center)
         return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
     end,
     config = { select_cards = 3 },
@@ -595,7 +581,7 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local top_suit = get_most_common_suit()
-        local select_cards = max_selected_cards(center)
+        local select_cards = alchemy_max_selected_cards(center)
         return { vars = { select_cards, alchemy_loc_plural("card", select_cards), top_suit, colours = { G.C.SUITS[top_suit] } } }
     end,
     config = { select_cards = 4 },
@@ -672,7 +658,7 @@ new_alchemical{
     pos = { x = 3, y = 3 },
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = max_selected_cards(center)
+        local select_cards = alchemy_max_selected_cards(center)
         return { vars = { select_cards > 1 and " " .. tostring(select_cards) or "", alchemy_loc_plural("card", select_cards) } }
     end,
     config = { select_cards = 1 },

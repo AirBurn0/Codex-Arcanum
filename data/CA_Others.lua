@@ -47,16 +47,43 @@ SMODS.Spectral{
     key = "philosopher_stone",
     pos = { x = 0, y = 1 },
     atlas = "others_atlas",
-    loc_vars = function(self, info_queue, center)
-        return { vars = { math.max(1, alchemy_ability_round(center.ability.extra.alchemicals)) } }
-    end,
-    config = { extra = { alchemicals = 2 } },
+    config = { extra = "alchemy_alchemical", select_cards = 1 },
     cost = 4,
     unlocked = true,
     discovered = false,
-    can_use = function(card) return not (G.deck and G.deck.config and G.deck.config.philosopher) and G.STATE == G.STATES.SELECTING_HAND end,
+    loc_vars = function(self, info_queue, center)
+        info_queue[#info_queue + 1] = { key = "alchemy_alchemical_seal", set = "Other" }
+        local select_cards = alchemy_max_selected_cards(center)
+        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
+    end,
+    can_use = function(self, card) return G.STATE == G.STATES.SELECTING_HAND and #G.hand.highlighted <= alchemy_max_selected_cards(card) and #G.hand.highlighted > 0 end,
     use = function(self, card, area, copier)
-        G.deck.config.philosopher = true
+        for _, _card in ipairs(G.hand.highlighted) do
+            G.E_MANAGER:add_event(Event{
+                func = function()
+                    play_sound("tarot1")
+                    card:juice_up(0.3, 0.5)
+                    return true
+                end
+            })
+            G.E_MANAGER:add_event(Event{
+                trigger = "after",
+                delay = 0.1,
+                func = function()
+                    _card:set_seal(card.ability.extra, false, true)
+                    return true
+                end
+            })
+            delay(0.5)
+            G.E_MANAGER:add_event(Event{
+                trigger = "after",
+                delay = 0.2,
+                func = function()
+                    G.hand:unhighlight_all()
+                    return true
+                end
+            })
+        end
     end
 }
 
@@ -112,7 +139,7 @@ SMODS.Sticker{
     key = "synthesized",
     default_compat = false,
     sets = { Joker = true, Default = true, Enhanced = true },
-    badge_colour = HEX("C09D75"),
+    badge_colour = G.C.SECONDARY_SET.Alchemy,
     order = 17,
     pos = { x = 0, y = 0 },
     atlas = "sticker_atlas",
@@ -161,3 +188,46 @@ SMODS.Sticker{
 function Card:set_synthesized(data)
     SMODS.Stickers["alchemy_synthesized"]:apply(self, data)
 end
+
+SMODS.Atlas{
+    key = "seals_atlas",
+    path = "ca_seals_atlas.png",
+    px = 71,
+    py = 95
+}
+
+local function is_card_in(card, array)
+    for k, v in ipairs(array) do
+        if (v == card) then
+            return true
+        end
+    end
+    return false
+end
+
+-- Alchemical Seal
+SMODS.Seal{
+    key = "alchemical",
+    badge_colour = G.C.SECONDARY_SET.Alchemy,
+    pos = { x = 1, y = 0 },
+    atlas = "seals_atlas",
+    weight = 1,
+    calculate = function(self, card, context)
+        if context.cardarea ~= G.hand or not context.hand_drawn or #G.consumeables.cards + G.GAME.consumeable_buffer >= G.consumeables.config.card_limit or not is_card_in(card, context.hand_drawn) then
+            return
+        end
+        -- not card.debuff
+        G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+        G.E_MANAGER:add_event(Event{
+            trigger = "before",
+            func = function()
+                local _card = create_alchemical()
+                _card:add_to_deck()
+                G.consumeables:emplace(_card)
+                G.GAME.consumeable_buffer = 0 -- event can be interrupted
+                return true
+            end
+        })
+        return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy }
+    end,
+}
