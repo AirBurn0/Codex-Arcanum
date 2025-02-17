@@ -94,6 +94,10 @@ function alchemy_ability_round(ability)
 	return math.floor(ability + 0.5)
 end
 
+function alchemy_max_highlighted(card)
+    return math.max(1, alchemy_ability_round(card.ability.max_highlighted))
+end
+
 function alchemy_loc_plural(word, count)
 	local plurals = G.localization.misc.CodexArcanum_plurals[word]
 	if not plurals then
