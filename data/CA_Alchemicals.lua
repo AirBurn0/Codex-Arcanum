@@ -809,7 +809,7 @@ new_alchemical{
         -- call it a day
         local target = G.hand.highlighted[1]
         for i = 1, math.max(1, alchemy_ability_round(card.ability.extra)) do
-            if #eligible_cards < 1 then
+            if #eligible_cards < i then
                 break
             end
             local _card = eligible_cards[i]
@@ -817,6 +817,9 @@ new_alchemical{
                 trigger = "after",
                 delay = 0.1,
                 func = function()
+                    if not target.edition then
+                        _card:juice_up(1, 0.5)
+                    end
                     _card:set_ability(target.config.center)
                     _card:set_edition(target.edition, true)
                     _card:set_seal(target:get_seal(true), false, true)
