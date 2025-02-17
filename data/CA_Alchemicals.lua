@@ -58,11 +58,6 @@ local function get_most_common_suit()
     return top_suit
 end
 
-local function get_progress_info(vars)
-    local main_end = {}
-    localize{ type = "descriptions", set = "Other", key = "a_alchemy_unlock_counter", nodes = main_end, vars = vars }
-    return main_end[1]
-end
 -- kinda default constructor
 local function new_alchemical(alchemical)
     -- can_use function builder

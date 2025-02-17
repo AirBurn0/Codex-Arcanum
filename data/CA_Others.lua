@@ -53,10 +53,10 @@ SMODS.Spectral{
     discovered = false,
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemy_alchemical_seal", set = "Other" }
-        local select_cards = alchemy_max_selected_cards(center)
+        local select_cards = alchemy_max_highlighted(center)
         return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
     end,
-    can_use = function(self, card) return G.STATE == G.STATES.SELECTING_HAND and #G.hand.highlighted <= alchemy_max_selected_cards(card) and #G.hand.highlighted > 0 end,
+    can_use = function(self, card) return G.STATE == G.STATES.SELECTING_HAND and #G.hand.highlighted <= alchemy_max_highlighted(card) and #G.hand.highlighted > 0 end,
     use = function(self, card, area, copier)
         for _, _card in ipairs(G.hand.highlighted) do
             G.E_MANAGER:add_event(Event{
@@ -216,7 +216,6 @@ SMODS.Seal{
         if context.cardarea ~= G.hand or not context.hand_drawn or #G.consumeables.cards + G.GAME.consumeable_buffer >= G.consumeables.config.card_limit or not is_card_in(card, context.hand_drawn) then
             return
         end
-        -- not card.debuff
         G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
         G.E_MANAGER:add_event(Event{
             trigger = "before",
