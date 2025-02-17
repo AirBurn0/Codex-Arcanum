@@ -58,18 +58,23 @@ local function get_most_common_suit()
     return top_suit
 end
 
+local function get_progress_info(vars)
+    local main_end = {}
+    localize{ type = "descriptions", set = "Other", key = "a_alchemy_unlock_counter", nodes = main_end, vars = vars }
+    return main_end[1]
+end
 -- kinda default constructor
 local function new_alchemical(alchemical)
     -- can_use function builder
     -- preharps there is simpler way to do this and don't ctrl+c ctrl+v code
     local can_use_builder = { alchemical.can_use or function(self, card) return G.STATE == G.STATES.SELECTING_HAND and not card.debuff end }
     if not alchemical.can_use then
-        if alchemical.config and alchemical.config.select_cards then
-            local select_type = type(alchemical.config.select_cards)
+        if alchemical.config and alchemical.config.max_highlighted then
+            local select_type = type(alchemical.config.max_highlighted)
             if select_type == "number" then     -- mutable select size (for cryptid enjoyers)
-                can_use_builder[#can_use_builder + 1] = function(self, card) return (#G.hand.highlighted <= alchemy_max_selected_cards(card) and #G.hand.highlighted > 0) end
+                can_use_builder[#can_use_builder + 1] = function(self, card) return (#G.hand.highlighted <= alchemy_max_highlighted(card) and #G.hand.highlighted > 0) end
             elseif select_type == "string" then -- immutable select size (no cryptid joy)
-                local finalSize = tonumber(alchemical.config.select_cards)
+                local finalSize = tonumber(alchemical.config.max_highlighted)
                 can_use_builder[#can_use_builder + 1] = function(self, card) return (#G.hand.highlighted <= finalSize and #G.hand.highlighted > 0) end
             end
         end
@@ -127,16 +132,16 @@ local function new_alchemical(alchemical)
     }
 end
 
-local function new_alchemical_enhance(key, pos, enhance, select_cards)
+local function new_alchemical_enhance(key, pos, enhance, max_highlighted)
     new_alchemical{
         key = key,
         loc_vars = function(self, info_queue, center)
             info_queue[#info_queue + 1] = G.P_CENTERS[enhance]
             info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-            local select_cards = alchemy_max_selected_cards(center)
-            return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
+            local max_highlighted = alchemy_max_highlighted(center)
+            return { vars = { max_highlighted, alchemy_loc_plural("card", max_highlighted) } }
         end,
-        config = { select_cards = select_cards or 4 },
+        config = { max_highlighted = max_highlighted or 4 },
         pos = pos,
         use = function(self, card, area, copier)
             G.E_MANAGER:add_event(Event{
@@ -351,10 +356,10 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = G.P_CENTERS.e_polychrome
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = alchemy_max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
+        local max_highlighted = alchemy_max_highlighted(center)
+        return { vars = { max_highlighted, alchemy_loc_plural("card", max_highlighted) } }
     end,
-    config = { select_cards = 2 },
+    config = { max_highlighted = 2 },
     pos = { x = 2, y = 1 },
     use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event{
@@ -488,10 +493,10 @@ new_alchemical{
     key = "soap",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = alchemy_max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
+        local max_highlighted = alchemy_max_highlighted(center)
+        return { vars = { max_highlighted, alchemy_loc_plural("card", max_highlighted) } }
     end,
-    config = { select_cards = 3 },
+    config = { max_highlighted = 3 },
     pos = { x = 0, y = 2 },
     use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event{
@@ -515,7 +520,7 @@ new_alchemical{
         local extra = alchemy_ability_round(center.ability.extra)
         return { vars = { extra, alchemy_loc_plural("card", extra) } }
     end,
-    config = { select_cards = "1", extra = 2 },
+    config = { max_highlighted = "1", extra = 2 },
     pos = { x = 5, y = 2 },
     use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event{
@@ -548,7 +553,7 @@ new_alchemical{
         local extra = alchemy_ability_round(center.ability.extra)
         return { vars = { extra, alchemy_loc_plural("copy", extra) } }
     end,
-    config = { select_cards = "1", extra = 2 },
+    config = { max_highlighted = "1", extra = 2 },
     pos = { x = 2, y = 2 },
     use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event{
@@ -581,10 +586,10 @@ new_alchemical{
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
         local top_suit = get_most_common_suit()
-        local select_cards = alchemy_max_selected_cards(center)
-        return { vars = { select_cards, alchemy_loc_plural("card", select_cards), top_suit, colours = { G.C.SUITS[top_suit] } } }
+        local max_highlighted = alchemy_max_highlighted(center)
+        return { vars = { max_highlighted, alchemy_loc_plural("card", max_highlighted), top_suit, colours = { G.C.SUITS[top_suit] } } }
     end,
-    config = { select_cards = 4 },
+    config = { max_highlighted = 4 },
     pos = { x = 3, y = 2 },
     use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event{
@@ -658,10 +663,8 @@ new_alchemical{
     pos = { x = 3, y = 3 },
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local select_cards = alchemy_max_selected_cards(center)
-        return { vars = { select_cards > 1 and " " .. tostring(select_cards) or "", alchemy_loc_plural("card", select_cards) } }
     end,
-    config = { select_cards = 1 },
+    config = { max_highlighted = 1 },
     locked_loc_vars = function(self, info_queue, center)
         local condition = self.unlock_condition.extra.count
         local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
@@ -750,7 +753,7 @@ new_alchemical{
         local extra = math.max(1, alchemy_ability_round(center.ability.extra))
         return { vars = { extra, alchemy_loc_plural("card", extra) } }
     end,
-    config = { select_cards = "1", extra = 3 },
+    config = { max_highlighted = "1", extra = 3 },
     pos = { x = 5, y = 3 },
     locked_loc_vars = function(self, info_queue, center)
         local extra = self.unlock_condition.extra
