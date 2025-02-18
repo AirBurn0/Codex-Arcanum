@@ -30,76 +30,10 @@ function create_card(_type, area, legendary, _rarity, skip_materialize, soulable
     return card
 end
 
--- Philosopher's Stone retriggers override
-local eval_cardref = eval_card
-function eval_card(card, context)
-    context = context or {}
-    local ret, sub = eval_cardref(card, context)
-    if context.repetition_only and G.deck.config.philosopher and not card.debuff then
-        ret.seals = ret.seals or {}
-        ret.seals.message = ret.seals.message or localize("k_again_ex")
-        ret.seals.repetitions = (ret.seals.repetitions or 0) + 1
-        ret.seals.card = card
-    end
-    return ret, sub
-end
-
-local function hue_to_rgb(hue)
-    local r, g, b = 0, 0, 0
-    local saturation = 0.5
-    local lightness = 0.75
-    if hue < 60 then
-        r = 1
-        g = saturation + (1 - saturation) * (hue / 60)
-        b = 1 - saturation
-    elseif hue < 120 then
-        r = saturation + (1 - saturation) * ((120 - hue) / 60)
-        g = 1
-        b = 1 - saturation
-    elseif hue < 180 then
-        r = 1 - saturation
-        g = 1
-        b = saturation + (1 - saturation) * ((hue - 120) / 60)
-    elseif hue < 240 then
-        r = 1 - saturation
-        g = saturation + (1 - saturation) * ((240 - hue) / 60)
-        b = 1
-    elseif hue < 300 then
-        r = saturation + (1 - saturation) * ((hue - 240) / 60)
-        g = 1 - saturation
-        b = 1
-    else
-        r = 1
-        g = 1 - saturation
-        b = saturation + (1 - saturation) * ((360 - hue) / 60)
-    end
-
-    local gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
-    local w = 0.5
-    r = ((1 - w) * r + w * gray) * lightness
-    g = ((1 - w) * g + w * gray) * lightness
-    b = ((1 - w) * b + w * gray) * lightness
-    return r, g, b
-end
-
 local game_updateref = Game.update
 function Game:update(dt)
     game_updateref(self, dt)
-    -- RGB background from Philosopher's Stone
-    if not self.C.RAINBOW_EDITION then
-        self.C.RAINBOW_EDITION = { 0, 0, 0, 1 }
-        self.C.RAINBOW_EDITION_HUE = 0
-    end
-    local r, g, b = hue_to_rgb(self.C.RAINBOW_EDITION_HUE)
-    self.C.RAINBOW_EDITION[1] = r
-    self.C.RAINBOW_EDITION[3] = g
-    self.C.RAINBOW_EDITION[2] = b
-    self.C.RAINBOW_EDITION_HUE = (self.C.RAINBOW_EDITION_HUE + 0.25) % 360
 
-    if G.deck and G.deck.config.philosopher then
-        G.GAME.blind:change_colour(G.C.RAINBOW_EDITION)
-        ease_background_colour{ new_colour = G.C.RAINBOW_EDITION, contrast = 1 }
-    end
     -- if used some alchemical ways to reduce blind score - check if chips is enought to win
     if G.GAME and G.GAME.blind and G.GAME.blind.alchemy_chips_win and G.STATE == G.STATES.SELECTING_HAND then
         G.GAME.blind.alchemy_chips_win = false
