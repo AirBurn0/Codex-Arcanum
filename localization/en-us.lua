@@ -295,7 +295,7 @@ return {
                 name = "The Seeker",
                 text = {
                     "Creates up to {C:attention}#1#",
-                    "random {C:alchemical}Alchemical{} cards",
+                    "random {C:alchemical}Alchemical{} #2#",
                     "{C:inactive}(Must have room)"
                 }
             }

@@ -5,11 +5,8 @@ SMODS.Atlas{
     py = 95
 }
 
-local function ability_round(ability) -- for cryptid enjoyers
-    if not ability or type(ability) ~= "number" then
-        return 0
-    end
-    return math.floor(ability + 0.5)
+local function extra(x)
+    return math.max(1, alchemy_ability_round(x))
 end
 
 SMODS.Tarot{
@@ -17,7 +14,8 @@ SMODS.Tarot{
     pos = { x = 0, y = 0 },
     atlas = "others_atlas",
     loc_vars = function(self, info_queue, center)
-        return { vars = { math.max(1, ability_round(center.ability.extra.alchemicals)) } }
+        local extra = extra(center.ability.extra.alchemicals)
+        return { vars = { extra, alchemy_loc_plural("card", extra) } }
     end,
     config = { extra = { alchemicals = 2 } },
     cost = 3,
@@ -25,7 +23,7 @@ SMODS.Tarot{
     discovered = false,
     can_use = function(card) return true end,
     use = function(self, card, area, copier)
-        local cards = math.min(math.max(1, ability_round(card.ability.extra.alchemicals)), G.consumeables.config.card_limit - #G.consumeables.cards)
+        local cards = math.min(extra(card.ability.extra.alchemicals), G.consumeables.config.card_limit - #G.consumeables.cards)
         if cards < 1 then
             return
         end
@@ -54,10 +52,6 @@ SMODS.Spectral{
     key = "philosopher_stone",
     pos = { x = 0, y = 1 },
     atlas = "others_atlas",
-    loc_vars = function(self, info_queue, center)
-        return { vars = { math.max(1, ability_round(center.ability.extra.alchemicals)) } }
-    end,
-    config = { extra = { alchemicals = 2 } },
     cost = 4,
     unlocked = true,
     discovered = false,
