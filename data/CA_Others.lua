@@ -213,7 +213,8 @@ SMODS.Seal{
     atlas = "seals_atlas",
     weight = 1,
     calculate = function(self, card, context)
-        if context.cardarea ~= G.hand or not context.hand_drawn or #G.consumeables.cards + G.GAME.consumeable_buffer >= G.consumeables.config.card_limit or not is_card_in(card, context.hand_drawn) then
+        local drawn = context.hand_drawn or context.other_drawn
+        if context.cardarea ~= G.hand or not drawn or #G.consumeables.cards + G.GAME.consumeable_buffer >= G.consumeables.config.card_limit or not is_card_in(card, drawn) then
             return
         end
         G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1

@@ -12,7 +12,7 @@ Also check out [**Redux Arcanum**](https://github.com/jumbocarrot0/Redux-Arcanum
 ## Branch changes
 
 Except for Fork changes, this branch also introduces:
-* New Seal - Alchemical Seal: Gives 1 Alchemical card when drawn to hand (author of the idea [Jumbo](https://github.com/jumbocarrot0)).
+* New Seal - Alchemical Seal: Gives 1 Alchemical card when drawn (even in booster packs!!) (author of the idea [Jumbo](https://github.com/jumbocarrot0)).
 * New Sticker - Synthesized: Card will return to its original state after 1 round. Basically that IS original mod's mechanic, but now you got marker that will help you distinguish enhanced cards and alchemically enhanced cards.
 Also, it says `to its original`, meaning that if it was, for example, Wild card and you used Silver to make it Lucky card, it will become back Wild card when Blind is completed, unlike original mod where it will become Base card. Note, that if you use Silver and then Chariot, it will ignore Chariot effect and card still will be returned to what it was before Silver.
 And also - it says `after 1 round`, right? Well, we all knows what can happen with numbers in effects description...
