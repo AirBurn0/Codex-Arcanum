@@ -379,9 +379,9 @@ function G.FUNCS.evaluate_round()
         end
     end
 
-    if G.deck.config.quicksilver then
-        G.hand:change_size(-G.deck.config.quicksilver)
-        G.deck.config.quicksilver = nil
+    if G.GAME.alchemy_quicksilver then
+        G.hand:change_size(-G.GAME.alchemy_quicksilver)
+        G.GAME.alchemy_quicksilver = nil
     end
 
     for i = 1, #G.jokers.cards do
@@ -396,16 +396,12 @@ function G.FUNCS.evaluate_round()
 
     evaluate_roundref()
 
-    if G.jokers.config.acid then
-        for _, acid in ipairs(G.jokers.config.acid) do
-            G.playing_card = (G.playing_card or 0) + 1
-            local _card = copy_card(acid, nil, nil, G.playing_card)
-            -- not really adding card cuz some jokers can go nuts
-            G.deck:emplace(_card)
-            G.deck.config.card_limit = G.deck.config.card_limit + 1
-            table.insert(G.playing_cards, _card)
+    if G.GAME.alchemy_acid and next(G.GAME.alchemy_acid) then
+        -- undoing acid manually cuz there is no active cards that can trigger
+        for _, acid in ipairs(G.GAME.alchemy_acid) do
+            G.P_CENTERS["c_alchemy_acid"]:undo(nil, acid)
         end
-        G.jokers.config.acid = nil
+        G.GAME.alchemy_acid = nil
     end
 
     local option = SMODS.optional_features.cardareas.deck

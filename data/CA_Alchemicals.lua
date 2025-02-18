@@ -259,7 +259,7 @@ new_alchemical{
             func = function()
                 local extra = alchemy_ability_round(card.ability.extra)
                 G.hand:change_size(extra)
-                G.deck.config.quicksilver = (G.deck.config.quicksilver or 0) + extra
+                G.GAME.alchemy_quicksilver = (G.GAME.alchemy_quicksilver or 0) + extra
                 return true
             end
         })
@@ -677,13 +677,13 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                G.jokers.config.acid = G.jokers.config.acid or {} -- TODO remove
+                G.GAME.alchemy_acid = G.GAME.alchemy_acid or {} -- TODO remove
                 local removed_table = {}
                 for _, _card in ipairs(G.hand.highlighted) do
                     local t_rank = SMODS.has_no_rank(_card) and "no_rank" or _card.base.id
                     for _, v in ipairs(G.playing_cards) do
                         if (t_rank == "no_rank" and SMODS.has_no_rank(v)) or (t_rank ~= "no_rank" and not SMODS.has_no_rank(v) and v.base.id == t_rank) then
-                            table.insert(G.jokers.config.acid, v)
+                            table.insert(G.GAME.alchemy_acid, v:save()) -- in case that game will be reopened
                             table.insert(removed_table, v)
                             v:start_dissolve({ HEX("E3FF37") }, nil, 1.6)
                         end
@@ -693,8 +693,26 @@ new_alchemical{
                 return true
             end
         })
+    end,
+    undo = function(self, card, data)
+        G.E_MANAGER:add_event(Event{
+            trigger = "after",
+            delay = 0.1,
+            func = function()
+                card = Card(0, 0, G.CARD_W, G.CARD_H, G.P_CENTERS.j_joker, G.P_CENTERS.c_base, { playing_card = G.playing_card })
+                card:load(data)
+                G.playing_card = (G.playing_card or 0) + 1
+                -- not really adding card cuz some jokers can go nuts
+                G.deck:emplace(card)
+                G.deck.config.card_limit = G.deck.config.card_limit + 1
+                table.insert(G.playing_cards, card)
+                G.deck:set_ranks()
+                G.deck:align_cards()
+                G.deck:hard_set_cards()
+                return true
+            end
+        })
     end
-    -- TODO undo
 }
 
 new_alchemical{
