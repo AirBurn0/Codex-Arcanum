@@ -415,9 +415,9 @@ end
 -- alchemical undos and end round evals
 local evaluate_roundref = G.FUNCS.evaluate_round
 function G.FUNCS.evaluate_round()
-    if G.deck.config.quicksilver then
-        G.hand:change_size(-G.deck.config.quicksilver)
-        G.deck.config.quicksilver = nil
+    if G.GAME.alchemy_quicksilver then
+        G.hand:change_size(-G.GAME.alchemy_quicksilver)
+        G.GAME.alchemy_quicksilver = nil
     end
 
     for i = 1, #G.jokers.cards do
