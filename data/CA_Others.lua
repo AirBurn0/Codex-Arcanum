@@ -56,7 +56,7 @@ SMODS.Spectral{
         local select_cards = alchemy_max_highlighted(center)
         return { vars = { select_cards, alchemy_loc_plural("card", select_cards) } }
     end,
-    can_use = function(self, card) return G.STATE == G.STATES.SELECTING_HAND and #G.hand.highlighted <= alchemy_max_highlighted(card) and #G.hand.highlighted > 0 end,
+    can_use = function(self, card) return #G.hand.highlighted <= alchemy_max_highlighted(card) and #G.hand.highlighted > 0 end,
     use = function(self, card, area, copier)
         for _, _card in ipairs(G.hand.highlighted) do
             G.E_MANAGER:add_event(Event{
