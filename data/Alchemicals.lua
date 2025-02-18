@@ -1,6 +1,6 @@
 SMODS.Atlas{
-    key = "alchemicals_atlas",
-    path = "ca_alchemical_atlas.png",
+    key = "alchemicals",
+    path = "alchemicals.png",
     px = 71,
     py = 95
 }
@@ -16,7 +16,7 @@ SMODS.ConsumableType{
 
 SMODS.UndiscoveredSprite{
     key = "Alchemical",
-    atlas = "alchemicals_atlas",
+    atlas = "alchemicals",
     pos = { x = 4, y = 4 }
 }
 
@@ -24,7 +24,7 @@ SMODS.UndiscoveredSprite{
 G.c_alchemy_locked = {
     name = "Locked",
     pos = { x = 5, y = 4 },
-    atlas = "alchemy_alchemicals_atlas",
+    atlas = "alchemicals",
     set = "Alchemical",
     unlocked = false,
     max = 1,
@@ -87,7 +87,7 @@ local function new_alchemical(alchemical)
     SMODS.Consumable{
         key = alchemical.key or "stone", -- default is stone lol
         set = "Alchemical",
-        atlas = alchemical.atlas or "alchemicals_atlas",
+        atlas = alchemical.atlas or "alchemicals",
         pos = alchemical.pos or { x = 3, y = 5 }, -- default is stone lol
         loc_vars = alchemical.loc_vars,
         unlocked = not (alchemical.check_for_unlock or alchemical.check_for_unlock),

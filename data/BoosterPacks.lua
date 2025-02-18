@@ -1,6 +1,6 @@
 SMODS.Atlas{
-    key = "booster_atlas",
-    path = "ca_booster_atlas.png",
+    key = "boosters",
+    path = "boosters.png",
     px = "71",
     py = "95"
 }
@@ -17,7 +17,7 @@ local function new_booster(booster)
         end,
         config = { extra = booster.extra, choose = booster.choose, name = "Alchemical" },
         pos = booster.pos,
-        atlas = "booster_atlas",
+        atlas = booster.atlas or "boosters",
         weight = booster.weight or 1,
         cost = booster.cost or 4,
         in_pool = function()

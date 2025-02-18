@@ -1,6 +1,6 @@
 SMODS.Atlas{
-    key = "voucher_atlas",
-    path = "ca_voucher_atlas.png",
+    key = "vouchers",
+    path = "vouchers.png",
     px = 71,
     py = 95
 }
@@ -11,7 +11,7 @@ local function new_voucher(voucher)
     SMODS.Voucher{
         key = voucher.key,
         pos = voucher.pos or { x = 0, y = 0 },
-        atlas = voucher.atlas or "voucher_atlas",
+        atlas = voucher.atlas or "vouchers",
         loc_vars = voucher.loc_vars,
         config = voucher.config or {},
         requires = voucher.requires,

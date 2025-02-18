@@ -1,6 +1,6 @@
 SMODS.Atlas{
-    key = "joker_atlas",
-    path = "ca_joker_atlas.png",
+    key = "jokers",
+    path = "jokers.png",
     px = 71,
     py = 95
 }
@@ -24,7 +24,7 @@ local function new_joker(joker)
     SMODS.Joker{
         key = joker.key,
         pos = joker.pos or { x = 0, y = 0 },
-        atlas = joker.atlas or "joker_atlas",
+        atlas = joker.atlas or "jokers",
         loc_vars = joker.loc_vars,
         config = joker.config or {},
         rarity = joker.rarity or 1,
