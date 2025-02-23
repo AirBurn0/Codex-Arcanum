@@ -75,7 +75,7 @@ new_joker{
         -- sadly but that's how canon works
         if context.selling_self and not context.blueprint and G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
             G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-            add_card_event(card, create_alchemical)
+            add_card_event(card, CodexArcanum.utils.create_alchemical)
             return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemical }
         elseif context.joker_main then
             return { mult = card.ability.mult }
@@ -103,7 +103,7 @@ new_joker{
                 end
                 if G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
                     G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-                    add_card_event(card, create_alchemical)
+                    add_card_event(card, CodexArcanum.utils.create_alchemical)
                     return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemical }
                 end
             end
@@ -211,7 +211,7 @@ new_joker{
         then
             local _card = context.blueprint_card or card
             G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-            add_card_event(_card, create_alchemical)
+            add_card_event(_card, CodexArcanum.utils.create_alchemical)
             card_eval_status_text(_card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemical })
         end
     end
@@ -234,13 +234,13 @@ new_joker{
         if choice < 0.33 or (not G.GAME.blind.in_blind and context.consumeable.config.center.key == "c_alchemy_salt") then
             return { dollars = card.ability.extra.money }
         elseif choice < 0.66 then
-            alchemy_draw_cards(alchemy_ability_round(card.ability.extra.cards))
+            CodexArcanum.utils.draw_cards(CodexArcanum.utils.round_to_integer(card.ability.extra.cards))
             return { message = localize("p_alchemy_plus_card"), colour = G.C.SECONDARY_SET.Alchemical }
         else
             G.E_MANAGER:add_event(Event{
                 trigger = "before",
                 func = function()
-                    alchemy_mult_blind_score(1 - card.ability.extra.blind_reduce)
+                    CodexArcanum.utils.mult_blind_score(1 - card.ability.extra.blind_reduce)
                     return true
                 end
             })

@@ -89,7 +89,7 @@ function Game:update(dt)
     -- if used some alchemical ways to reduce blind score - check if chips is enought to win
     if G.GAME and G.GAME.blind and G.GAME.blind.alchemy_chips_win and G.STATE == G.STATES.SELECTING_HAND then
         G.GAME.blind.alchemy_chips_win = false
-        if alchemy_check_for_chips_win() then -- double check in case of modified score
+        if CodexArcanum.utils.check_for_chips_win() then -- double check in case of modified score
             G.STATE = G.STATES.HAND_PLAYED
             G.STATE_COMPLETE = true
             end_round()
@@ -230,7 +230,7 @@ G.FUNCS.select_alchemical = function(e, mute, nosave)
                     G.STATE = prev_state
                     G.TAROT_INTERRUPT = nil
                     G.CONTROLLER.locks.use = false
-                    if is_in_booster_pack(prev_state) and G.booster_pack then
+                    if CodexArcanum.utils.is_in_booster_state(prev_state) and G.booster_pack then
                         if area == G.consumeables then
                             G.booster_pack.alignment.offset.y = G.booster_pack.alignment.offset.py
                             G.booster_pack.alignment.offset.py = nil

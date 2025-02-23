@@ -5,10 +5,6 @@ SMODS.Atlas{
     py = 95
 }
 
-local function extra(x)
-    return math.max(1, alchemy_ability_round(x))
-end
-
 CodexArcanum.pools.Consumables = {}
 
 local function new_consumable(consumable)
@@ -50,13 +46,13 @@ new_consumable{
     set = "Tarot",
     pos = { x = 0, y = 0 },
     loc_vars = function(self, info_queue, center)
-        local extra = extra(center.ability.extra.alchemicals)
-        return { vars = { extra, alchemy_loc_plural("card", extra) } }
+        local extra = CodexArcanum.utils.round_to_natural(center.ability.extra.alchemicals)
+        return { vars = { extra, CodexArcanum.utils.loc_plural("card", extra) } }
     end,
     config = { extra = { alchemicals = 2 } },
     cost = 3,
     use = function(self, card, area, copier)
-        local cards = math.min(extra(card.ability.extra.alchemicals), G.consumeables.config.card_limit - #G.consumeables.cards)
+        local cards = math.min(CodexArcanum.utils.round_to_natural(card.ability.extra.alchemicals), G.consumeables.config.card_limit - #G.consumeables.cards)
         if cards < 1 then
             return
         end

@@ -1,10 +1,45 @@
-CodexArcanum.utils = {}
+CodexArcanum.utils = {} -- namespace to prevent func names collisions
 
-function create_alchemical()
+function CodexArcanum.utils.get_first_key_enabled(map, default)
+    for k, v in pairs(map) do
+        if v then
+            return k
+        end
+    end
+    return default
+end
+
+function CodexArcanum.utils.create_alchemical()
 	return create_card("Alchemical", G.pack_cards, nil, nil, true, true, nil, "alc")
 end
 
-function take_cards_from_discard()
+function CodexArcanum.utils.get_most_common_suit()
+    local suit_to_card_couner = {}
+    for _, v in pairs(SMODS.Suits) do
+        if not v.disabled then
+            suit_to_card_couner[v.name] = 0
+        end
+    end
+    if G.playing_cards then
+        for _, v in pairs(G.playing_cards) do
+            if not (SMODS.has_no_suit(v) or SMODS.has_any_suit(v)) then -- stone cards should count as no suit, wildcards should count as any suit
+                suit_to_card_couner[v.base.suit] = suit_to_card_couner[v.base.suit] + 1
+            end
+        end
+    end
+    local top_suit = "";
+    local top_count = -1;
+    for suit, count in pairs(suit_to_card_couner) do
+        if top_count < count then
+            top_suit = suit
+            top_count = count
+        end
+    end
+
+    return top_suit
+end
+
+function CodexArcanum.utils.take_cards_from_discard()
 	G.E_MANAGER:add_event(Event{
 		trigger = "immediate",
 		func = function()
@@ -17,7 +52,7 @@ function take_cards_from_discard()
 	})
 end
 
-function return_to_deck(card)
+function CodexArcanum.utils.return_to_deck(card)
 	if not (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK) and G.hand.config.card_limit <= 0 and #G.hand.cards == 0 then
 		G.STATE = G.STATES.GAME_OVER
 		G.STATE_COMPLETE = false
@@ -27,7 +62,7 @@ function return_to_deck(card)
 	draw_card(G.hand, G.deck, 100, "up", false, card)
 end
 
-function is_in_booster_pack(state)
+function CodexArcanum.utils.is_in_booster_state(state)
 	return state == G.STATES.STANDARD_PACK
 		or state == G.STATES.TAROT_PACK
 		or state == G.STATES.PLANET_PACK
@@ -36,11 +71,11 @@ function is_in_booster_pack(state)
 		or state == G.STATES.SMODS_BOOSTER_OPENED
 end
 
-function alchemy_check_for_chips_win()
+function CodexArcanum.utils.check_for_chips_win()
 	return G.GAME.chips >= G.GAME.blind.chips
 end
 
-function alchemy_card_eval_text(card, text, sound, color, text_scale, hold, delayed, after_func)
+function CodexArcanum.utils.card_eval_text(card, text, sound, color, text_scale, hold, delayed, after_func)
 	local card_aligned = "bm"
 	local y_off = 0.15 * G.CARD_H
 	if card.area == G.jokers or card.area == G.consumeables then
@@ -77,7 +112,7 @@ function alchemy_card_eval_text(card, text, sound, color, text_scale, hold, dela
 end
 
 -- Serpent fix, plz do not be like Serpent and don't override what must not be overriden
-function alchemy_draw_cards(amount)
+function CodexArcanum.utils.draw_cards(amount)
 	if G.GAME.blind:get_type() == "Boss" and G.GAME.blind.config.blind.key == "bl_serpent" then
 		local serpent = G.GAME.blind.disabled
 		G.GAME.blind.disabled = true
@@ -89,18 +124,29 @@ function alchemy_draw_cards(amount)
 end
 
 -- for cryptid enjoyers
-function alchemy_ability_round(ability)
+function CodexArcanum.utils.round_to_integer(ability)
 	if not ability or type(ability) ~= "number" then
 		return 0
 	end
 	return math.floor(ability + 0.5)
 end
 
-function alchemy_max_highlighted(card)
-    return math.max(1, alchemy_ability_round(card.ability.max_highlighted))
+-- basically returns an integer that is not less than 1
+function CodexArcanum.utils.round_to_natural(x)
+    return math.max(1, CodexArcanum.utils.round_to_integer(x))
 end
 
-function alchemy_loc_plural(word, count)
+function CodexArcanum.utils.max_highlighted(card)
+    return CodexArcanum.utils.round_to_natural(card.ability.max_highlighted)
+end
+
+function CodexArcanum.utils.get_progress_info(vars)
+    local main_end = {}
+    localize{ type = "descriptions", set = "Other", key = "a_alchemy_unlock_counter", nodes = main_end, vars = vars }
+    return main_end[1]
+end
+
+function CodexArcanum.utils.loc_plural(word, count)
 	local plurals = G.localization.misc.CodexArcanum_plurals[word]
 	if not plurals then
 		return "nil"
@@ -108,7 +154,7 @@ function alchemy_loc_plural(word, count)
 	return plurals(count)
 end
 
-function alchemy_mult_blind_score(by_percent)
+function CodexArcanum.utils.mult_blind_score(by_percent)
     G.GAME.blind.chips = math.floor(G.GAME.blind.chips * math.max(0, by_percent))
     G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
     G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
@@ -117,5 +163,5 @@ function alchemy_mult_blind_score(by_percent)
     if not silent then
         play_sound("chips2")
     end
-    G.GAME.blind.alchemy_chips_win = alchemy_check_for_chips_win()
+    G.GAME.blind.alchemy_chips_win = CodexArcanum.utils.check_for_chips_win()
 end

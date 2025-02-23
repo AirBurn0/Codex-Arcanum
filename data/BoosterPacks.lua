@@ -42,7 +42,7 @@ local function new_booster(booster)
             return true
         end,
         create_card = function(self, card)
-            return create_alchemical()
+            return CodexArcanum.utils.create_alchemical()
         end
     }
 end
