@@ -1,28 +1,49 @@
 SMODS.Atlas{
-    key = "decks_atlas",
-    path = "ca_decks_atlas.png",
+    key = "decks",
+    path = "decks.png",
     px = 71,
     py = 95
 }
 
+CodexArcanum.pools.Decks = {}
+
 -- kinda default constructor
 local function new_deck(deck)
+    local key = "b_alchemy_" .. deck.key
+    -- create fake
+    if not CodexArcanum.config.modules.Decks[key] then
+        CodexArcanum.pools.Decks[#CodexArcanum.pools.Decks + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "b" }{
+            key = deck.key or "default",
+            loc_set = "Back",
+            atlas = deck.atlas or "decks",
+            pos = deck.pos or { x = 0, y = 0 },
+            loc_vars = function(self, info_queue, center)
+                local loc = deck.loc_vars and deck.loc_vars(self, info_queue, center) or { vars = {} }
+                loc.set = "Back"
+                return loc
+            end,
+            config = deck.config or {},
+            rarity = deck.rarity or 1
+        }
+        return
+    end
+
     -- create deck
-    SMODS.Back{
+    CodexArcanum.pools.Decks[#CodexArcanum.pools.Decks + 1] = SMODS.Back{
         key = deck.key,
         config = deck.config or {},
         unlocked = not deck.check_for_unlock,
         check_for_unlock = deck.check_for_unlock,
         apply = function(self) end,
         pos = deck.pos or { x = 0, y = 0 },
-        atlas = "decks_atlas",
+        atlas = deck.atlas or "decks",
         trigger_effect = deck.trigger_effect
     }
 end
 
 new_deck{
     key = "philosopher",
-    config = { vouchers = { "v_alchemy_alchemical_merchant" }, atlas = "decks_atlas" },
+    config = { vouchers = { "v_alchemy_alchemical_merchant" }},
     pos = { x = 0, y = 0 },
     check_for_unlock = function(self, args)
         if args.type == "discover_amount" and G.P_CENTERS.c_alchemy_philosopher_stone.discovered then
@@ -33,7 +54,7 @@ new_deck{
 
 new_deck{
     key = "herbalist",
-    config = { vouchers = { "v_alchemy_mortar_and_pestle" }, atlas = "decks_atlas" },
+    config = { vouchers = { "v_alchemy_mortar_and_pestle" } },
     pos = { x = 1, y = 0 },
     check_for_unlock = function(self, args)
         if args.type == "discover_amount" and G.P_CENTERS.c_alchemy_seeker.discovered then

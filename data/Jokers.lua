@@ -1,6 +1,6 @@
 SMODS.Atlas{
-    key = "joker_atlas",
-    path = "ca_joker_atlas.png",
+    key = "jokers",
+    path = "jokers.png",
     px = 71,
     py = 95
 }
@@ -18,13 +18,34 @@ local function add_card_event(self, card_func) -- card creation delayed
     })
 end
 
+CodexArcanum.pools.Jokers = {}
+
 -- kinda default constructor
 local function new_joker(joker)
+    local key = "j_alchemy_" .. joker.key
+    -- create fake
+    if not CodexArcanum.config.modules.Jokers[key] then
+        CodexArcanum.pools.Jokers[#CodexArcanum.pools.Jokers + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "j" }{
+            key = joker.key or "default",
+            loc_set = "Joker",
+            atlas = joker.atlas or "jokers",
+            pos = joker.pos or { x = 0, y = 0 },
+            loc_vars = function(self, info_queue, center)
+                local loc = joker.loc_vars and joker.loc_vars(self, info_queue, center) or { vars = {} }
+                loc.set = "Joker"
+                return loc
+            end,
+            config = joker.config or {},
+            rarity = joker.rarity or 1
+        }
+        return
+    end
+
     -- create joker
-    SMODS.Joker{
+    CodexArcanum.pools.Jokers[#CodexArcanum.pools.Jokers + 1] = SMODS.Joker{
         key = joker.key,
         pos = joker.pos or { x = 0, y = 0 },
-        atlas = joker.atlas or "joker_atlas",
+        atlas = joker.atlas or "jokers",
         loc_vars = joker.loc_vars,
         config = joker.config or {},
         rarity = joker.rarity or 1,
@@ -54,8 +75,8 @@ new_joker{
         -- sell blueprint for alchemical? HELL YEAH!!
         if context.selling_self and G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
             G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-            add_card_event(card, create_alchemical)
-            return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy }
+            add_card_event(card, CodexArcanum.utils.create_alchemical)
+            return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemical }
         elseif context.joker_main then
             return { mult = card.ability.mult }
         end
@@ -82,8 +103,8 @@ new_joker{
                 end
                 if G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
                     G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-                    add_card_event(card, create_alchemical)
-                    return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy }
+                    add_card_event(card, CodexArcanum.utils.create_alchemical)
+                    return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemical }
                 end
             end
         end
@@ -126,7 +147,7 @@ new_joker{
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra, card.ability.x_mult } }
     end,
-    config = { extra = 0.1, Xmult = 1 },
+    config = { extra = 0.1, x_mult = 1 },
     rarity = 2,
     cost = 6,
     perishable_compat = false,
@@ -160,8 +181,8 @@ new_joker{
         then
             local _card = context.blueprint_card or card
             G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-            add_card_event(_card, create_alchemical)
-            card_eval_status_text(_card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy })
+            add_card_event(_card, CodexArcanum.utils.create_alchemical)
+            card_eval_status_text(_card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemical })
         end
     end
 }
@@ -174,7 +195,7 @@ new_joker{
     cost = 6,
     locked_loc_vars = function(self, info_queue, center)
         local condition = self.unlock_condition.count
-        return { vars = { condition, alchemy_loc_plural("card", condition), (self.unlock_condition.tally and G.DISCOVER_TALLIES) and G.DISCOVER_TALLIES[self.unlock_condition.tally].tally or 0 } }
+        return { vars = { condition, CodexArcanum.utils.loc_plural("card", condition), (self.unlock_condition.tally and G.DISCOVER_TALLIES) and G.DISCOVER_TALLIES[self.unlock_condition.tally].tally or 0 } }
     end,
     unlock_condition = { type = "discover_amount", tally = "alchemicals", count = 24 },
     check_for_unlock = function(self, args)
@@ -216,9 +237,9 @@ new_joker{
     cost = 7,
     locked_loc_vars = function(self, info_queue, center)
         local condition = self.unlock_condition.extra
-        local loc = { vars = { condition, alchemy_loc_plural("card", condition), self.unlock_condition.ante } }
+        local loc = { vars = { condition, CodexArcanum.utils.loc_plural("card", condition), self.unlock_condition.ante } }
         if G.STAGE == G.STAGES.RUN then
-            loc.main_end = alchemy_get_progress_info{ G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical or 0 }
+            loc.main_end = CodexArcanum.utils.get_progress_info{ G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.alchemical or 0 }
         end
         return loc
     end,
@@ -234,17 +255,17 @@ new_joker{
         if choice < 0.33 or not G.GAME.blind.in_blind then
             return { dollars = card.ability.extra.money * (G.GAME.blind.in_blind and context.consumeable.config.center.key == "c_alchemy_salt" and 2 or 1) } -- jesse we need to cook
         elseif choice < 0.66 then
-            alchemy_draw_cards(alchemy_ability_round(card.ability.extra.cards))
-            return { message = localize("p_alchemy_plus_card"), colour = G.C.SECONDARY_SET.Alchemy }
+            CodexArcanum.utils.draw_cards(CodexArcanum.utils.round_to_integer(card.ability.extra.cards))
+            return { message = localize("p_alchemy_plus_card"), colour = G.C.SECONDARY_SET.Alchemical }
         else
             G.E_MANAGER:add_event(Event{
                 trigger = "before",
                 func = function()
-                    alchemy_mult_blind_score(1 - card.ability.extra.blind_reduce)
+                    CodexArcanum.utils.mult_blind_score(1 - card.ability.extra.blind_reduce)
                     return true
                 end
             })
-            return { message = localize("a_alchemy_reduce_blind"), colour = G.C.SECONDARY_SET.Alchemy }
+            return { message = localize("a_alchemy_reduce_blind"), colour = G.C.SECONDARY_SET.Alchemical }
         end
     end
 }
@@ -260,9 +281,9 @@ new_joker{
     cost = 6,
     locked_loc_vars = function(self, info_queue, center)
         local condition = self.unlock_condition.extra
-        local loc = { vars = { condition, alchemy_loc_plural("card", condition) } }
+        local loc = { vars = { condition, CodexArcanum.utils.loc_plural("card", condition) } }
         if G.STAGE == G.STAGES.RUN and G.GAME.blind and G.GAME.blind.in_blind then
-            loc.main_end = alchemy_get_progress_info{ G.GAME.consumeable_usage_blind or 0 }
+            loc.main_end = CodexArcanum.utils.get_progress_info{ G.GAME.consumeable_usage_blind or 0 }
         end
         return loc
     end,

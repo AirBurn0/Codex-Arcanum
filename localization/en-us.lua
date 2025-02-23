@@ -408,7 +408,7 @@ return {
                 name = "The Seeker",
                 text = {
                     "Creates up to {C:attention}#1#",
-                    "random {C:alchemical}Alchemical{} cards",
+                    "random {C:alchemical}Alchemical{} #2#",
                     "{C:inactive}(Must have room)"
                 }
             }
@@ -537,6 +537,19 @@ return {
                     "{C:inactive}(#1#)"
                 }
             }
+        },
+        Mod = {
+            CodexArcanum = {
+                name = "Codex Arcanum",
+                text = {
+                    "Adds a new set of consumable cards - {C:alchemical}Alchemicals{},",
+                    "and additional content that will help to use them!",
+                    " ",
+                    "{C:alchemical}Alchemical{} cards are usually {C:attention}stronger{} than other",
+                    "consumables, but their {C:attention}effect stays only until the",
+                    "{C:attention}end of the Blind"
+                }
+            }
         }
     },
     misc = {
@@ -549,9 +562,46 @@ return {
             k_alchemy_pack = "Alchemy Pack",
             p_plus_alchemical = "+1 Alchemical",
             p_alchemy_plus_card = "+2 Cards",
+            a_alchemy_reduce_blind = "Reduce score",
             b_stat_alchemicals = "Alchemicals",
             b_alchemical_cards = "Alchemical Cards",
-            a_alchemy_reduce_blind = "Reduce score"
+            b_alchemy_ui_enabled = "Enabled",
+            b_alchemy_ui_config_alchemicals = {
+                { title = { "Alchemicals" }, tooltip = { "Tweaks for Alchemical cards added by mod" } },
+                { title = { "Disable" }, tooltip = { "Disable specific Alchemical cards by selecting them", "Contains Alchemical cards spoilers!" } }
+            },
+            b_alchemy_ui_config_boosters = {
+                { title = { "Booster Packs" }, tooltip = { "Tweaks for Booster Packs added by mod" } },
+                { title = { "Disable" }, tooltip = { "Disable specific Booster Packs by selecting them", "Contains Booster Packs spoilers!" } }
+            },
+            b_alchemy_ui_config_jokers = {
+                { title = { "Jokers" }, tooltip = { "Tweaks for Jokers added by mod" } },
+                { title = { "Disable" }, tooltip = { "Disable specific Jokers by selecting them", "Contains Jokers spoilers!" } }
+            },
+            b_alchemy_ui_config_consumables = {
+                { title = { "Consumables" }, tooltip = { "Tweaks for Consumable cards added by mod" } },
+                { title = { "Disable" }, tooltip = { "Disable specific Consumable (Tarot, Spectral) cards by selecting them", "Contains Consumable cards spoilers!" } }
+            },
+            b_alchemy_ui_config_decks = {
+                { title = { "Decks" }, tooltip = { "Tweaks for Decks added by mod" } },
+                { title = { "Disable" }, tooltip = { "Disable specific Decks by selecting them", "Contains Decks spoilers!" } }
+            },
+            b_alchemy_ui_config_vouchers = {
+                { title = { "Vouchers" }, tooltip = { "Tweaks for Vouchers added by mod" } },
+                { title = { "Disable" }, tooltip = { "Disable specific Vouchers by selecting them", "Contains Vouchers spoilers!" } }
+            },
+            b_alchemy_ui_config_tags = {
+                { title = { "Tags" }, tooltip = { "Tweaks for Tags added by mod" } },
+                { title = { "Disable" }, tooltip = { "Disable specific Tags by selecting them", "Contains Tags spoilers!" } }
+            },
+            b_alchemy_ui_config_seals= {
+                { title = { "Seals" }, tooltip = { "Tweaks for Seals added by mod" } },
+                { title = { "Disable" }, tooltip = { "Disable specific Seals by selecting them"} }
+            },
+            b_alchemy_ui_config_stickers = {
+                { title = { "Stickers" }, tooltip = { "Tweaks for Stickers added by mod" } },
+                { title = { "Disable" }, tooltip = { "Disable specific Stickers by selecting them" } }
+            },
         },
         --I'm not a schizo, different languages ​​may have several variants of plural form
         CodexArcanum_plurals = {

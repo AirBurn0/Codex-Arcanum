@@ -1,17 +1,37 @@
 SMODS.Atlas{
-    key = "voucher_atlas",
-    path = "ca_voucher_atlas.png",
+    key = "vouchers",
+    path = "vouchers.png",
     px = 71,
     py = 95
 }
 
+CodexArcanum.pools.Vouchers = {}
+
 -- kinda default constructor
 local function new_voucher(voucher)
+    local key = "v_alchemy_" .. voucher.key
+    -- create fake
+    if not CodexArcanum.config.modules.Vouchers[key] then
+        CodexArcanum.pools.Vouchers[#CodexArcanum.pools.Vouchers + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "v" }{
+            key = voucher.key or "default",
+            loc_set = "Voucher",
+            pos = voucher.pos or { x = 0, y = 0 },
+            atlas = voucher.atlas or "vouchers",
+            loc_vars = function(self, info_queue, center)
+                local loc = voucher.loc_vars and voucher.loc_vars(self, info_queue, center) or { vars = {} }
+                loc.set = "Voucher"
+                return loc
+            end,
+            config = voucher.config or {}
+        }
+        return
+    end
+
     -- create voucher
-    SMODS.Voucher{
+    CodexArcanum.pools.Vouchers[#CodexArcanum.pools.Vouchers + 1] = SMODS.Voucher{
         key = voucher.key,
         pos = voucher.pos or { x = 0, y = 0 },
-        atlas = voucher.atlas or "voucher_atlas",
+        atlas = voucher.atlas or "vouchers",
         loc_vars = voucher.loc_vars,
         config = voucher.config or {},
         requires = voucher.requires,
