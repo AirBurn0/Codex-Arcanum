@@ -56,7 +56,7 @@ new_tag{
     type = "new_blind_choice",
     apply_color = G.C.PURPLE,
     apply = function()
-        local key = "p_alchemy_mega_1"
+        local key = CodexArcanum.config.modules.BoosterPacks["p_alchemy_mega_1"] and "p_alchemy_mega_1" or "p_arcana_mega_1"
         local card = Card(G.play.T.x + G.play.T.w / 2 - G.CARD_W * 1.27 / 2, G.play.T.y + G.play.T.h / 2 - G.CARD_H * 1.27 / 2, G.CARD_W * 1.27, G.CARD_H * 1.27, G.P_CARDS.empty, G.P_CENTERS[key], { bypass_discovery_center = true, bypass_discovery_ui = true })
         card.cost = 0
         card.from_tag = true

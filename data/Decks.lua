@@ -40,9 +40,11 @@ local function new_deck(deck)
     }
 end
 
+local philosopher_consumables = CodexArcanum.config.modules.Consumables["c_alchemy_seeker"] and { "c_alchemy_seeker" } or nil
+
 new_deck{
     key = "philosopher",
-    config = { vouchers = { "v_alchemy_alchemical_merchant" }, consumables = { "c_alchemy_seeker" } },
+    config = { vouchers = { "v_alchemy_alchemical_merchant" }, consumables = philosopher_consumables },
     pos = { x = 0, y = 0 }
 }
 
