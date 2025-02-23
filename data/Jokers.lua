@@ -18,10 +18,31 @@ local function add_card_event(self, card_func) -- card creation delayed
     })
 end
 
+CodexArcanum.pools.Jokers = {}
+
 -- kinda default constructor
 local function new_joker(joker)
+    local key = "j_alchemy_" .. joker.key
+    -- create fake
+    if not CodexArcanum.config.modules.Jokers[key] then
+        CodexArcanum.pools.Jokers[#CodexArcanum.pools.Jokers + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "j" }{
+            key = joker.key or "default",
+            loc_set = "Joker",
+            atlas = joker.atlas or "jokers",
+            pos = joker.pos or { x = 0, y = 0 },
+            loc_vars = function(self, info_queue, center)
+                local loc = joker.loc_vars and joker.loc_vars(self, info_queue, center) or { vars = {} }
+                loc.set = "Joker"
+                return loc
+            end,
+            config = joker.config or {},
+            rarity = joker.rarity or 1
+        }
+        return
+    end
+
     -- create joker
-    SMODS.Joker{
+    CodexArcanum.pools.Jokers[#CodexArcanum.pools.Jokers + 1] = SMODS.Joker{
         key = joker.key,
         pos = joker.pos or { x = 0, y = 0 },
         atlas = joker.atlas or "jokers",
@@ -55,7 +76,7 @@ new_joker{
         if context.selling_self and not context.blueprint and G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
             G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
             add_card_event(card, create_alchemical)
-            return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy }
+            return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemical }
         elseif context.joker_main then
             return { mult = card.ability.mult }
         end
@@ -83,7 +104,7 @@ new_joker{
                 if G.consumeables.config.card_limit - (#G.consumeables.cards + G.GAME.consumeable_buffer) > 0 then
                     G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
                     add_card_event(card, create_alchemical)
-                    return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy }
+                    return { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemical }
                 end
             end
         end
@@ -147,7 +168,7 @@ new_joker{
             _card:set_edition({ negative = true }, true)
             return _card
         end)
-        return { message = localize("k_copied_ex"), colour = G.C.SECONDARY_SET.Alchemy }
+        return { message = localize("k_copied_ex"), colour = G.C.SECONDARY_SET.Alchemical }
     end
 }
 
@@ -157,7 +178,7 @@ new_joker{
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra, card.ability.x_mult } }
     end,
-    config = { extra = 0.1, Xmult = 1 },
+    config = { extra = 0.1, x_mult = 1 },
     rarity = 2,
     cost = 6,
     calculate = function(self, card, context)
@@ -191,7 +212,7 @@ new_joker{
             local _card = context.blueprint_card or card
             G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
             add_card_event(_card, create_alchemical)
-            card_eval_status_text(_card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemy })
+            card_eval_status_text(_card, "extra", nil, nil, nil, { message = localize("p_plus_alchemical"), colour = G.C.SECONDARY_SET.Alchemical })
         end
     end
 }
@@ -214,7 +235,7 @@ new_joker{
             return { dollars = card.ability.extra.money }
         elseif choice < 0.66 then
             alchemy_draw_cards(alchemy_ability_round(card.ability.extra.cards))
-            return { message = localize("p_alchemy_plus_card"), colour = G.C.SECONDARY_SET.Alchemy }
+            return { message = localize("p_alchemy_plus_card"), colour = G.C.SECONDARY_SET.Alchemical }
         else
             G.E_MANAGER:add_event(Event{
                 trigger = "before",
@@ -223,7 +244,7 @@ new_joker{
                     return true
                 end
             })
-            return { message = localize("a_alchemy_reduce_blind"), colour = G.C.SECONDARY_SET.Alchemy }
+            return { message = localize("a_alchemy_reduce_blind"), colour = G.C.SECONDARY_SET.Alchemical }
         end
     end
 }

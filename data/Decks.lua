@@ -5,10 +5,31 @@ SMODS.Atlas{
     py = 95
 }
 
+CodexArcanum.pools.Decks = {}
+
 -- kinda default constructor
 local function new_deck(deck)
+    local key = "b_alchemy_" .. deck.key
+    -- create fake
+    if not CodexArcanum.config.modules.Decks[key] then
+        CodexArcanum.pools.Decks[#CodexArcanum.pools.Decks + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "b" }{
+            key = deck.key or "default",
+            loc_set = "Back",
+            atlas = deck.atlas or "decks",
+            pos = deck.pos or { x = 0, y = 0 },
+            loc_vars = function(self, info_queue, center)
+                local loc = deck.loc_vars and deck.loc_vars(self, info_queue, center) or { vars = {} }
+                loc.set = "Back"
+                return loc
+            end,
+            config = deck.config or {},
+            rarity = deck.rarity or 1
+        }
+        return
+    end
+
     -- create deck
-    SMODS.Back{
+    CodexArcanum.pools.Decks[#CodexArcanum.pools.Decks + 1] = SMODS.Back{
         key = deck.key,
         config = deck.config or {},
         unlocked = true,

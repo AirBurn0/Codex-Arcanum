@@ -9,19 +9,52 @@ local function extra(x)
     return math.max(1, alchemy_ability_round(x))
 end
 
-SMODS.Tarot{
+CodexArcanum.pools.Consumables = {}
+
+local function new_consumable(consumable)
+    local key = "c_alchemy_" .. consumable.key
+    -- create fake
+    if not CodexArcanum.config.modules.Consumables[key] then
+        CodexArcanum.pools.Consumables[#CodexArcanum.pools.Consumables + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "c" }{
+            key = consumable.key or "default",
+            loc_set = consumable.set,
+            atlas = consumable.atlas or "consumables",
+            pos = consumable.pos or { x = 0, y = 0 },
+            loc_vars = function(self, info_queue, center)
+                local loc = consumable.loc_vars and consumable.loc_vars(self, info_queue, center) or { vars = {} }
+                loc.set = consumable.set
+                return loc
+            end,
+            config = consumable.config or {},
+        }
+        return
+    end
+
+    CodexArcanum.pools.Consumables[#CodexArcanum.pools.Consumables + 1] = SMODS.Consumable{
+        key = consumable.key,
+        set = consumable.set,
+        pos = consumable.pos or { x = 0, y = 0 },
+        atlas =  consumable.atlas or "consumables",
+        loc_vars = consumable.loc_vars,
+        config = consumable.config or {},
+        cost = consumable.cost or 1,
+        unlocked = true,
+        discovered = false,
+        can_use = consumable.can_use or function(card) return true end,
+        use = consumable.use
+    }
+end
+
+new_consumable{
     key = "seeker",
+    set = "Tarot",
     pos = { x = 0, y = 0 },
-    atlas = "consumables",
     loc_vars = function(self, info_queue, center)
         local extra = extra(center.ability.extra.alchemicals)
         return { vars = { extra, alchemy_loc_plural("card", extra) } }
     end,
     config = { extra = { alchemicals = 2 } },
     cost = 3,
-    unlocked = true,
-    discovered = false,
-    can_use = function(card) return true end,
     use = function(self, card, area, copier)
         local cards = math.min(extra(card.ability.extra.alchemicals), G.consumeables.config.card_limit - #G.consumeables.cards)
         if cards < 1 then
@@ -48,13 +81,11 @@ SMODS.Tarot{
     end
 }
 
-SMODS.Spectral{
+new_consumable{
     key = "philosopher_stone",
+    set = "Spectral",
     pos = { x = 0, y = 1 },
-    atlas = "consumables",
     cost = 4,
-    unlocked = true,
-    discovered = false,
     can_use = function(card) return not (G.deck and G.deck.config and G.deck.config.philosopher) and G.STATE == G.STATES.SELECTING_HAND end,
     use = function(self, card, area, copier)
         G.deck.config.philosopher = true

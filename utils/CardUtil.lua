@@ -1,3 +1,5 @@
+CodexArcanum.utils = {}
+
 function create_alchemical()
 	return create_card("Alchemical", G.pack_cards, nil, nil, true, true, nil, "alc")
 end

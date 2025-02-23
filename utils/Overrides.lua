@@ -104,7 +104,7 @@ function Card:set_sprites(_center, _front)
     if _center and _center.set == "Alchemical" and not _center.unlocked and not self.params.bypass_discovery_center then
         self.bypass_discovery_center = true -- hide (?) icon
         -- Until SMODS do 'LockedSprite' it will be like that
-        self.children.center = Sprite(self.T.x, self.T.y, self.T.w, self.T.h, G.ASSET_ATLAS["alchemy_alchemicals_atlas"], G.c_alchemy_locked.pos)
+        self.children.center = Sprite(self.T.x, self.T.y, self.T.w, self.T.h, G.ASSET_ATLAS[G.c_alchemy_locked.atlas], G.c_alchemy_locked.pos)
         self.children.center.states.hover = self.states.hover
         self.children.center.states.click = self.states.click
         self.children.center.states.drag = self.states.drag

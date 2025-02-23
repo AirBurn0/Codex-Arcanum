@@ -5,15 +5,6 @@ SMODS.Atlas{
     py = 95
 }
 
-SMODS.ConsumableType{
-    key = "Alchemical",
-    primary_colour = G.C.SECONDARY_SET.Alchemy,
-    secondary_colour = G.C.SECONDARY_SET.Alchemy,
-    collection_rows = { 4, 4 },
-    shop_rate = 0,
-    default = "c_alchemy_ignis"
-}
-
 SMODS.UndiscoveredSprite{
     key = "Alchemical",
     atlas = "alchemicals",
@@ -24,13 +15,22 @@ SMODS.UndiscoveredSprite{
 G.c_alchemy_locked = {
     name = "Locked",
     pos = { x = 5, y = 4 },
-    atlas = "alchemicals",
+    atlas = "alchemy_alchemicals",
     set = "Alchemical",
     unlocked = false,
     max = 1,
     cost_mult = 1.0,
     config = {}
 }
+
+local function get_first_key_enabled(map, default)
+    for k, v in pairs(map) do
+        if v then
+            return k
+        end
+    end
+    return default
+end
 
 local function get_most_common_suit()
     local suit_to_card_couner = {}
@@ -64,8 +64,37 @@ local function get_progress_info(vars)
     return main_end[1]
 end
 
+SMODS.ConsumableType{
+    key = "Alchemical",
+    primary_colour = HEX("C09D75"),
+    secondary_colour = HEX("C09D75"),
+    collection_rows = { 4, 4 },
+    shop_rate = 0,
+    default = get_first_key_enabled(CodexArcanum.config.modules.Alchemicals, "c_fool"), -- should be c_alchemy_ignis if not disabled
+}
+
+CodexArcanum.pools.Alchemicals = CodexArcanum.pools.Alchemicals or {}
+
 -- kinda default constructor
 local function new_alchemical(alchemical)
+    local key = "c_alchemy_" .. alchemical.key
+    -- create fake
+    if not CodexArcanum.config.modules.Alchemicals[key] then
+        CodexArcanum.pools.Alchemicals[#CodexArcanum.pools.Alchemicals + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "c" }{
+            key = alchemical.key or "default",
+            loc_set = "Alchemical",
+            atlas = alchemical.atlas or "alchemicals",
+            pos = alchemical.pos or { x = 4, y = 4 },
+            loc_vars = function(self, info_queue, center)
+                local loc = alchemical.loc_vars and alchemical.loc_vars(self, info_queue, center) or { vars = {} }
+                loc.set = "Alchemical"
+                return loc
+            end,
+            config = alchemical.config or {}
+        }
+        return
+    end
+
     -- can_use function builder
     -- preharps there is simpler way to do this and don't ctrl+c ctrl+v code
     local can_use_builder = { alchemical.can_use or function(self, card) return G.STATE == G.STATES.SELECTING_HAND and not card.debuff end }
@@ -84,11 +113,11 @@ local function new_alchemical(alchemical)
         end
     end
     -- create consumable
-    SMODS.Consumable{
-        key = alchemical.key or "stone", -- default is stone lol
+    CodexArcanum.pools.Alchemicals[#CodexArcanum.pools.Alchemicals + 1] = SMODS.Consumable{
+        key = alchemical.key or "unknown",
         set = "Alchemical",
         atlas = alchemical.atlas or "alchemicals",
-        pos = alchemical.pos or { x = 3, y = 5 }, -- default is stone lol
+        pos = alchemical.pos or { x = 4, y = 4 },
         loc_vars = alchemical.loc_vars,
         unlocked = not (alchemical.check_for_unlock or alchemical.check_for_unlock),
         unlock_condition = alchemical.unlock_condition,
