@@ -9,7 +9,7 @@ CodexArcanum.pools.Vouchers = {}
 
 -- kinda default constructor
 local function new_voucher(voucher)
-    local key = "v_alchemy_" .. voucher.key
+    local key = "v_" .. CodexArcanum.prefix .. "_" .. voucher.key
     -- create fake
     if not CodexArcanum.config.modules.Vouchers[key] then
         CodexArcanum.pools.Vouchers[#CodexArcanum.pools.Vouchers + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "v" }{

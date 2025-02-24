@@ -22,7 +22,7 @@ CodexArcanum.pools.Jokers = {}
 
 -- kinda default constructor
 local function new_joker(joker)
-    local key = "j_alchemy_" .. joker.key
+    local key = "j_" .. CodexArcanum.prefix .. "_" .. joker.key
     -- create fake
     if not CodexArcanum.config.modules.Jokers[key] then
         CodexArcanum.pools.Jokers[#CodexArcanum.pools.Jokers + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "j" }{

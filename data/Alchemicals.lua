@@ -36,7 +36,7 @@ CodexArcanum.pools.Alchemicals = CodexArcanum.pools.Alchemicals or {}
 
 -- kinda default constructor
 local function new_alchemical(alchemical)
-    local key = "c_alchemy_" .. alchemical.key
+    local key = "c_" .. CodexArcanum.prefix .. "_" .. alchemical.key
     -- create fake
     if not CodexArcanum.config.modules.Alchemicals[key] then
         CodexArcanum.pools.Alchemicals[#CodexArcanum.pools.Alchemicals + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "c" }{

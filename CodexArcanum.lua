@@ -8,6 +8,7 @@ SMODS.load_file("utils/FakeGameObjects.lua")()
 SMODS.load_file("utils/UI.lua")()
 
 CodexArcanum.pools = CodexArcanum.pools or {}
+
 for k, _ in pairs(CodexArcanum.config.modules) do
-    SMODS.load_file("data/" .. k .. ".lua")()
+    pcall(SMODS.load_file("data/" .. k .. ".lua"))
 end

@@ -85,7 +85,7 @@ end
     -added card params to for example bypass unlock/discovery flags
     -remove unnecessary sorting via SMODS.collection_pool(_pool) that does NOTHING and SHUFFLES my already sorted array
 ]]
-local function card_collection_UIBox(pool, rows, args)
+local function card_collection_UIBox(pool, rows, create_card, args)
     args = args or {}
     args.w_mod = args.w_mod or 1
     args.h_mod = args.h_mod or 1
@@ -136,10 +136,7 @@ local function card_collection_UIBox(pool, rows, args)
                 if not center then
                     break
                 end
-                local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w / 2, G.your_collection[j].T.y, G.CARD_W * args.card_scale, G.CARD_H * args.card_scale_h, G.P_CARDS.empty, (args.center and G.P_CENTERS[args.center]) or center, args.card_args)
-                if args.modify_card then
-                    args.modify_card(card, center, i, j)
-                end
+                local card = create_card(center, i, j, args)
                 if not args.no_materialize then
                     card:start_materialize(nil, i > 1 or j > 1)
                 end
@@ -171,12 +168,12 @@ local function create_cards_disable_collection(configRef, pool, rows, args)
     args = args or {}
     args.area_type = args.area_type or "shop"
     args.no_materialize = true
-    args.card_args = {
-        bypass_discovery_center = true,
-        bypass_discovery_ui = true,
-        bypass_lock = true
-    }
-    args.modify_card = function(card, center, i, j)
+    local create_card = function(center, i, j, _args)
+        local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w / 2, G.your_collection[j].T.y, G.CARD_W * _args.card_scale, G.CARD_H * _args.card_scale_h, G.P_CARDS.empty, (_args.center and G.P_CENTERS[_args.center]) or center, {
+            bypass_discovery_center = true,
+            bypass_discovery_ui = true,
+            bypass_lock = true
+        })
         local key = card.config.center.key
         card.children.center:set_sprite_pos(center.pos)
         if not configRef[key] then
@@ -204,20 +201,50 @@ local function create_cards_disable_collection(configRef, pool, rows, args)
             card:juice_up(1, 0.5)
             card.debuff = not configRef[key]
         end
+        return card
     end
-    return card_collection_UIBox(pool, rows, args)
+    return card_collection_UIBox(pool, rows, create_card, args)
 end
 
-local disable_tabs = {
+local function config_category_button(category, menu, loc, color)
+    local button = UIBox_button{
+        label = loc and loc.title,
+        id = { category = category, menu = menu },
+        shadow = true,
+        scale = 0.5,
+        colour = color,
+        minw = 4.5,
+        minh = 0.75,
+        button = "alchemy_config_button"
+    }
+    if loc and loc.tooltip then
+        button.nodes[1].config.tooltip = { text = loc.tooltip }
+    end
+    return button
+end
+
+local UIDEF = {
     alchemicals = {
-        init = function()
+        menu = function()
+            local loc = localize("b_alchemy_ui_config_alchemicals")
+            return create_category_pane{ text = loc[1], nodes = {
+                config_category_button("alchemicals", "disable", loc[2], G.C.RED),
+            } }
+        end,
+        disable = function()
             return create_cards_disable_collection(CodexArcanum.config.modules.Alchemicals, CodexArcanum.pools.Alchemicals, { 4, 4 }, {
                 h_mod = 0.95,
             })
         end
     },
     boosters = {
-        init = function()
+        menu = function()
+            local loc = localize("b_alchemy_ui_config_boosters")
+            return create_category_pane{ text = loc[1], nodes = {
+                config_category_button("boosters", "disable", loc[2], G.C.RED)
+            } }
+        end,
+        disable = function()
             return create_cards_disable_collection(CodexArcanum.config.modules.BoosterPacks, CodexArcanum.pools.BoosterPacks, { 4, 3 }, {
                 h_mod = 1.3,
                 card_scale = 1.27
@@ -225,33 +252,63 @@ local disable_tabs = {
         end
     },
     jokers = {
-        init = function()
+        menu = function()
+            local loc = localize("b_alchemy_ui_config_jokers")
+            return create_category_pane{ text = loc[1], nodes = {
+                config_category_button("jokers", "disable", loc[2], G.C.RED)
+            } }
+        end,
+        disable = function()
             return create_cards_disable_collection(CodexArcanum.config.modules.Jokers, CodexArcanum.pools.Jokers, { 4, 4 }, {
                 h_mod = 0.95,
             })
         end
     },
     consumables = {
-        init = function()
+        menu = function()
+            local loc = localize("b_alchemy_ui_config_consumables")
+            return create_category_pane{ text = loc[1], nodes = {
+                config_category_button("consumables", "disable", loc[2], G.C.RED)
+            } }
+        end,
+        disable = function()
             return create_cards_disable_collection(CodexArcanum.config.modules.Consumables, CodexArcanum.pools.Consumables, { 1, 1 }, {
                 h_mod = 0.95,
             })
         end
     },
     decks = {
-        init = function()
+        menu = function()
+            local loc = localize("b_alchemy_ui_config_decks")
+            return create_category_pane{ text = loc[1], nodes = {
+                config_category_button("decks", "disable", loc[2], G.C.RED)
+            } }
+        end,
+        disable = function()
             return create_cards_disable_collection(CodexArcanum.config.modules.Decks, CodexArcanum.pools.Decks, { 2 }, {
                 h_mod = 0.95,
             })
         end
     },
     vouchers = {
-        init = function()
+        menu = function()
+            local loc = localize("b_alchemy_ui_config_vouchers")
+            return create_category_pane{ text = loc[1], nodes = {
+                config_category_button("vouchers", "disable", loc[2], G.C.RED)
+            } }
+        end,
+        disable = function()
             return create_cards_disable_collection(CodexArcanum.config.modules.Vouchers, CodexArcanum.pools.Vouchers, { 2, 2 })
         end
     },
     tags = {
-        init = function()
+        menu = function()
+            local loc = localize("b_alchemy_ui_config_tags")
+            return create_category_pane{ text = loc[1], nodes = {
+                config_category_button("tags", "disable", loc[2], G.C.RED)
+            } }
+        end,
+        disable = function()
             return create_cards_disable_collection(CodexArcanum.config.modules.Tags, CodexArcanum.pools.Tags, { 2 }, {
                 w_mod = 0.5,
                 h_mod = 0.5,
@@ -262,109 +319,8 @@ local disable_tabs = {
     }
 }
 
-function G.FUNCS.alchemy_config_button_disable(e)
-    G.FUNCS.overlay_menu{ definition = disable_tabs[e.config.id].init() }
-end
-
-local function config_category_button(loc, name, color)
-    local button = UIBox_button{
-        label = loc.title,
-        id = name,
-        shadow = true,
-        scale = 0.5,
-        colour = color,
-        minw = 4.5,
-        minh = 0.75,
-        button = "alchemy_config_button_disable"
-    }
-    button.nodes[1].config.tooltip = { text = loc.tooltip }
-    return button
-end
-
-local category_tabs = {
-    alchemicals = {
-        init = function()
-            local loc = localize("b_alchemy_ui_config_alchemicals")
-            return create_category_pane{ text = loc[1], nodes = {
-                config_category_button(loc[2], "alchemicals", G.C.RED),
-            } }
-        end
-    },
-    boosters = {
-        init = function()
-            local enabled_loc = localize("b_alchemy_ui_enabled")
-            local loc = localize("b_alchemy_ui_config_boosters")
-            return create_category_pane{ text = loc[1], nodes = {
-                -- create_ttoggle{ label = enabled_loc, tooltip = loc[2].tooltip, align = "cm", active_colour = G.C.RED, shadow = true, ref_table = CodexArcanum.config.modules, ref_value = "BoosterPacks" }
-                config_category_button(loc[2], "boosters", G.C.RED)
-            } }
-        end
-    },
-    jokers = {
-        init = function()
-            local enabled_loc = localize("b_alchemy_ui_enabled")
-            local loc = localize("b_alchemy_ui_config_jokers")
-            return create_category_pane{ text = loc[1], nodes = {
-                config_category_button(loc[2], "jokers", G.C.RED)
-            } }
-        end
-    },
-    consumables = {
-        init = function()
-            local enabled_loc = localize("b_alchemy_ui_enabled")
-            local loc = localize("b_alchemy_ui_config_consumables")
-            return create_category_pane{ text = loc[1], nodes = {
-                config_category_button(loc[2], "consumables", G.C.RED)
-            } }
-        end
-    },
-    decks = {
-        init = function()
-            local enabled_loc = localize("b_alchemy_ui_enabled")
-            local loc = localize("b_alchemy_ui_config_decks")
-            return create_category_pane{ text = loc[1], nodes = {
-                config_category_button(loc[2], "decks", G.C.RED)
-            } }
-        end
-    },
-    vouchers = {
-        init = function()
-            local enabled_loc = localize("b_alchemy_ui_enabled")
-            local loc = localize("b_alchemy_ui_config_vouchers")
-            return create_category_pane{ text = loc[1], nodes = {
-                config_category_button(loc[2], "vouchers", G.C.RED)
-            } }
-        end
-    },
-    tags = {
-        init = function()
-            local enabled_loc = localize("b_alchemy_ui_enabled")
-            local loc = localize("b_alchemy_ui_config_tags")
-            return create_category_pane{ text = loc[1], nodes = {
-                config_category_button(loc[2], "tags", G.C.RED)
-            } }
-        end
-    }
-}
-
 function G.FUNCS.alchemy_config_button(e)
-    G.FUNCS.overlay_menu{ definition = category_tabs[e.config.id].init() }
-end
-
-local function config_category_button(name, color)
-    local loc = localize("b_alchemy_ui_config_" .. name)
-    local button = UIBox_button{
-        label = loc[1].title,
-        id = name,
-        shadow = true,
-        scale = 0.5,
-        colour = color,
-        minw = 4.5,
-        minh = 0.75,
-        button = "alchemy_config_button"
-    }
-    button.nodes[1].config.tooltip = { text = loc[1].tooltip }
-    return button
+    G.FUNCS.overlay_menu{ definition = UIDEF[e.config.id.category][e.config.id.menu]() }
 end
 
 CodexArcanum.config_tab = function()
@@ -376,13 +332,13 @@ CodexArcanum.config_tab = function()
                 n = G.UIT.C,
                 config = { align = "tm", padding = 0.15, },
                 nodes = {
-                    config_category_button("alchemicals", G.C.SECONDARY_SET.Alchemical),
-                    config_category_button("boosters", G.C.BOOSTER),
-                    config_category_button("jokers", G.C.SECONDARY_SET.Joker),
-                    config_category_button("consumables", G.C.SECONDARY_SET.Tarot),
-                    config_category_button("decks", HEX("3DAD82")),
-                    config_category_button("vouchers", G.C.SECONDARY_SET.Voucher),
-                    config_category_button("tags", HEX("878DC6")),
+                    config_category_button("alchemicals", "menu", localize("b_alchemy_ui_config_alchemicals")[1], G.C.SECONDARY_SET.Alchemical),
+                    config_category_button("boosters", "menu", localize("b_alchemy_ui_config_boosters")[1], G.C.BOOSTER),
+                    config_category_button("jokers", "menu", localize("b_alchemy_ui_config_jokers")[1], G.C.SECONDARY_SET.Joker),
+                    config_category_button("consumables", "menu", localize("b_alchemy_ui_config_consumables")[1], G.C.SECONDARY_SET.Tarot),
+                    config_category_button("decks", "menu", localize("b_alchemy_ui_config_decks")[1], HEX("3DAD82")),
+                    config_category_button("vouchers", "menu", localize("b_alchemy_ui_config_vouchers")[1], G.C.SECONDARY_SET.Voucher),
+                    config_category_button("tags", "menu", localize("b_alchemy_ui_config_tags")[1], HEX("878DC6"))
                 }
             }
         }
