@@ -12,10 +12,16 @@ CodexArcanum.pools = CodexArcanum.pools or {}
 
 local current_config = SMODS.load_file("config.lua")().modules -- There is some cases of OLD/invalid data in config, so try to clean it
 for module, config in pairs(CodexArcanum.config.modules) do
-    for key, _ in pairs(config) do
-        if current_config[module][key] == nil then
-            config[key] = nil
+    if current_config[module] == nil then
+        -- remove nonexistent module
+        CodexArcanum.config.modules[module] = nil
+    else
+        for key, _ in pairs(config) do
+            if current_config[module][key] == nil then
+                -- remove nonexistent config key
+                config[key] = nil
+            end
         end
+        SMODS.load_file("data/" .. module .. ".lua")()
     end
-    pcall(SMODS.load_file("data/" .. module .. ".lua"))
 end

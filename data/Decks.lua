@@ -22,8 +22,7 @@ local function new_deck(deck)
                 loc.set = "Back"
                 return loc
             end,
-            config = deck.config or {},
-            rarity = deck.rarity or 1
+            config = deck.config or {}
         }
         return
     end
