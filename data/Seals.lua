@@ -13,7 +13,7 @@ local function new_seal(seal)
     -- create fake
     if not CodexArcanum.config.modules.Seals[key] then
         CodexArcanum.pools.Seals[#CodexArcanum.pools.Seals + 1] = CodexArcanum.FakeCard{
-            key = seal.key or "default",
+            key = (seal.key or "default") .. "_seal",
             atlas = seal.atlas or "seals",
             pos = seal.pos or { x = 4, y = 4 },
             loc_vars = seal.loc_vars
