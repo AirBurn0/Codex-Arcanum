@@ -14,16 +14,13 @@ function CodexArcanum.UICard:init(X, Y, W, H, card, center, mod_config, params)
     }
     self.tilt_var = { mx = 0, my = 0, dx = 0, dy = 0, amt = 0 }
     self.ambient_tilt = 0.2
-
     self.states.collide.can = true
     self.states.hover.can = true
     self.states.drag.can = true
     self.states.click.can = true
-
     self.playing_card = self.params.playing_card
     G.sort_id = (G.sort_id or 0) + 1
     self.sort_id = G.sort_id
-
     if self.params.viewed_back then
         self.back = "viewed_back"
     else
@@ -40,9 +37,6 @@ function CodexArcanum.UICard:init(X, Y, W, H, card, center, mod_config, params)
     self.unique_val = 1 - self.ID / 1603301
     self.edition = nil
     self.zoom = true
-    if not mod_config[center.key] then
-        self.debuff = true
-    end
     self:set_ability(center, true)
     self:set_base(card, true)
     self.facing = "front"
@@ -54,11 +48,9 @@ function CodexArcanum.UICard:init(X, Y, W, H, card, center, mod_config, params)
     self.T.scale = 0.95
     self.rank = nil
     self.added_to_deck = nil
-
     if self.children.front then self.children.front.VT.w = 0 end
     self.children.back.VT.w = 0
     self.children.center.VT.w = 0
-
     if self.children.front then
         self.children.front.parent = self;
         self.children.front.layered_parallax = nil
@@ -67,7 +59,6 @@ function CodexArcanum.UICard:init(X, Y, W, H, card, center, mod_config, params)
     self.children.back.layered_parallax = nil
     self.children.center.parent = self
     self.children.center.layered_parallax = nil
-
     self.states.focus.can = false
     self.states.drag.can = false
     self.children.alert = nil
@@ -350,34 +341,6 @@ function CodexArcanum.UICard:move(dt)
     end
 end
 
-function CodexArcanum.UICard:align_h_popup()
-    local focused_ui = self.children.focused_ui and true or false
-    local popup_direction = (self.T.y < G.CARD_H * 0.8) and "bm" or "tm"
-    return {
-        major = self.children.focused_ui or self,
-        parent = self,
-        xy_bond = "Strong",
-        r_bond = "Weak",
-        wh_bond = "Weak",
-        offset = {
-            x = --popup_direction ~= "cl" and 0 or
-                focused_ui and -0.05 or
-                (self.ability.consumeable and 0.0) or
-                (self.ability.set == "Voucher" and 0.0) or
-                -0.05,
-            y = focused_ui and (
-                    popup_direction == "tm" and (self.area and self.area == G.hand and -0.08 or -0.15) or
-                    popup_direction == "bm" and 0.12 or
-                    0
-                ) or
-                popup_direction == "tm" and -0.13 or
-                popup_direction == "bm" and 0.1 or
-                0
-        },
-        type = popup_direction,
-    }
-end
-
 function CodexArcanum.UICard:juice_up(scale, rot_amount)
     local rot_amt = rot_amount and 0.4 * (math.random() > 0.5 and 1 or -1) * rot_amount or (math.random() > 0.5 and 1 or -1) * 0.16
     scale = scale and scale * 0.4 or 0.11
@@ -461,8 +424,7 @@ function CodexArcanum.UICard:draw(layer)
         for k, v in pairs(self.children) do
             if string.find(k, "overlay_") then
                 v.role.draw_major = self
-                v:draw_shader("dissolve", nil, nil, true, v)
-                v:draw()
+                v:draw_shader('dissolve', nil, nil, nil, self.children.center)
             end
         end
 
@@ -602,6 +564,34 @@ function CodexArcanum.UICard:card_h_popup()
     }
 end
 
+function CodexArcanum.UICard:align_h_popup()
+    local focused_ui = self.children.focused_ui and true or false
+    local popup_direction = (self.T.y < G.CARD_H * 0.8) and "bm" or "tm"
+    return {
+        major = self.children.focused_ui or self,
+        parent = self,
+        xy_bond = "Strong",
+        r_bond = "Weak",
+        wh_bond = "Weak",
+        offset = {
+            x = --popup_direction ~= "cl" and 0 or
+                focused_ui and -0.05 or
+                (self.ability.consumeable and 0.0) or
+                (self.ability.set == "Voucher" and 0.0) or
+                -0.05,
+            y = focused_ui and (
+                    popup_direction == "tm" and (self.area and self.area == G.hand and -0.08 or -0.15) or
+                    popup_direction == "bm" and 0.12 or
+                    0
+                ) or
+                popup_direction == "tm" and -0.13 or
+                popup_direction == "bm" and 0.1 or
+                0
+        },
+        type = popup_direction,
+    }
+end
+
 function CodexArcanum.UICard:hover()
     local debuff = self.debuff
     self.debuff = false
@@ -620,6 +610,9 @@ function CodexArcanum.UICard:hover()
     if set == "Default" and self.config.overlays then
         local k, overlay = next(self.config.overlays)
         key = overlay.key
+        if overlay.is and overlay:is(SMODS.Seal) then -- I really DO hate that inconsistency
+            key = key .. "_seal"
+        end
     end
     if not G.localization.descriptions[set] then
         set = "Other"
@@ -662,12 +655,9 @@ function CodexArcanum.UICard:stop_hover()
 end
 
 function CodexArcanum.UICard:click()
-    local key = self.config.center.key
-    local mod_config = self.config.mod_config
-    mod_config[key] = not mod_config[key]
     play_sound("tarot1", 0.9 + 0.1 * math.random(), 0.4)
     self:juice_up(1, 0.5)
-    self.debuff = not mod_config[key]
+    self.debuff = not self.params.toggle_config(self)
 end
 
 function CodexArcanum.UICard:remove()
