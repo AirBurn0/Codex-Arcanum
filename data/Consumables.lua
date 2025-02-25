@@ -102,7 +102,7 @@ new_consumable{
                 trigger = "after",
                 delay = 0.1,
                 func = function()
-                    _card:set_seal(card.ability.extra, false, true)
+                    _card:set_seal(CodexArcanum.config.modules.Seals.alchemy_alchemical and card.ability.extra or "Gold", false, true)
                     return true
                 end
             })

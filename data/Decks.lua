@@ -43,10 +43,10 @@ end
 
 new_deck{
     key = "philosopher",
-    config = { vouchers = { "v_alchemy_alchemical_merchant" }},
+    config = { vouchers = { CodexArcanum.config.modules.Vouchers.v_alchemy_alchemical_merchant and "v_alchemy_alchemical_merchant" or nil }},
     pos = { x = 0, y = 0 },
     check_for_unlock = function(self, args)
-        if args.type == "discover_amount" and G.P_CENTERS.c_alchemy_philosopher_stone.discovered then
+        if not CodexArcanum.config.modules.Consumables.c_alchemy_philosopher_stone or args.type == "discover_amount" and G.P_CENTERS.c_alchemy_philosopher_stone.discovered then
             unlock_card(self)
         end
     end
@@ -54,10 +54,10 @@ new_deck{
 
 new_deck{
     key = "herbalist",
-    config = { vouchers = { "v_alchemy_mortar_and_pestle" } },
+    config = { vouchers = { CodexArcanum.config.modules.Vouchers.v_alchemy_mortar_and_pestle and  "v_alchemy_mortar_and_pestle" or nil } },
     pos = { x = 1, y = 0 },
     check_for_unlock = function(self, args)
-        if args.type == "discover_amount" and G.P_CENTERS.c_alchemy_seeker.discovered then
+        if not CodexArcanum.config.modules.Consumables.c_alchemy_seeker and args.type == "discover_amount" and G.P_CENTERS.c_alchemy_seeker.discovered then
             unlock_card(self)
         end
     end,

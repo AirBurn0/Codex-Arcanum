@@ -77,7 +77,7 @@ new_sticker{
             -- eval all
             for _, entry in ipairs(extra.array) do
                 local center = G.P_CENTERS[entry.key]
-                if center.undo then
+                if center and center.undo then
                     center.undo(center, card, entry.data)
                 end
             end

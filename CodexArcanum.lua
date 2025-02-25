@@ -10,6 +10,12 @@ SMODS.load_file("utils/UI.lua")()
 
 CodexArcanum.pools = CodexArcanum.pools or {}
 
-for k, _ in pairs(CodexArcanum.config.modules) do
-    pcall(SMODS.load_file("data/" .. k .. ".lua"))
+local current_config = SMODS.load_file("config.lua")().modules -- There is some cases of OLD/invalid data in config, so try to clean it
+for module, config in pairs(CodexArcanum.config.modules) do
+    for key, _ in pairs(config) do
+        if current_config[module][key] == nil then
+            config[key] = nil
+        end
+    end
+    pcall(SMODS.load_file("data/" .. module .. ".lua"))
 end
