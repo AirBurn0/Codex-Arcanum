@@ -111,14 +111,23 @@ end
 
 local function create_cards_disable_collection(mod_config, pool, rows, args)
     local create_card = function(center, i, j, _args)
-        return CodexArcanum.UICard(
+        local key = center.key
+        local params = (type(_args.params) == "table" and _args.params) or (type(_args.params) == "function") and _args.params(center) or {}
+        params.toggle_config = function(card)
+            mod_config[key] = not mod_config[key]
+            return mod_config[key]
+        end
+        card = CodexArcanum.UICard(
             G.your_collection[j].T.x + G.your_collection[j].T.w / 2,
             G.your_collection[j].T.y,
             (_args.card_w or G.CARD_W) * _args.card_scale,
             (_args.card_h or G.CARD_H) * _args.card_scale, G.P_CARDS.empty,
-            (_args.center and G.P_CENTERS[_args.center]) or center, mod_config,
-            _args.params and ((type(_args.params) == "table" and _args.params) or (type(_args.params) == "function") and _args.params(center))
+            (_args.center and G.P_CENTERS[_args.center]) or center,
+            mod_config,
+            params
         )
+        card.debuff = not mod_config[center.key]
+        return card
     end
     return card_collection_UIBox(pool, rows, create_card, args)
 end
