@@ -11,7 +11,7 @@ CodexArcanum.pools.Tags = CodexArcanum.pools.Tags or {}
 local function new_tag(tag)
     tag.config = tag.config or {}
     tag.config.type = tag.type
-    local key = "tag_alchemy_" .. tag.key
+    local key = "tag_" .. CodexArcanum.prefix .. "_" .. tag.key
     -- create fake
     if not CodexArcanum.config.modules.Tags[key] then
         CodexArcanum.pools.Tags[#CodexArcanum.pools.Tags + 1] = CodexArcanum.FakeTag{

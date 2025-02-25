@@ -8,7 +8,7 @@ SMODS.Atlas{
 CodexArcanum.pools.Consumables = {}
 
 local function new_consumable(consumable)
-    local key = "c_alchemy_" .. consumable.key
+    local key = "c_" .. CodexArcanum.prefix .. "_" .. consumable.key
     -- create fake
     if not CodexArcanum.config.modules.Consumables[key] then
         CodexArcanum.pools.Consumables[#CodexArcanum.pools.Consumables + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "c" }{
@@ -30,7 +30,7 @@ local function new_consumable(consumable)
         key = consumable.key,
         set = consumable.set,
         pos = consumable.pos or { x = 0, y = 0 },
-        atlas =  consumable.atlas or "consumables",
+        atlas = consumable.atlas or "consumables",
         loc_vars = consumable.loc_vars,
         config = consumable.config or {},
         cost = consumable.cost or 1,
@@ -64,9 +64,9 @@ new_consumable{
                 func = function()
                     if G.consumeables.config.card_limit > #G.consumeables.cards then
                         play_sound("timpani")
-                        local card = create_card("Alchemical", G.consumeables, nil, nil, nil, nil, nil, "see")
-                        card:add_to_deck()
-                        G.consumeables:emplace(card)
+                        local _card = create_card("Alchemical", G.consumeables, nil, nil, nil, nil, nil, "see")
+                        _card:add_to_deck()
+                        G.consumeables:emplace(_card)
                         used_tarot:juice_up(0.3, 0.5)
                     end
                     return true

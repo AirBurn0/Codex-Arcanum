@@ -6,7 +6,6 @@ CodexArcanum.FakeCard = SMODS.Center:extend{
     config = {},
     set = "Consumeables",
     required_params = {
-        "loc_set",
         "key",
     },
     inject = function(self)
@@ -31,9 +30,6 @@ CodexArcanum.FakeCard = SMODS.Center:extend{
     end,
     generate_ui = function(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
         SMODS.Center.generate_ui(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
-    end,
-    process_loc_text = function(self)
-        SMODS.process_loc_text(G.localization.descriptions[self.loc_set], self.key, self.loc_txt)
     end
 }
 
@@ -92,15 +88,11 @@ CodexArcanum.FakeTag = SMODS.GameObject:extend{
     discovered = false,
     min_ante = nil,
     atlas = "tags",
-    class_prefix = "tag",
     set = "Tag",
     pos = { x = 0, y = 0 },
     config = {},
-    process_loc_text = function(self)
-        SMODS.process_loc_text(G.localization.descriptions.Tag, self.key, self.loc_txt)
-    end,
     inject = function(self)
-        SMODS.insert_pool(G.P_CENTER_POOLS[self.set], self)
+        -- SMODS.insert_pool(G.P_CENTER_POOLS[self.set], self)
     end,
     generate_ui = function(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
         if not card then

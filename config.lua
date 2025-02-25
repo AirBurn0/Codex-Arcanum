@@ -24,7 +24,11 @@ return {
             c_alchemy_oil = true,
             c_alchemy_acid = true,
             c_alchemy_brimstone = true,
-            c_alchemy_uranium = true
+            c_alchemy_uranium = true,
+            c_alchemy_lithium = true,
+            c_alchemy_honey = true,
+            c_alchemy_chlorine = true,
+            c_alchemy_stone = true
         },
         BoosterPacks = {
             p_alchemy_normal_1 = true,

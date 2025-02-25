@@ -9,7 +9,7 @@ CodexArcanum.pools.Decks = {}
 
 -- kinda default constructor
 local function new_deck(deck)
-    local key = "b_alchemy_" .. deck.key
+    local key = "b_" .. CodexArcanum.prefix .. "_" .. deck.key
     -- create fake
     if not CodexArcanum.config.modules.Decks[key] then
         CodexArcanum.pools.Decks[#CodexArcanum.pools.Decks + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "b" }{

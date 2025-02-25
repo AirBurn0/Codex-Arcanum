@@ -36,7 +36,7 @@ CodexArcanum.pools.Alchemicals = CodexArcanum.pools.Alchemicals or {}
 
 -- kinda default constructor
 local function new_alchemical(alchemical)
-    local key = "c_alchemy_" .. alchemical.key
+    local key = "c_" .. CodexArcanum.prefix .. "_" .. alchemical.key
     -- create fake
     if not CodexArcanum.config.modules.Alchemicals[key] then
         CodexArcanum.pools.Alchemicals[#CodexArcanum.pools.Alchemicals + 1] = CodexArcanum.FakeCard:extend{ class_prefix = "c" }{
@@ -159,7 +159,7 @@ new_alchemical{
     key = "ignis",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local extra = CodexArcanum.utils.round_integer(center.ability.extra)
+        local extra = CodexArcanum.utils.round_to_integer(center.ability.extra)
         return { vars = { extra, CodexArcanum.utils.loc_plural("discard", extra) } }
     end,
     config = { extra = 1 },
@@ -169,7 +169,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                ease_discard(CodexArcanum.utils.round_integer(card.ability.extra))
+                ease_discard(CodexArcanum.utils.round_to_integer(card.ability.extra))
                 return true
             end
         })
@@ -180,7 +180,7 @@ new_alchemical{
     key = "aqua",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local extra = CodexArcanum.utils.round_integer(center.ability.extra)
+        local extra = CodexArcanum.utils.round_to_integer(center.ability.extra)
         return { vars = { extra, CodexArcanum.utils.loc_plural("hand", extra) } }
     end,
     config = { extra = 1 },
@@ -190,7 +190,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                ease_hands_played(CodexArcanum.utils.round_integer(card.ability.extra))
+                ease_hands_played(CodexArcanum.utils.round_to_integer(card.ability.extra))
                 return true
             end
         })
@@ -221,7 +221,7 @@ new_alchemical{
     key = "aero",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local extra = CodexArcanum.utils.round_integer(center.ability.extra)
+        local extra = CodexArcanum.utils.round_to_integer(center.ability.extra)
         return { vars = { extra, CodexArcanum.utils.loc_plural("card", extra) } }
     end,
     config = { extra = 4 },
@@ -231,7 +231,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                CodexArcanum.utils.draw_cards(CodexArcanum.utils.round_integer(card.ability.extra))
+                CodexArcanum.utils.draw_cards(CodexArcanum.utils.round_to_integer(card.ability.extra))
                 return true
             end
         })
@@ -242,7 +242,7 @@ new_alchemical{
     key = "quicksilver",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        return { vars = { CodexArcanum.utils.round_integer(center.ability.extra) } }
+        return { vars = { CodexArcanum.utils.round_to_integer(center.ability.extra) } }
     end,
     config = { extra = 2 },
     pos = { x = 4, y = 0 },
@@ -251,7 +251,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                local extra = CodexArcanum.utils.round_integer(card.ability.extra)
+                local extra = CodexArcanum.utils.round_to_integer(card.ability.extra)
                 G.hand:change_size(extra)
                 G.GAME.alchemy_quicksilver = (G.GAME.alchemy_quicksilver or 0) + extra
                 return true
@@ -263,7 +263,7 @@ new_alchemical{
 new_alchemical{
     key = "salt",
     loc_vars = function(self, info_queue, center)
-        local extra = math.max(1, CodexArcanum.utils.round_integer(center.ability.extra))
+        local extra = math.max(1, CodexArcanum.utils.round_to_integer(center.ability.extra))
         return { vars = { extra, CodexArcanum.utils.loc_plural("tag", extra) } }
     end,
     config = { extra = 1 },
@@ -274,7 +274,7 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                for _ = 1, math.max(1, CodexArcanum.utils.round_integer(card.ability.extra)) do
+                for _ = 1, math.max(1, CodexArcanum.utils.round_to_integer(card.ability.extra)) do
                     local _tag_name
                     if G.FORCE_TAG then
                         _tag_name = G.FORCE_TAG
@@ -374,7 +374,7 @@ new_alchemical{
     key = "cobalt",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local extra = CodexArcanum.utils.round_integer(center.ability.extra)
+        local extra = CodexArcanum.utils.round_to_integer(center.ability.extra)
         return { vars = { extra, CodexArcanum.utils.loc_plural("level", extra) } }
     end,
     config = { extra = 2 },
@@ -390,7 +390,7 @@ new_alchemical{
                     { sound = "button", volume = 0.7, pitch = 0.8, delay = 0.3 },
                     { handname = localize(text, "poker_hands"), chips = G.GAME.hands[text].chips, mult = G.GAME.hands[text].mult, level = G.GAME.hands[text].level }
                 )
-                level_up_hand(card, text, nil, CodexArcanum.utils.round_integer(card.ability.extra))
+                level_up_hand(card, text, nil, CodexArcanum.utils.round_to_integer(card.ability.extra))
                 update_hand_text(
                     { sound = "button", volume = 0.7, pitch = 1.1, delay = 0 },
                     { mult = 0, chips = 0, handname = "", level = "" }
@@ -436,7 +436,7 @@ new_alchemical{
         info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
         info_queue[#info_queue + 1] = { key = "eternal", set = "Other" }
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local extra = CodexArcanum.utils.round_integer(center.ability.extra)
+        local extra = CodexArcanum.utils.round_to_integer(center.ability.extra)
         return { vars = { extra, CodexArcanum.utils.loc_plural("copy", extra) } }
     end,
     config = { extra = 1 },
@@ -449,7 +449,7 @@ new_alchemical{
                 trigger = "after",
                 delay = 0.1,
                 func = function()
-                    for _ = 1, CodexArcanum.utils.round_integer(card.ability.extra) or 1 do
+                    for _ = 1, CodexArcanum.utils.round_to_integer(card.ability.extra) or 1 do
                         local joker = pseudorandom_element(G.jokers.cards, pseudoseed("invisible"))
                         local _card = copy_card(joker, nil, nil, nil, joker.edition and joker.edition.negative)
                         _card:set_edition({ negative = true }, true)
@@ -506,7 +506,7 @@ new_alchemical{
     key = "magnet",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local extra = CodexArcanum.utils.round_integer(center.ability.extra)
+        local extra = CodexArcanum.utils.round_to_integer(center.ability.extra)
         return { vars = { extra, CodexArcanum.utils.loc_plural("card", extra) } }
     end,
     config = { max_highlighted = "1", extra = 2 },
@@ -518,7 +518,7 @@ new_alchemical{
             func = function()
                 local target = G.hand.highlighted[1]
                 local t_rank = SMODS.has_no_rank(target) and "no_rank" or target.base.id
-                local count = CodexArcanum.utils.round_integer(card.ability.extra)
+                local count = CodexArcanum.utils.round_to_integer(card.ability.extra)
                 for _, _card in pairs(G.deck.cards) do
                     if (t_rank == "no_rank" and SMODS.has_no_rank(_card)) or (t_rank ~= "no_rank" and not SMODS.has_no_rank(_card) and _card.base.id == t_rank) then
                         delay(0.05)
@@ -539,7 +539,7 @@ new_alchemical{
     key = "wax",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local extra = CodexArcanum.utils.round_integer(center.ability.extra)
+        local extra = CodexArcanum.utils.round_to_integer(center.ability.extra)
         return { vars = { extra, CodexArcanum.utils.loc_plural("copy", extra) } }
     end,
     config = { max_highlighted = "1", extra = 2 },
@@ -550,7 +550,7 @@ new_alchemical{
             delay = 0.1,
             func = function()
                 local new_table = {}
-                for _ = 1, CodexArcanum.utils.round_integer(card.ability.extra) do
+                for _ = 1, CodexArcanum.utils.round_to_integer(card.ability.extra) do
                     G.playing_card = (G.playing_card or 0) + 1
                     local _card = copy_card(G.hand.highlighted[1], nil, nil, G.playing_card)
                     _card:add_to_deck()
@@ -713,7 +713,7 @@ new_alchemical{
     key = "brimstone",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local hands, discards = CodexArcanum.utils.round_integer(center.ability.extra.hands), CodexArcanum.utils.round_integer(center.ability.extra.discards)
+        local hands, discards = CodexArcanum.utils.round_to_integer(center.ability.extra.hands), CodexArcanum.utils.round_to_integer(center.ability.extra.discards)
         return { vars = { hands, CodexArcanum.utils.loc_plural("hand", hands), discards, CodexArcanum.utils.loc_plural("discard", discards) } }
     end,
     config = { extra = { hands = 2, discards = 2 } },
@@ -738,8 +738,8 @@ new_alchemical{
             trigger = "after",
             delay = 0.1,
             func = function()
-                ease_discard(CodexArcanum.utils.round_integer(card.ability.extra.hands))
-                ease_hands_played(CodexArcanum.utils.round_integer(card.ability.extra.discards))
+                ease_discard(CodexArcanum.utils.round_to_integer(card.ability.extra.hands))
+                ease_hands_played(CodexArcanum.utils.round_to_integer(card.ability.extra.discards))
                 for i = 1, #G.jokers.cards do
                     if not G.jokers.cards[i].debuff then
                         G.jokers.cards[i]:set_debuff(true)
@@ -757,7 +757,7 @@ new_alchemical{
     key = "uranium",
     loc_vars = function(self, info_queue, center)
         info_queue[#info_queue + 1] = { key = "alchemical_card", set = "Other" }
-        local extra = math.max(1, CodexArcanum.utils.round_integer(center.ability.extra))
+        local extra = math.max(1, CodexArcanum.utils.round_to_integer(center.ability.extra))
         return { vars = { extra, CodexArcanum.utils.loc_plural("card", extra) } }
     end,
     config = { max_highlighted = "1", extra = 3 },
@@ -789,7 +789,7 @@ new_alchemical{
         end
         -- call it a day
         local target = G.hand.highlighted[1]
-        for i = 1, math.max(1, CodexArcanum.utils.round_integer(card.ability.extra)) do
+        for i = 1, math.max(1, CodexArcanum.utils.round_to_integer(card.ability.extra)) do
             if #eligible_cards < i then
                 break
             end

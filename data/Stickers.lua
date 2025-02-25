@@ -16,7 +16,10 @@ local function new_sticker(sticker)
             key = sticker.key or "default",
             atlas = sticker.atlas or "stickers",
             pos = sticker.pos or { x = 4, y = 4 },
-            loc_vars = sticker.loc_vars
+            loc_vars = sticker.loc_vars,
+            apply = function(self, card, val)
+                card.ability[self.key] = val
+            end
         }
         return
     end
