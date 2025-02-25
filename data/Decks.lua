@@ -40,17 +40,17 @@ local function new_deck(deck)
     }
 end
 
-local philosopher_consumables = CodexArcanum.config.modules.Consumables["c_alchemy_seeker"] and { "c_alchemy_seeker" } or nil
+local philosopher_consumables = CodexArcanum.config.modules.Consumables.c_alchemy_seeker and { "c_alchemy_seeker" } or nil
 
 new_deck{
     key = "philosopher",
-    config = { vouchers = { "v_alchemy_alchemical_merchant" }, consumables = philosopher_consumables },
+    config = { vouchers = { CodexArcanum.config.modules.Vouchers.v_alchemy_alchemical_merchant and "v_alchemy_alchemical_merchant" or nil }, consumables = philosopher_consumables },
     pos = { x = 0, y = 0 }
 }
 
 new_deck{
     key = "herbalist",
-    config = { vouchers = { "v_alchemy_mortar_and_pestle" } },
+    config = { vouchers = { CodexArcanum.config.modules.Vouchers.v_alchemy_mortar_and_pestle and  "v_alchemy_mortar_and_pestle" } },
     pos = { x = 1, y = 0 },
     trigger_effect = function(self, context)
         if context.setting_blind and G.GAME.blind:get_type() == "Boss" then

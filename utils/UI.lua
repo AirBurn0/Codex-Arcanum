@@ -2,57 +2,6 @@ function CodexArcanum:description_loc_vars()
     return { shadow = true, scale = 1 / 0.75, text_colour = G.C.UI.TEXT_LIGHT, background_colour = G.C.CLEAR }
 end
 
-local function create_ttoggle(args)
-    args = args or {}
-    args.active_colour = args.active_colour or G.C.RED
-    args.inactive_colour = args.inactive_colour or G.C.BLACK
-    args.scale = args.scale or 1
-    args.label_scale = args.label_scale or 0.4
-    args.ref_table = args.ref_table or {}
-    args.ref_value = args.ref_value or "test"
-    local check = Sprite(0, 0, 0.5 * args.scale, 0.5 * args.scale, G.ASSET_ATLAS["icons"], { x = 1, y = 0 })
-    check.states.drag.can = false
-    check.states.visible = false
-    return {
-        n = G.UIT.R,
-        config = { align = "cm", padding = 0.1, r = 0.1, colour = G.C.CLEAR, focus_args = { funnel_from = true } },
-        nodes = {
-            { n = G.UIT.T, config = { text = args.label, scale = args.label_scale, colour = G.C.UI.TEXT_LIGHT } },
-            { n = G.UIT.B, config = { w = 0.1, h = 0.1 } },
-            {
-                n = G.UIT.C,
-                config = { align = "cm", r = 0.1, colour = G.C.BLACK },
-                nodes = {
-                    {
-                        n = G.UIT.C,
-                        config = {
-                            align = "cm",
-                            r = 0.1,
-                            padding = 0.03,
-                            minw = 0.4 * args.scale,
-                            minh = 0.4 * args.scale,
-                            outline_colour = G.C.WHITE,
-                            outline = 1.2 * args.scale,
-                            line_emboss = 0.5 * args.scale,
-                            ref_table = args,
-                            colour = args.inactive_colour,
-                            button = "toggle_button",
-                            button_dist = 0.2,
-                            hover = true,
-                            toggle_callback = args.callback,
-                            func = "toggle",
-                            focus_args = { funnel_to = true }
-                        },
-                        nodes = {
-                            { n = G.UIT.O, config = { object = check } },
-                        }
-                    },
-                }
-            }
-        }
-    }
-end
-
 local function create_category_pane(args)
     table.insert(args.nodes, 1, {
         n = G.UIT.R,
@@ -79,18 +28,14 @@ local function create_category_pane(args)
     }
 end
 
---[[
-    modified SMODS.card_collection_UIBox(pool, rows, args)
-    changes:
-    -added card params to for example bypass unlock/discovery flags
-    -remove unnecessary sorting via SMODS.collection_pool(_pool) that does NOTHING and SHUFFLES my already sorted array
-]]
+-- modified SMODS.card_collection_UIBox(pool, rows, args)
 local function card_collection_UIBox(pool, rows, create_card, args)
     args = args or {}
+    args.no_materialize = true
+    args.area_type = args.area_type or "shop"
     args.w_mod = args.w_mod or 1
     args.h_mod = args.h_mod or 1
     args.card_scale = args.card_scale or 1
-    args.card_scale_h = args.card_scale * (args.card_scale_h or 1)
     local deck_tables = {}
     G.your_collection = {}
     local cards_per_page = 0
@@ -147,7 +92,7 @@ local function card_collection_UIBox(pool, rows, create_card, args)
     end
     G.FUNCS.SMODS_card_collection_page{ cycle_config = { current_option = 1 } }
     local t = create_UIBox_generic_options{
-        back_func = (args and args.back_func) or G.ACTIVE_MOD_UI and "openModUI_" .. G.ACTIVE_MOD_UI.id or "your_collection",
+        back_func = (args and args.back_func) or G.ACTIVE_MOD_UI and "openModUI_" .. G.ACTIVE_MOD_UI.id,
         snap_back = args.snap_back,
         infotip = args.infotip,
         contents = {
@@ -164,44 +109,16 @@ local function card_collection_UIBox(pool, rows, create_card, args)
     return t
 end
 
-local function create_cards_disable_collection(configRef, pool, rows, args)
-    args = args or {}
-    args.area_type = args.area_type or "shop"
-    args.no_materialize = true
+local function create_cards_disable_collection(mod_config, pool, rows, args)
     local create_card = function(center, i, j, _args)
-        local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w / 2, G.your_collection[j].T.y, G.CARD_W * _args.card_scale, G.CARD_H * _args.card_scale_h, G.P_CARDS.empty, (_args.center and G.P_CENTERS[_args.center]) or center, {
-            bypass_discovery_center = true,
-            bypass_discovery_ui = true,
-            bypass_lock = true
-        })
-        local key = card.config.center.key
-        card.children.center:set_sprite_pos(center.pos)
-        if not configRef[key] then
-            card.debuff = true
-        end
-
-        card.states.focus.can = false
-        card.states.drag.can = false
-        card:set_base(card.config.card, true)
-        card.hover = function(self)
-            if self.states.focus.is and not self.children.focused_ui then
-                self.children.focused_ui = G.UIDEF.card_focus_ui(self)
-            end
-            local debuff = self.debuff
-            self.debuff = false
-            self.ability_UIBox_table = generate_card_ui(self.config.center)
-            self.config.h_popup = G.UIDEF.card_h_popup(self)
-            self.config.h_popup_config = self:align_h_popup()
-            self.debuff = debuff
-            Node.hover(self)
-        end
-        card.click = function(self)
-            configRef[key] = not configRef[key]
-            play_sound("tarot1", 0.9 + 0.1 * math.random(), 0.4)
-            card:juice_up(1, 0.5)
-            card.debuff = not configRef[key]
-        end
-        return card
+        return CodexArcanum.UICard(
+            G.your_collection[j].T.x + G.your_collection[j].T.w / 2,
+            G.your_collection[j].T.y,
+            (_args.card_w or G.CARD_W) * _args.card_scale,
+            (_args.card_h or G.CARD_H) * _args.card_scale, G.P_CARDS.empty,
+            (_args.center and G.P_CENTERS[_args.center]) or center, mod_config,
+            _args.params and ((type(_args.params) == "table" and _args.params) or (type(_args.params) == "function") and _args.params(center))
+        )
     end
     return card_collection_UIBox(pool, rows, create_card, args)
 end
@@ -312,8 +229,8 @@ local UIDEF = {
             return create_cards_disable_collection(CodexArcanum.config.modules.Tags, CodexArcanum.pools.Tags, { 2 }, {
                 w_mod = 0.5,
                 h_mod = 0.5,
-                card_scale_h = 71 / 95,
-                card_scale = 0.5
+                card_w = 1,
+                card_h = 1,
             })
         end
     }

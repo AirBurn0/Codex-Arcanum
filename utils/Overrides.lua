@@ -1,7 +1,8 @@
 -- creates cards in boosters and etc.
 local create_cardref = create_card
 function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
-    if not forced_key
+    if CodexArcanum.config.modules.Consumables.c_alchemy_philosopher_stone
+    and not forced_key
     and soulable
     and not G.GAME.banned_keys["c_soul"]     -- game checks for G.GAME.banned_keys["c_soul"] even for black hole spectral
     and (_type == "Alchemical" or _type == "Spectral")

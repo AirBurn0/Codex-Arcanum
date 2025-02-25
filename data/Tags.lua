@@ -20,7 +20,6 @@ local function new_tag(tag)
             pos = tag.pos or { x = 0, y = 0 },
             loc_vars = tag.loc_vars,
             config = tag.config,
-            rarity = tag.rarity or 1
         }
         return
     end
