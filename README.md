@@ -4,6 +4,8 @@ This Fork contains:
 * **API refactoring** (migrated to SMODS API)
 * **Compressed art**
 * **Compatibility** with other mods like [**Bunco**](https://github.com/Firch/Bunco), [**Ortalab**](https://github.com/Eremel/Ortalab), [**Pokermon**](https://github.com/InertSteak/Pokermon), [**Talisman**](https://github.com/MathIsFun0/Talisman), etc. 
+* **Disable config system** that entroduces ability to disable mod's content ingame (like, removing specified Alchemicals, Jokers, etc.) via config tab in mod's settings, without need to edit mod sources, create speicfic challenges, or any extra modding.
+
 
 <ins>Any bug/incompatibility reports are welcome</ins>, but before reporting any issue please reset your game progress and confirm if issue is still here.
 
@@ -12,8 +14,6 @@ Also check out [**Redux Arcanum**](https://github.com/jumbocarrot0/Redux-Arcanum
 ## Branch changes
 
 Except for Fork changes, this branch is mostly like vanilla Codex Arcanum 1.1.4
-
-Added **Disable config system** that entroduces ability to disable mod's content ingame (like, removing specified Alchemicals, Jokers, etc.) via config tab in mod's settings, without need to edit mod sources, create speicfic challenges, or any extra modding.
 
 ---
 
