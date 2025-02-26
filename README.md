@@ -13,6 +13,8 @@ Also check out [**Redux Arcanum**](https://github.com/jumbocarrot0/Redux-Arcanum
 
 Except for Fork changes, this branch is mostly like vanilla Codex Arcanum 1.1.4
 
+Added **Disable config system** that entroduces ability to disable mod's content ingame (like, removing specified Alchemicals, Jokers, etc.) via config tab in mod's settings, without need to edit mod sources, create speicfic challenges, or any extra modding.
+
 ---
 
 <p align="center">
